@@ -10,7 +10,6 @@ public class BookInventoryMgmtApplication {
 		SpringApplication.run(BookInventoryMgmtApplication.class, args);
 
 		System.out.println("Order Module");
-		System.out.println("Inventory Module");
 	}
 
 }
