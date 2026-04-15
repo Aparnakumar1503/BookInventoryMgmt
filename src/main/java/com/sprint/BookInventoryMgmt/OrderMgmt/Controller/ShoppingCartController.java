@@ -1,7 +1,6 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Repository.ShoppingCartRepository;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Service.ShoppingCartService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +18,11 @@ public class ShoppingCartController {
 
     @PostMapping("/add")
     public ShoppingCart addCart(@RequestBody ShoppingCart cart) {
-
         return service.addCart(cart);
     }
 
     @GetMapping("/get")
     public List<ShoppingCart> getAll() {
-
         return service.getAll();
     }
 

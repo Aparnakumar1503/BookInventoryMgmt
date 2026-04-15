@@ -1,8 +1,8 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Repository.PurchaseLogRepository;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Service.PurchaseLogService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +16,6 @@ public class PurchaseLogController {
     public PurchaseLogController(PurchaseLogService service) {
         this.service = service;
     }
-
 
     @PostMapping("/add")
     public PurchaseLog addPurchase(@RequestBody PurchaseLog purchase) {
