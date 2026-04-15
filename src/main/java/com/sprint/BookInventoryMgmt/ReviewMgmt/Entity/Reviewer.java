@@ -13,12 +13,12 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "reviewer")
+@Table(name = "Reviewer")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class reviewer {
+public class Reviewer {
 
     @Id
     @NotNull(message = "Reviewer ID cannot be null")

@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.ReviewMgmt.Repository;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.reviewer;
+import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.Reviewer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReviewerRepository extends JpaRepository<reviewer, Integer> {
+public interface ReviewerRepository extends JpaRepository<Reviewer, Integer> {
 }
