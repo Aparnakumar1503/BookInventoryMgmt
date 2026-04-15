@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Entity;
+package com.sprint.BookInventoryMgmt.Inventory.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCondition {
-    // Validation added and tested...
+    // Validation added and tested
     @Id
     @Column(name = "ranks")
     private Integer ranks;
