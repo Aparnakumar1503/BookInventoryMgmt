@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "BookReview")
+@Table(name = "bookreview")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,11 +23,11 @@ public class BookReview {
     private Integer id;
 
     @NotBlank(message = "ISBN cannot be empty")
-    @Column(name = "ISBN")
+    @Column(name = "ISBN",nullable = false)
     private String isbn;
 
     @NotNull(message = "Reviewer ID is required")
-    @Column(name = "ReviewerID")
+    @Column(name = "ReviewerID",nullable = false)
     private Integer reviewerID;
 
     @NotNull(message = "Rating is required")

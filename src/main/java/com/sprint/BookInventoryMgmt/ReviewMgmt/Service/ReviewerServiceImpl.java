@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReviewerServiceImpl {
+public class ReviewerServiceImpl implements ReviewerService{
     @Autowired
     private ReviewerRepository reviewerRepository;
 
@@ -20,6 +20,7 @@ public class ReviewerServiceImpl {
         return reviewerRepository.findById(reviewerId)
                 .orElseThrow(() -> new RuntimeException("Reviewer not found"));
     }
+
     public List<Reviewer> getAllReviewers() {
         return reviewerRepository.findAll();
     }
