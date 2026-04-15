@@ -2,6 +2,7 @@ package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Repository.PurchaseLogRepository;
+import com.sprint.BookInventoryMgmt.OrderMgmt.Service.PurchaseLogService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,26 +11,26 @@ import java.util.List;
 @RequestMapping("/purchase")
 public class PurchaseLogController {
 
-    private final PurchaseLogRepository repo;
+    private final PurchaseLogService service;
 
-    public PurchaseLogController(PurchaseLogRepository repo) {
-        this.repo = repo;
+    public PurchaseLogController(PurchaseLogService service) {
+        this.service = service;
     }
 
 
     @PostMapping("/add")
     public PurchaseLog addPurchase(@RequestBody PurchaseLog purchase) {
-        return repo.save(purchase);
+        return service.addPurchase(purchase);
     }
 
     @GetMapping("/get")
     public List<PurchaseLog> getAll() {
-        return repo.findAll();
+        return service.getAll();
     }
 
     @DeleteMapping("/delete/{userId}")
     public String delete(@PathVariable Long userId) {
-        repo.deleteById(userId);
+        service.delete(userId);
         return "Deleted Successfully";
     }
 }
