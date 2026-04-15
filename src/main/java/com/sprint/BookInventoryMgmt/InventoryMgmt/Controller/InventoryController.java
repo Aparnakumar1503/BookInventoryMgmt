@@ -1,7 +1,8 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Controller;
+package com.sprint.BookInventoryMgmt.Inventory.Controller;
 
 import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.Inventory;
-import com.sprint.BookInventoryMgmt.InventoryMgmt.Repository.InventoryRepository;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Service.InventoryService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,39 +13,35 @@ import java.util.List;
 public class InventoryController {
 
     @Autowired
-    private InventoryRepository repository;
+    private InventoryService service;
 
-    // GET all inventory
+    // ✅ GET all inventory
     @GetMapping
     public List<Inventory> getAllInventory() {
-        return repository.findAll();
+        return service.getAllInventory();
     }
 
-    // GET by ID
+    // ✅ GET inventory by ID
     @GetMapping("/{id}")
-    public Inventory getById(@PathVariable Integer id) {
-        return repository.findById(id).orElseThrow();
+    public Inventory getInventoryById(@PathVariable Integer id) {
+        return service.getInventoryById(id);
     }
 
-    // GET by ISBN
+    // ✅ GET inventory by ISBN
     @GetMapping("/books/{isbn}")
-    public List<Inventory> getByISBN(@PathVariable String isbn) {
-        return repository.findByIsbn(isbn);
+    public List<Inventory> getInventoryByISBN(@PathVariable String isbn) {
+        return service.getInventoryByISBN(isbn);
     }
 
-    // POST create inventory
+    // ✅ POST add inventory
     @PostMapping
-    public Inventory createInventory(@RequestBody Inventory inventory) {
-        inventory.setPurchased(false);
-        return repository.save(inventory);
+    public Inventory addInventory(@RequestBody Inventory inventory) {
+        return service.addInventory(inventory);
     }
 
-    // PUT mark as purchased
+    // ✅ PUT mark as purchased
     @PutMapping("/{id}/purchase")
-    public Inventory markPurchased(@PathVariable Integer id) {
-        Inventory inv = repository.findById(id).orElseThrow();
-        inv.setPurchased(true);
-        return repository.save(inv);
+    public Inventory markAsPurchased(@PathVariable Integer id) {
+        return service.markAsPurchased(id);
     }
 }
-
