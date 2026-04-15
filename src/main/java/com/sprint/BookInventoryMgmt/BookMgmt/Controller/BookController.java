@@ -1,57 +1,73 @@
-// package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
+package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
-// import org.springframework.web.bind.annotation.RestController;
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.BookMgmt.Repository.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-// import com.sprint.BookInventoryMgmt.BookMgmt.DTO.BookRequestDTO;
-// import com.sprint.BookInventoryMgmt.BookMgmt.DTO.BookResponseDTO;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
+import java.util.List;
+import java.util.Optional;
 
-// import jakarta.validation.Valid;
-// import lombok.*;
-// import java.util.List;
+@RestController
+@RequestMapping("/api/v1/books")
+public class BookController {
 
-// @RestController
-// @RequestMapping("/api/v1/books")
-// @RequiredArgsConstructor
+    @Autowired
+    private BookRepository bookRepository;
 
-// public class BookController {
+    // CREATE
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
+        Book saved = bookRepository.save(book);
+        return ResponseEntity.status(201).body(saved);
+    }
 
-//     private final BookService bookService;
+    // GET ALL
+    @GetMapping
+    public List<Book> getAllBooks(
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer publisherId
+    ) {
+        if (categoryId != null && publisherId != null) {
+            return bookRepository.findByCategoryCatIdAndPublisherPublisherId(categoryId, publisherId);
+        }
+        return bookRepository.findAll();
+    }
 
-//     @GetMapping
-//     public List<BookResponseDTO> getAllBooks(
-//             @RequestParam(required = false) Integer categoryId,
-//             @RequestParam(required = false) Integer publisherId
-//     ) {
-//         return bookService.searchBooks(categoryId, publisherId);
-//     }
+    // GET BY ID
+    @GetMapping("/{isbn}")
+    public ResponseEntity<Book> getBook(@PathVariable String isbn) {
+        Optional<Book> book = bookRepository.findById(isbn);
+        return book.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-//     @GetMapping("/{isbn}")
-//     public BookResponseDTO getBook(@PathVariable String isbn) {
-//         return bookService.getBookById(isbn);
-//     }
+    // UPDATE
+    @PutMapping("/{isbn}")
+    public ResponseEntity<Book> updateBook(@PathVariable String isbn,
+                                           @RequestBody Book updatedBook) {
 
-//     @PostMapping
-//     public BookResponseDTO createBook(@RequestBody @Valid BookRequestDTO dto) {
-//         return bookService.createBook(dto);
-//     }
+        return bookRepository.findById(isbn)
+                .map(existing -> {
+                    existing.setTitle(updatedBook.getTitle());
+                    existing.setDescription(updatedBook.getDescription());
+                    existing.setEdition(updatedBook.getEdition());
+                    existing.setCategory(updatedBook.getCategory());
+                    existing.setPublisher(updatedBook.getPublisher());
 
-//     @PutMapping("/{isbn}")
-//     public BookResponseDTO updateBook(@PathVariable String isbn,
-//                                       @RequestBody @Valid BookRequestDTO dto) {
-//         return bookService.updateBook(isbn, dto);
-//     }
+                    return ResponseEntity.ok(bookRepository.save(existing));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-//     @DeleteMapping("/{isbn}")
-//     public void deleteBook(@PathVariable String isbn) {
-//         bookService.deleteBook(isbn);
-//     }
-// }
+    // DELETE
+    @DeleteMapping("/{isbn}")
+    public ResponseEntity<Void> deleteBook(@PathVariable String isbn) {
+        if (bookRepository.existsById(isbn)) {
+            bookRepository.deleteById(isbn);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+}
