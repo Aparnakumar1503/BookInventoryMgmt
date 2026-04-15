@@ -16,18 +16,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class bookreview {
+public class BookReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = "ISBN cannot be empty")
-    @Column(name = "ISBN")
+    @Column(name = "ISBN",nullable = false)
     private String isbn;
 
     @NotNull(message = "Reviewer ID is required")
-    @Column(name = "ReviewerID")
+    @Column(name = "ReviewerID",nullable = false)
     private Integer reviewerID;
 
     @NotNull(message = "Rating is required")
