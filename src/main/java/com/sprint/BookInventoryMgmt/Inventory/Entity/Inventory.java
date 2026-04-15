@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Inventory {
-
+    // Verified entity mapping
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inventoryId;

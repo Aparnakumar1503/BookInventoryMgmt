@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCondition {
-
+    // Validation added and tested
     @Id
     @Column(name = "ranks")
     private Integer ranks;
