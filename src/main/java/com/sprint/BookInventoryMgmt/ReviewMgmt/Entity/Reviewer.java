@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class reviewer {
+public class Reviewer {
 
     @Id
     @NotNull(message = "Reviewer ID cannot be null")
