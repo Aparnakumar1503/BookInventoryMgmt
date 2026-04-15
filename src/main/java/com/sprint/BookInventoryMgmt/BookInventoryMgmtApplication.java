@@ -11,8 +11,6 @@ public class BookInventoryMgmtApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BookInventoryMgmtApplication.class, args);
 
-
-
 	}
 
 }
