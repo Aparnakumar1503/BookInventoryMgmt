@@ -14,7 +14,6 @@ public class BookInventoryMgmtApplication {
 		System.out.println("Order Module");
 		System.out.println("Inventory Module");
 		System.out.println("Reviewer Module Added");
-		System.out.println("hello");
 		System.out.println("Added Book Module");
 	}
 
