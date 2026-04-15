@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.Inventory.Controller;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.Inventory.Entity.Inventory;
-import com.sprint.BookInventoryMgmt.Inventory.Repository.InventoryRepository;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.Inventory;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,3 +47,4 @@ public class InventoryController {
         return repository.save(inv);
     }
 }
+

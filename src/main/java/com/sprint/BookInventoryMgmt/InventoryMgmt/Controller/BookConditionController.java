@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.Inventory.Controller;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.Inventory.Entity.BookCondition;
-import com.sprint.BookInventoryMgmt.Inventory.Repository.BookConditionRepository;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.BookCondition;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Repository.BookConditionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

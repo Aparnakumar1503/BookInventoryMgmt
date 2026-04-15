@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.Inventory.Entity;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
