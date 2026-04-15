@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.Inventory.Repository;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.Repository;
 
-import com.sprint.BookInventoryMgmt.Inventory.Entity.BookCondition;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.BookCondition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
