@@ -1,20 +1,10 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "category")
@@ -26,11 +16,11 @@ import lombok.Setter;
 public class Category {
 
     @Id
-    @Column(name = "CatID")
+    @Column(name = "cat_id")
     private Integer catId;
 
-    @Column(name = "CatDescription", length = 24)
-    @NotBlank(message = "Category description is required")
+    @NotBlank
+    @Column(name = "cat_description", length = 24)
     private String catDescription;
 
     @OneToMany(mappedBy = "category")
