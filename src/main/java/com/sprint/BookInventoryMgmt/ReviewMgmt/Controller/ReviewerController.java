@@ -11,39 +11,34 @@ import java.util.List;
 @RequestMapping("/api/v1/reviewers")
 @CrossOrigin(origins = "*")
 public class ReviewerController {
+
     @Autowired
     private ReviewerService reviewerService;
 
-    // ✅ CREATE
     @PostMapping
     public Reviewer addReviewer(@RequestBody Reviewer reviewer) {
         return reviewerService.addReviewer(reviewer);
     }
 
-    // ✅ GET BY ID
     @GetMapping("/{reviewerId}")
     public Reviewer getReviewerById(@PathVariable int reviewerId) {
         return reviewerService.getReviewerById(reviewerId);
     }
 
-    // ✅ GET ALL
     @GetMapping
     public List<Reviewer> getAllReviewers() {
         return reviewerService.getAllReviewers();
     }
 
-    // ✅ UPDATE
     @PutMapping("/{reviewerId}")
     public Reviewer updateReviewer(@PathVariable int reviewerId,
                                    @RequestBody Reviewer reviewer) {
         return reviewerService.updateReviewer(reviewerId, reviewer);
     }
 
-    // ✅ DELETE
     @DeleteMapping("/{reviewerId}")
     public String deleteReviewer(@PathVariable int reviewerId) {
         reviewerService.deleteReviewer(reviewerId);
         return "Reviewer deleted successfully";
     }
-
 }
