@@ -1,33 +1,51 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
-
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.BookRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/books")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/books")
 public class BookController {
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
-    // ✅ Create Book
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookRepository.save(book);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Book create(@RequestBody Book book) {
+        return bookService.createBook(book);
     }
 
-    // ✅ Get All Books
+    @GetMapping("/{isbn}")
+    public Book get(@PathVariable String isbn) {
+        return bookService.getBookByIsbn(isbn);
+    }
+
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<Book> getAll() {
+        return bookService.getAllBooks();
     }
 
-
-
+    @PutMapping("/{isbn}")
+    public Book update(@PathVariable String isbn, @RequestBody Book book) {
+        return bookService.updateBook(isbn, book);
     }
+
+    @DeleteMapping("/{isbn}")
+    public void delete(@PathVariable String isbn) {
+        bookService.deleteBook(isbn);
+    }
+
+    @GetMapping("/filter")
+    public List<Book> filter(@RequestParam Integer catId,
+                             @RequestParam Integer publisherId) {
+        return bookService.getBooksByCategoryAndPublisher(catId, publisherId);
+    }
+}
