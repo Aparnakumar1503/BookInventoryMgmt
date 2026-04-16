@@ -43,6 +43,9 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     @Override
     public void deleteReviewer(int reviewerId) {
+        if (!reviewerRepository.existsById(reviewerId)) {
+            throw new ReviewerNotFoundException("Reviewer not found with ID: " + reviewerId);
+        }
         reviewerRepository.deleteById(reviewerId);
     }
 }

@@ -9,6 +9,8 @@ public interface BookReviewService {
 
     List<BookReview> getReviewsByISBN(String isbn);
 
+    List<BookReview> getReviewsByReviewer(int reviewerId);
+
     List<BookReview> getAllReviews();
 
     void deleteReview(int id);

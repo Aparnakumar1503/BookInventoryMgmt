@@ -1,6 +1,7 @@
 package com.sprint.BookInventoryMgmt.ReviewMgmt.Service;
 
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.BookReview;
+import com.sprint.BookInventoryMgmt.ReviewMgmt.Exception.ReviewNotFoundException;
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Repository.BookReviewRepository;
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Repository.ReviewerRepository;
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Exception.ReviewerNotFoundException;
@@ -34,12 +35,23 @@ public class BookReviewServiceImpl implements BookReviewService {
     }
 
     @Override
+    public List<BookReview> getReviewsByReviewer(int reviewerId) {
+        if (!reviewerRepository.existsById(reviewerId)) {
+            throw new ReviewerNotFoundException("Reviewer not found with ID: " + reviewerId);
+        }
+        return reviewRepository.findByReviewerID(reviewerId);
+    }
+
+    @Override
     public List<BookReview> getAllReviews() {
         return reviewRepository.findAll();
     }
 
     @Override
     public void deleteReview(int id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new ReviewNotFoundException("Review not found with ID: " + id);
+        }
         reviewRepository.deleteById(id);
     }
 }
