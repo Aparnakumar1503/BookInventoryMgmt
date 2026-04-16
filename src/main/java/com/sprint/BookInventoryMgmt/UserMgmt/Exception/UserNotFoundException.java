@@ -1,5 +1,7 @@
 package com.sprint.BookInventoryMgmt.UserMgmt.Exception;
 
-public class UserNotFoundException {
-
+public class UserNotFoundException extends RuntimeException{
+    public UserNotFoundException(String message) {
+        super(message);
+    }
 }
