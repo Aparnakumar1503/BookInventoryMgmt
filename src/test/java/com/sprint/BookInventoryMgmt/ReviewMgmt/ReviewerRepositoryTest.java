@@ -4,8 +4,8 @@ import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.Reviewer;
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Repository.ReviewerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ public class ReviewerRepositoryTest {
     @Test
     void testSaveReviewer() {
         Reviewer r = new Reviewer();
+        r.setReviewerID(1);
         r.setName("Swarnalatha");
         r.setEmployedBy("Student");
 
@@ -32,6 +33,7 @@ public class ReviewerRepositoryTest {
     @Test
     void testFindAll() {
         Reviewer r = new Reviewer();
+        r.setReviewerID(2);
         r.setName("Test User");
         r.setEmployedBy("Company");
 
@@ -45,6 +47,7 @@ public class ReviewerRepositoryTest {
     @Test
     void testUpdateReviewer() {
         Reviewer r = new Reviewer();
+        r.setReviewerID(3);
         r.setName("Old Name");
         r.setEmployedBy("Old Company");
 
@@ -62,6 +65,7 @@ public class ReviewerRepositoryTest {
     @Test
     void testDeleteReviewer() {
         Reviewer r = new Reviewer();
+        r.setReviewerID(4);
         r.setName("Delete Me");
         r.setEmployedBy("X");
 
