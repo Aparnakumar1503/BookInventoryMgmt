@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt;
+package com.sprint.BookInventoryMgmt.BookMgmt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;

@@ -5,22 +5,23 @@ import com.sprint.BookInventoryMgmt.AuthorMgmt.Repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class AuthorRepositoryTest {
+class AuthorRepositoryTest {
+
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorRepository repository;
 
     @Test
     void testSaveAuthor() {
-
         Author author = new Author();
         author.setFirstName("John");
         author.setLastName("Doe");
+        author.setPhoto("photo.jpg");
 
-        Author saved = authorRepository.save(author);
+        Author saved = repository.save(author);
 
         assertNotNull(saved.getAuthorId());
         assertEquals("John", saved.getFirstName());
@@ -28,13 +29,25 @@ public class AuthorRepositoryTest {
 
     @Test
     void testFindAllAuthors() {
+        Author a1 = new Author(null, "A", "One", null);
+        Author a2 = new Author(null, "B", "Two", null);
 
-        Author author = new Author();
-        author.setFirstName("Jane");
-        author.setLastName("Smith");
+        repository.save(a1);
+        repository.save(a2);
 
-        authorRepository.save(author);
+        List<Author> list = repository.findAll();
 
-        assertFalse(authorRepository.findAll().isEmpty());
+        assertFalse(list.isEmpty());
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    void testDeleteAuthor() {
+        Author author = new Author(null, "Delete", "Me", null);
+        Author saved = repository.save(author);
+
+        repository.deleteById(saved.getAuthorId());
+
+        assertFalse(repository.findById(saved.getAuthorId()).isPresent());
     }
 }
