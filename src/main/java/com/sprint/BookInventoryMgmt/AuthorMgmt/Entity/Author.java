@@ -12,6 +12,7 @@ import lombok.*;
 public class Author {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "AuthorID")
 	private Integer authorId;
 
