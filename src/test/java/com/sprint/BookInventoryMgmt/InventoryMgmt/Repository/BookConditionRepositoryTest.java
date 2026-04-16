@@ -3,7 +3,7 @@ package com.sprint.BookInventoryMgmt.InventoryMgmt.Repository;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.BookCondition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
@@ -61,9 +61,8 @@ class BookConditionRepositoryTest {
         repository.save(bc1);
         repository.save(bc2);
 
-        List<BookCondition> result = repository.findByPriceRange(50, 200);
+        List<BookCondition> result = repository.findByPriceBetween(50.0, 200.0);
 
-        assertFalse(result.isEmpty());
         assertEquals(1, result.size());
         assertEquals(100.0, result.get(0).getPrice());
     }
@@ -85,9 +84,8 @@ class BookConditionRepositoryTest {
         repository.save(bc1);
         repository.save(bc2);
 
-        List<BookCondition> result = repository.findByRankGreaterThan(2);
+        List<BookCondition> result = repository.findByRanksGreaterThan(2);
 
-        assertFalse(result.isEmpty());
         assertEquals(1, result.size());
         assertEquals(5, result.get(0).getRanks());
     }
