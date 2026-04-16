@@ -19,7 +19,6 @@ public class Reviewer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull(message = "Reviewer ID cannot be null")
     private Integer reviewerID;
 
     @NotBlank(message = "Name cannot be empty")
