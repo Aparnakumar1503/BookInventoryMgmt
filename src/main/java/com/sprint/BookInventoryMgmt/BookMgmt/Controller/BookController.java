@@ -2,12 +2,13 @@ package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/api/v1/books")
 public class BookController {
 
     private final BookService bookService;
@@ -17,6 +18,7 @@ public class BookController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Book create(@RequestBody Book book) {
         return bookService.createBook(book);
     }
