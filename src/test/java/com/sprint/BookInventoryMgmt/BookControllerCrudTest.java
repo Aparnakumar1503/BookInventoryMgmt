@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,10 +37,14 @@ class BookControllerCrudTest {
     @BeforeEach
     void setup() throws Exception {
 
+        // 1. FIRST delete BOOKS (child table)
+        mockMvc.perform(delete("/api/v1/books/" + ISBN));
 
+        // 2. THEN delete parents
         publisherRepository.deleteAll();
         categoryRepository.deleteAll();
 
+        // 3. Recreate clean state
         Category category = new Category();
         category.setCatId(1);
         category.setCatDescription("Fiction");
@@ -51,16 +55,17 @@ class BookControllerCrudTest {
         publisher.setName("Test Publisher");
         publisherRepository.save(publisher);
 
+        // 4. Create book again
         String bookJson = """
-        {
-          "isbn": "ISBN123",
-          "title": "Test Book",
-          "description": "Test Desc",
-          "edition": "1st",
-          "category": { "catId": 1 },
-          "publisher": { "publisherId": 1 }
-        }
-        """;
+    {
+      "isbn": "ISBN123",
+      "title": "Test Book",
+      "description": "Test Desc",
+      "edition": "1st",
+      "category": { "catId": 1 },
+      "publisher": { "publisherId": 1 }
+    }
+    """;
 
         mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,15 +78,15 @@ class BookControllerCrudTest {
     void testCreateBook() throws Exception {
 
         String body = """
-    {
-      "isbn": "ISBN999",
-      "title": "Spring Boot Basics",
-      "description": "Learn Spring Boot",
-      "edition": "1st",
-      "category": { "catId": 1 },
-      "publisher": { "publisherId": 1 }
-    }
-    """;
+        {
+          "isbn": "ISBN123",
+          "title": "Spring Boot Basics",
+          "description": "Learn Spring Boot",
+          "edition": "1st",
+          "category": { "catId": 1 },
+          "publisher": { "publisherId": 1 }
+        }
+        """;
 
         mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
