@@ -1,9 +1,6 @@
 package com.sprint.BookInventoryMgmt.UserMgmt.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 
@@ -12,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 public class PermRole {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "RoleNumber")
 	private Integer roleNumber;
 	
