@@ -4,21 +4,33 @@ import com.sprint.BookInventoryMgmt.UserMgmt.Entity.PermRole;
 import com.sprint.BookInventoryMgmt.UserMgmt.Repository.PermRoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+
+@DataJpaTest
 public class PermRoleRepositoryTest {
     @Autowired
     private PermRoleRepository roleRepository;
 
     @Test
-    void testReadRoles() {
+    void testSaveAndReadRoles() {
+
+        // CREATE
+        PermRole role = new PermRole();
+        role.setRoleNumber(1);   // 🔥 mandatory
+        role.setPermRole("ADMIN");
+
+        roleRepository.save(role);
+
+        // READ
         List<PermRole> roles = roleRepository.findAll();
 
+        // ASSERT
         assertNotNull(roles);
-        assertTrue(roles.size() > 0);
+        assertEquals(1, roles.size());
+        assertEquals("ADMIN", roles.get(0).getPermRole());
     }
 }
