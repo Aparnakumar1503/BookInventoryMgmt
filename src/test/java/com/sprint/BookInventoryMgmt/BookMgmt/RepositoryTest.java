@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt;
+package com.sprint.BookInventoryMgmt.BookMgmt;
 
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.*;
 import com.sprint.BookInventoryMgmt.BookMgmt.Repository.*;
