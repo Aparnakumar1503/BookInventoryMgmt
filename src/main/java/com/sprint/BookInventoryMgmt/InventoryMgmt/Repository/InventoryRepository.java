@@ -14,6 +14,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
 
     List<Inventory> findByPurchasedFalse();
 
-    List<Inventory> findByRankAndStatus(int ranks, boolean purchased);
+    List<Inventory> findByRanksAndPurchased(int ranks, boolean purchased);
 
 }

@@ -35,6 +35,6 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public List<Inventory> getByRankAndStatus(int rank, boolean status) {
-        return repository.findByRankAndStatus(rank, status);
+        return repository.findByRanksAndPurchased(rank, status);
     }
 }
