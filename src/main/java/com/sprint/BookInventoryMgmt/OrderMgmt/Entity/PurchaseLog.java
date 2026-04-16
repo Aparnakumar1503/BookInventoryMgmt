@@ -1,7 +1,6 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Entity;
 
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

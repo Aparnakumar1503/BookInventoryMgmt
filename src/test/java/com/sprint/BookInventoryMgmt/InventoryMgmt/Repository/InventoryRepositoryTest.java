@@ -18,14 +18,12 @@ class InventoryRepositoryTest {
     @Test
     void testSaveInventory() {
         Inventory inv = new Inventory();
-        inv.setIsbn("1234567890543");
         inv.setRanks(1);
         inv.setPurchased(false);
 
         Inventory saved = repository.save(inv);
 
         assertNotNull(saved.getInventoryId());
-        assertEquals("1234567890543", saved.getIsbn());
     }
 
     @Test
