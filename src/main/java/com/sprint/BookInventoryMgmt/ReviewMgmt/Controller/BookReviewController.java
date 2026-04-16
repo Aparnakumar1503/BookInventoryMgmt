@@ -15,11 +15,12 @@ public class BookReviewController {
     @Autowired
     private BookReviewService reviewService;
 
+
     @PostMapping("/{isbn}/reviews")
     public BookReview addReview(@PathVariable String isbn,
                                 @RequestBody BookReview review) {
 
-        review.setIsbn(isbn); // IMPORTANT
+        review.setIsbn(isbn);
         return reviewService.addReview(review);
     }
 
