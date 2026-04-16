@@ -1,7 +1,9 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Service;
 
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.OrderMgmt.Exception.PurchaseNotFoundException;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Repository.PurchaseLogRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,14 @@ public class PurchaseLogServiceImpl implements PurchaseLogService {
 
     @Override
     public String delete(Long userId) {
-        repo.deleteById(userId);
-        return "Deleted Successfully";
+
+        PurchaseLog purchase = repo.findById(userId)
+                .orElseThrow(() ->
+                        new PurchaseNotFoundException("Purchase not found for id: " + userId)
+                );
+
+        repo.delete(purchase);
+
+        return "Deleted Successfully for id: " + userId;
     }
 }
