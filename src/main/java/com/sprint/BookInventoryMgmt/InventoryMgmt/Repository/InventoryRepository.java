@@ -17,4 +17,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
     @Query("SELECT i FROM Inventory i WHERE i.ranks = :rank AND i.purchased = :status")
     List<Inventory> findByRankAndStatus(@Param("rank") int rank,
                                         @Param("status") boolean status);
+
 }
