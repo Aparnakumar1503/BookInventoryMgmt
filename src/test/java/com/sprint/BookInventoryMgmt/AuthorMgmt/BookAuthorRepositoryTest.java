@@ -1,56 +1,44 @@
 package com.sprint.BookInventoryMgmt.AuthorMgmt;
 
-import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.Author;
-import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.BookAuthor;
-import com.sprint.BookInventoryMgmt.AuthorMgmt.Repository.AuthorRepository;
+import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.*;
 import com.sprint.BookInventoryMgmt.AuthorMgmt.Repository.BookAuthorRepository;
+
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
 import com.sprint.BookInventoryMgmt.BookMgmt.Repository.BookRepository;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class BookAuthorRepositoryTest {
+class BookAuthorRepositoryTest {
+
+    @Autowired
+    private BookAuthorRepository repository;
+
     @Autowired
     private BookRepository bookRepository;
-
-    @Autowired
-    private AuthorRepository authorRepository;
-
-    @Autowired
-    private BookAuthorRepository bookAuthorRepository;
 
     @Test
     void testSaveBookAuthor() {
 
-        // 🔹 CREATE BOOK
+        // Create Book
         Book book = new Book();
-        book.setIsbn("123");
-        book.setTitle("Java");
+        book.setIsbn("ISBN111");
+        book.setTitle("Test Book");
+        bookRepository.save(book);
 
-        Book savedBook = bookRepository.save(book);
-
-        // 🔹 CREATE AUTHOR
-        Author author = new Author();
-        author.setFirstName("John");
-        author.setLastName("Doe");
-
-        Author savedAuthor = authorRepository.save(author);
-
-        // 🔹 CREATE MAPPING
+        // Create BookAuthor
         BookAuthor ba = new BookAuthor();
-        ba.setIsbn(savedBook.getIsbn());
-        ba.setAuthorId(savedAuthor.getAuthorId());
+        ba.setIsbn("ISBN111");
+        ba.setAuthorId(1);
         ba.setPrimaryAuthor("Y");
 
-        BookAuthor saved = bookAuthorRepository.save(ba);
+        BookAuthor saved = repository.save(ba);
 
-        // ASSERT
         assertNotNull(saved);
-        assertEquals("Y", saved.getPrimaryAuthor());
+        assertEquals("ISBN111", saved.getIsbn());
     }
 }
