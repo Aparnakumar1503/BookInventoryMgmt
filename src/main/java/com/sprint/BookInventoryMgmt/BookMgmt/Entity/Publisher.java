@@ -2,18 +2,11 @@ package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Entity
 @Table(name = "publisher")
@@ -25,21 +18,21 @@ import lombok.Setter;
 public class Publisher {
 
     @Id
-    @Column(name = "publisherid")
+    @Column(name = "publisher_id")
     private Integer publisherId;
 
+    @NotBlank
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @Column(name = "city", length = 30)
     private String city;
 
-    // 🔗 Many Publishers → One State
     @ManyToOne
-    @JoinColumn(name = "statecode", referencedColumnName = "statecode")
+    @JoinColumn(name = "state_code")
     private State state;
 
-    // 🔁 One Publisher → Many Books
     @OneToMany(mappedBy = "publisher")
+    @JsonIgnore
     private List<Book> books;
 }
