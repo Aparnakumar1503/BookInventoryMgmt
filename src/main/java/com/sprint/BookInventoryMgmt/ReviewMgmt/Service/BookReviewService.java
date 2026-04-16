@@ -1,7 +1,6 @@
 package com.sprint.BookInventoryMgmt.ReviewMgmt.Service;
 
 import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.BookReview;
-
 import java.util.List;
 
 public interface BookReviewService {
