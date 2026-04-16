@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Service.ShoppingCartService;
+import com.sprint.BookInventoryMgmt.OrderMgmt.Service.ShoppingCartServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.List;
 @RequestMapping("/cart")
 public class ShoppingCartController {
 
-    private final ShoppingCartService service;
+    private final ShoppingCartServiceImpl service;
 
-    public ShoppingCartController(ShoppingCartService service) {
+    public ShoppingCartController(ShoppingCartServiceImpl service) {
         this.service = service;
     }
 
