@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,14 +73,15 @@ class BookControllerCrudTest {
     void testCreateBook() throws Exception {
 
         String body = """
-        {
-          "title": "Spring Boot Basics",
-          "description": "Learn Spring Boot",
-          "edition": "1st",
-          "category": { "catId": 1 },
-          "publisher": { "publisherId": 1 }
-        }
-        """;
+    {
+      "isbn": "ISBN999",
+      "title": "Spring Boot Basics",
+      "description": "Learn Spring Boot",
+      "edition": "1st",
+      "category": { "catId": 1 },
+      "publisher": { "publisherId": 1 }
+    }
+    """;
 
         mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
