@@ -1,5 +1,6 @@
 package com.sprint.BookInventoryMgmt.GlobalException;
 
+import com.sprint.BookInventoryMgmt.AuthorMgmt.Exception.AuthorNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,10 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthorNotFoundException.class)
+    public ResponseEntity<?> handleAuthorNotFound(AuthorNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
