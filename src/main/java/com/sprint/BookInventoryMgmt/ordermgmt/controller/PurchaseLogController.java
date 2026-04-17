@@ -1,8 +1,10 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.controller;
 
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.service.PurchaseLogService;
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +21,39 @@ public class PurchaseLogController {
     }
 
     @PostMapping("/add")
-    public PurchaseLogResponseDTO addPurchase(@RequestBody PurchaseLogRequestDTO dto) {
-        return service.addPurchase(dto);
+    public ResponseStructure<PurchaseLogResponseDTO> addPurchase(
+            @RequestBody PurchaseLogRequestDTO dto) {
+
+        PurchaseLogResponseDTO response = service.addPurchase(dto);
+
+        return new ResponseStructure<>(
+                201,
+                "Purchase added successfully",
+                response
+        );
     }
 
     @GetMapping("/get")
-    public List<PurchaseLogResponseDTO> getAll() {
-        return service.getAll();
+    public ResponseStructure<List<PurchaseLogResponseDTO>> getAll() {
+
+        List<PurchaseLogResponseDTO> list = service.getAll();
+
+        return new ResponseStructure<>(
+                200,
+                "Fetched successfully",
+                list
+        );
     }
 
     @DeleteMapping("/delete/{userId}")
-    public String delete(@PathVariable Long userId) {
+    public ResponseStructure<String> delete(@PathVariable Long userId) {
+
         service.delete(userId);
-        return "Deleted Successfully";
+
+        return new ResponseStructure<>(
+                200,
+                "Deleted successfully",
+                null
+        );
     }
 }
