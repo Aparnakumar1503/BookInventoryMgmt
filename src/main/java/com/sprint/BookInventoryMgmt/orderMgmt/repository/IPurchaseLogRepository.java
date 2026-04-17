@@ -1,14 +1,14 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.Repository;
+package com.sprint.BookInventoryMgmt.orderMgmt.repository;
 
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.PurchaseLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface PurchaseLogRepository extends JpaRepository<PurchaseLog, Long> {
+public interface IPurchaseLogRepository extends JpaRepository<PurchaseLog, Long> {
 
     List<PurchaseLog> findByUserId(Long userId);
 

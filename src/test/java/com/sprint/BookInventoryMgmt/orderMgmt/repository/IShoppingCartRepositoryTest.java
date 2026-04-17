@@ -1,19 +1,22 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.Repository;
+package com.sprint.BookInventoryMgmt.orderMgmt.repository;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.ShoppingCart;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class ShoppingCartRepositoryTest {
+
+class IShoppingCartRepositoryTest {
 
     @Autowired
-    private ShoppingCartRepository repository;
+    private IShoppingCartRepository repository;
 
     @Test
     void testSaveShoppingCart() {
