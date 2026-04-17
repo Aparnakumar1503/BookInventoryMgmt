@@ -1,10 +1,7 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
-import java.util.List;
-
+import com.sprint.BookInventoryMgmt.OrderMgmt.dto.requestdto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.OrderMgmt.dto.responsedto.PurchaseLogResponseDTO;
 
 import java.util.List;
 

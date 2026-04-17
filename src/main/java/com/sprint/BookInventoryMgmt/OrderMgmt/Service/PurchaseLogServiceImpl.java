@@ -1,11 +1,11 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogResponseDTO;
+import com.sprint.BookInventoryMgmt.OrderMgmt.dto.responsedto.PurchaseLogResponseDTO;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Exception.PurchaseNotFoundException;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Repository.PurchaseLogRepository;
 
+import com.sprint.BookInventoryMgmt.OrderMgmt.dto.requestdto.PurchaseLogRequestDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

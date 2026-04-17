@@ -1,8 +1,6 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.OrderMgmt.dto.responsedto.PurchaseLogResponseDTO;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Service.PurchaseLogService;
 
 import org.springframework.web.bind.annotation.*;
