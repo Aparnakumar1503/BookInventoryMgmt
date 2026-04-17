@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt;
+package com.sprint.BookInventoryMgmt.reviewmgmt;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.Reviewer;
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Repository.ReviewerRepository;
+import com.sprint.BookInventoryMgmt.reviewmgmt.entity.Reviewer;
+import com.sprint.BookInventoryMgmt.reviewmgmt.repository.ReviewerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
