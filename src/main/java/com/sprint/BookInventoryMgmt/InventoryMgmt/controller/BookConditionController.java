@@ -65,4 +65,11 @@ public class BookConditionController {
 
         return ResponseEntity.ok(response);
     }
+    @DeleteMapping("/{rank}")
+    public ResponseEntity<ResponseStructure<String>> deleteBookCondition(@PathVariable Integer rank) {
+
+        ResponseStructure<String> response = service.deleteBookCondition(rank);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

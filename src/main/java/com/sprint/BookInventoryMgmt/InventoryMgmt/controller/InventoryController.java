@@ -91,4 +91,12 @@ public class InventoryController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseStructure<String>> deleteInventory(@PathVariable Integer id) {
+
+        ResponseStructure<String> response = service.deleteInventory(id);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
