@@ -1,18 +1,16 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
+package com.sprint.BookInventoryMgmt.BookMgmt.DTO.response;
 
-import jakarta.persistence.*;
+public class StateResponseDTO {
 
-@Entity
-@Table(name = "state")
-public class State {
-
-    @Id
-    @Column(name = "state_code")
     private String stateCode;
-
     private String stateName;
 
-    public State() {}
+    public StateResponseDTO() {}
+
+    public StateResponseDTO(String stateCode, String stateName) {
+        this.stateCode = stateCode;
+        this.stateName = stateName;
+    }
 
     public String getStateCode() { return stateCode; }
     public void setStateCode(String stateCode) { this.stateCode = stateCode; }
