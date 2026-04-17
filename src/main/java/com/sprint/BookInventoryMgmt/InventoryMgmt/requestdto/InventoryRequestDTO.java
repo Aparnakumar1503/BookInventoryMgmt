@@ -1,9 +1,15 @@
 package com.sprint.BookInventoryMgmt.InventoryMgmt.requestdto;
 
+import jakarta.validation.constraints.*;
+
 public class InventoryRequestDTO {
 
+    @NotBlank(message = "ISBN is required")
     private String isbn;
+
+    @NotNull(message = "Rank is required")
     private Integer ranks;
+
     private Boolean purchased;
 
     public InventoryRequestDTO() {}

@@ -6,6 +6,8 @@ import com.sprint.BookInventoryMgmt.InventoryMgmt.entity.Inventory;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.service.InventoryService;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,14 @@ public class InventoryController {
     @Autowired
     private InventoryService service;
 
+    // ✅ CREATE
     @PostMapping
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> save(@RequestBody InventoryRequestDTO dto) {
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> save(
+            @Valid @RequestBody InventoryRequestDTO dto) {
 
-        Inventory saved = service.saveInventory(InventoryMapper.toInventoryEntity(dto));
+        Inventory saved = service.saveInventory(
+                InventoryMapper.toInventoryEntity(dto)
+        );
 
         ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.CREATED.value());
@@ -32,6 +38,7 @@ public class InventoryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getAll() {
 
@@ -48,6 +55,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // ✅ GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getById(@PathVariable Integer id) {
 
@@ -62,6 +70,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // ✅ GET BY ISBN
     @GetMapping("/books/{isbn}")
     public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getByIsbn(@PathVariable String isbn) {
 
@@ -78,6 +87,26 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // ✅ UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody InventoryRequestDTO dto) {
+
+        Inventory updated = InventoryMapper.toInventoryEntity(dto);
+
+        ResponseStructure<Inventory> result =
+                service.updateInventory(id, updated);
+
+        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(result.getStatusCode());
+        response.setMessage(result.getMessage());
+        response.setData(InventoryMapper.toInventoryResponse(result.getData()));
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ✅ PURCHASE
     @PutMapping("/{id}/purchase")
     public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchase(@PathVariable Integer id) {
 
@@ -92,11 +121,9 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
 
+    // ✅ DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseStructure<String>> deleteInventory(@PathVariable Integer id) {
-
-        ResponseStructure<String> response = service.deleteInventory(id);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(service.deleteInventory(id));
     }
 }

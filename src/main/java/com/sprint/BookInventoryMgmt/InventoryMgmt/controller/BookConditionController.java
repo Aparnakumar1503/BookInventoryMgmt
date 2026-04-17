@@ -7,6 +7,8 @@ import com.sprint.BookInventoryMgmt.InventoryMgmt.requestdto.InventoryMapper;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.service.BookConditionService;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,10 @@ public class BookConditionController {
     @Autowired
     private BookConditionService service;
 
+    // ✅ CREATE
     @PostMapping
     public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> create(
-            @RequestBody BookConditionRequestDTO dto) {
+            @Valid @RequestBody BookConditionRequestDTO dto) {
 
         BookCondition saved = service.saveBookCondition(
                 InventoryMapper.toBookConditionEntity(dto)
@@ -36,6 +39,7 @@ public class BookConditionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<ResponseStructure<List<BookConditionResponseDTO>>> getAll() {
 
@@ -52,11 +56,12 @@ public class BookConditionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{rank}")
-    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getByRank(@PathVariable Integer rank) {
+    // ✅ GET BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getById(@PathVariable Integer id) {
 
         BookConditionResponseDTO dto =
-                InventoryMapper.toBookConditionResponse(service.getByRank(rank));
+                InventoryMapper.toBookConditionResponse(service.getById(id));
 
         ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
@@ -65,11 +70,29 @@ public class BookConditionController {
 
         return ResponseEntity.ok(response);
     }
-    @DeleteMapping("/{rank}")
-    public ResponseEntity<ResponseStructure<String>> deleteBookCondition(@PathVariable Integer rank) {
 
-        ResponseStructure<String> response = service.deleteBookCondition(rank);
+    // ✅ UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody BookConditionRequestDTO dto) {
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        BookCondition updated = InventoryMapper.toBookConditionEntity(dto);
+
+        ResponseStructure<BookCondition> result =
+                service.updateBookCondition(id, updated);
+
+        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(result.getStatusCode());
+        response.setMessage(result.getMessage());
+        response.setData(InventoryMapper.toBookConditionResponse(result.getData()));
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ✅ DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseStructure<String>> delete(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.deleteBookCondition(id));
     }
 }

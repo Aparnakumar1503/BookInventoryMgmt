@@ -11,7 +11,9 @@ public interface BookConditionService {
 
     List<BookCondition> getAllBookConditions();
 
-    BookCondition getByRank(Integer rank);
+    BookCondition getById(Integer id);
 
-    ResponseStructure<String> deleteBookCondition(Integer rank);
+    ResponseStructure<String> deleteBookCondition(Integer id);
+
+    ResponseStructure<BookCondition> updateBookCondition(Integer id, BookCondition updated);
 }

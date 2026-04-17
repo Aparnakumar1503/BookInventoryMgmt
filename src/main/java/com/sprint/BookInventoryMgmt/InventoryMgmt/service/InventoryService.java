@@ -8,10 +8,16 @@ import java.util.List;
 public interface InventoryService {
 
     Inventory saveInventory(Inventory inventory);
+
     List<Inventory> getAllInventory();
+
     Inventory getById(Integer id);
+
     List<Inventory> getByIsbn(String isbn);
+
     Inventory markAsPurchased(Integer id);
 
     ResponseStructure<String> deleteInventory(Integer id);
+
+    ResponseStructure<Inventory> updateInventory(Integer id, Inventory updated);
 }
