@@ -21,12 +21,12 @@ public class BookAuthor {
 	@Column(name = "AuthorID")
 	private Integer authorId;
 
-	// 🔥 RELATIONSHIP TO BOOK
+	//  RELATIONSHIP TO BOOK
 	@ManyToOne
 	@JoinColumn(name = "ISBN", insertable = false, updatable = false)
 	private Book book;
 
-	// 🔥 RELATIONSHIP TO AUTHOR
+	//  RELATIONSHIP TO AUTHOR
 	@ManyToOne
 	@JoinColumn(name = "AuthorID", insertable = false, updatable = false)
 	private Author author;

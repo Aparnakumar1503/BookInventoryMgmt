@@ -27,18 +27,22 @@ public class PermRole {
 
 	// Getters and Setters
 	public Integer getRoleNumber() {
+
 		return roleNumber;
 	}
 
 	public void setRoleNumber(Integer roleNumber) {
+
 		this.roleNumber = roleNumber;
 	}
 
 	public String getPermRole() {
+
 		return permRole;
 	}
 
 	public void setPermRole(String permRole) {
+
 		this.permRole = permRole;
 	}
 }

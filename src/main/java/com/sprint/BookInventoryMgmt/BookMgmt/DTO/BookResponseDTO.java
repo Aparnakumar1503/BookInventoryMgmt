@@ -9,7 +9,7 @@ public class BookResponseDTO {
     private Integer categoryId;
     private Integer publisherId;
 
-    // ✅ Constructor
+    // Constructor
     public BookResponseDTO(String isbn, String title, String description,
                            String edition, Integer categoryId, Integer publisherId) {
         this.isbn = isbn;
@@ -20,7 +20,7 @@ public class BookResponseDTO {
         this.publisherId = publisherId;
     }
 
-    // ✅ Getters
+    //  Getters
     public String getIsbn() { return isbn; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }

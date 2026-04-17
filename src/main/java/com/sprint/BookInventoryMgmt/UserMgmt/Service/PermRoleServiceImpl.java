@@ -4,9 +4,10 @@ import com.sprint.BookInventoryMgmt.UserMgmt.Entity.PermRole;
 import com.sprint.BookInventoryMgmt.UserMgmt.Exception.UserNotFoundException;
 import com.sprint.BookInventoryMgmt.UserMgmt.Repository.PermRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class PermRoleServiceImpl implements PermRoleService{
     @Autowired
     private PermRoleRepository roleRepository;
