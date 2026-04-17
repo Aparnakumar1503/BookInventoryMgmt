@@ -1,5 +1,7 @@
 package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
 
+import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.OrderMgmt.DTO.PurchaseLogResponseDTO;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.PurchaseLog;
 import com.sprint.BookInventoryMgmt.OrderMgmt.Service.PurchaseLogService;
 
@@ -18,12 +20,12 @@ public class PurchaseLogController {
     }
 
     @PostMapping("/add")
-    public PurchaseLog addPurchase(@RequestBody PurchaseLog purchase) {
-        return service.addPurchase(purchase);
+    public PurchaseLogResponseDTO addPurchase(@RequestBody PurchaseLogRequestDTO dto) {
+        return service.addPurchase(dto);
     }
 
     @GetMapping("/get")
-    public List<PurchaseLog> getAll() {
+    public List<PurchaseLogResponseDTO> getAll() {
         return service.getAll();
     }
 
