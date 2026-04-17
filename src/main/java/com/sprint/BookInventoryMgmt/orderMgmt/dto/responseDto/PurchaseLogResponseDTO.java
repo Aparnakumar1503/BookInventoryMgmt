@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto;
+package com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto;
 
 
 import lombok.Data;

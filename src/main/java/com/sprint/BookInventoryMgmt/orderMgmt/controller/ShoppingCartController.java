@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.controller;
+package com.sprint.BookInventoryMgmt.orderMgmt.controller;
 
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.service.ShoppingCartService;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.service.IShoppingCartService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +14,13 @@ import java.util.List;
 @RequestMapping("/cart")
 public class ShoppingCartController {
 
-    private final ShoppingCartService service;
+    @Autowired
+    IShoppingCartService service;
 
-    public ShoppingCartController(ShoppingCartService service) {
+    public ShoppingCartController(){}
+
+
+    public ShoppingCartController(IShoppingCartService service) {
         this.service = service;
     }
 

@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.repository;
+package com.sprint.BookInventoryMgmt.orderMgmt.repository;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.PurchaseLog;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,14 +12,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class PurchaseLogRepositoryTest {
+class IPurchaseLogRepositoryTest {
 
     @Autowired
-    private PurchaseLogRepository repository;
+    private IPurchaseLogRepository repository;
 
     @Test
     void testSavePurchaseLog() {
-        PurchaseLog log = new PurchaseLog();
+       PurchaseLog log = new PurchaseLog();
         log.setUserId(1L);
         log.setInventoryId(101L);
 

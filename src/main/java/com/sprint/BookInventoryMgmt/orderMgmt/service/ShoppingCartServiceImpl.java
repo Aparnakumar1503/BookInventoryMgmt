@@ -1,37 +1,42 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.BookInventoryMgmt.orderMgmt.service;
 
 
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.ShoppingCartRepository;
-import com.sprint.BookInventoryMgmt.ordermgmt.exception.ShoppingCartNotFoundException;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.orderMgmt.repository.IShoppingCartRepository;
+import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.ShoppingCartNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ShoppingCartServiceImpl implements ShoppingCartService {
+public class ShoppingCartServiceImpl implements IShoppingCartService {
 
-    private final ShoppingCartRepository repo;
+    @Autowired
+    IShoppingCartRepository repo;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository repo) {
+    public ShoppingCartServiceImpl(){
+
+    }
+
+    public ShoppingCartServiceImpl(IShoppingCartRepository repo) {
+
         this.repo = repo;
     }
 
     @Override
     public ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO dto) {
 
-        // DTO → Entity
         ShoppingCart entity = new ShoppingCart();
         entity.setUserId(dto.getUserId());
         entity.setIsbn(dto.getIsbn());
 
         ShoppingCart saved = repo.save(entity);
 
-        // Entity → DTO
         ShoppingCartResponseDTO response = new ShoppingCartResponseDTO();
         response.setUserId(saved.getUserId());
         response.setIsbn(saved.getIsbn());

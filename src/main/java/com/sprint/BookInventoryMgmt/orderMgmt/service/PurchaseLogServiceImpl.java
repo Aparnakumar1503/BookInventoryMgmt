@@ -1,36 +1,39 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.BookInventoryMgmt.orderMgmt.service;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.ordermgmt.exception.PurchaseNotFoundException;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.PurchaseLogRepository;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.BookInventoryMgmt.orderMgmt.repository.IPurchaseLogRepository;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.PurchaseLogRequestDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PurchaseLogServiceImpl implements PurchaseLogService {
+public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
-    private final PurchaseLogRepository repo;
+    @Autowired
+     IPurchaseLogRepository repo;
 
-    public PurchaseLogServiceImpl(PurchaseLogRepository repo) {
+    public PurchaseLogServiceImpl(){}
+
+    public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
+
         this.repo = repo;
     }
 
     @Override
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
 
-        // DTO → Entity
         PurchaseLog entity = new PurchaseLog();
         entity.setUserId(dto.getUserId());
         entity.setInventoryId(dto.getInventoryId());
 
         PurchaseLog saved = repo.save(entity);
 
-        // Entity → DTO
         PurchaseLogResponseDTO response = new PurchaseLogResponseDTO();
         response.setUserId(saved.getUserId());
         response.setInventoryId(saved.getInventoryId());
@@ -67,4 +70,6 @@ public class PurchaseLogServiceImpl implements PurchaseLogService {
 
         return "Deleted Successfully for id: " + userId;
     }
+
+
 }

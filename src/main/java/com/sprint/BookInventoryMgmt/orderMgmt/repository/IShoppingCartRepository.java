@@ -1,14 +1,14 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.repository;
+package com.sprint.BookInventoryMgmt.orderMgmt.repository;
 
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.orderMgmt.entity.ShoppingCart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
+public interface IShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
 
 
     List<ShoppingCart> findByUserId(Long userId);

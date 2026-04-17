@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.controller;
+package com.sprint.BookInventoryMgmt.orderMgmt.controller;
 
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.service.PurchaseLogService;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.service.IPurchaseLogService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +14,14 @@ import java.util.List;
 @RequestMapping("/purchase")
 public class PurchaseLogController {
 
-    private final PurchaseLogService service;
+    @Autowired
+    IPurchaseLogService service;
 
-    public PurchaseLogController(PurchaseLogService service) {
+    public PurchaseLogController(){
+
+    }
+
+    public PurchaseLogController(IPurchaseLogService service) {
         this.service = service;
     }
 
