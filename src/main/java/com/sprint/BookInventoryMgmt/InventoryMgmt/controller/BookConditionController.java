@@ -5,6 +5,7 @@ import com.sprint.BookInventoryMgmt.InventoryMgmt.requestdto.BookConditionReques
 import com.sprint.BookInventoryMgmt.InventoryMgmt.responsedto.BookConditionResponseDTO;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.requestdto.InventoryMapper;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.service.BookConditionService;
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,34 +20,49 @@ public class BookConditionController {
     @Autowired
     private BookConditionService service;
 
-    // ✅ POST API (NEW)
     @PostMapping
-    public ResponseEntity<BookConditionResponseDTO> create(
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> create(
             @RequestBody BookConditionRequestDTO dto) {
 
         BookCondition saved = service.saveBookCondition(
                 InventoryMapper.toBookConditionEntity(dto)
         );
 
-        return ResponseEntity.status(201)
-                .body(InventoryMapper.toBookConditionResponse(saved));
+        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.CREATED.value());
+        response.setMessage("BookCondition created successfully");
+        response.setData(InventoryMapper.toBookConditionResponse(saved));
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // GET all
     @GetMapping
-    public ResponseEntity<List<BookConditionResponseDTO>> getAll() {
-        return ResponseEntity.ok(
-                service.getAllBookConditions().stream()
-                        .map(InventoryMapper::toBookConditionResponse)
-                        .toList()
-        );
+    public ResponseEntity<ResponseStructure<List<BookConditionResponseDTO>>> getAll() {
+
+        List<BookConditionResponseDTO> list = service.getAllBookConditions()
+                .stream()
+                .map(InventoryMapper::toBookConditionResponse)
+                .toList();
+
+        ResponseStructure<List<BookConditionResponseDTO>> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("BookConditions fetched successfully");
+        response.setData(list);
+
+        return ResponseEntity.ok(response);
     }
 
-    // GET by rank
     @GetMapping("/{rank}")
-    public ResponseEntity<BookConditionResponseDTO> getByRank(@PathVariable Integer rank) {
-        return ResponseEntity.ok(
-                InventoryMapper.toBookConditionResponse(service.getByRank(rank))
-        );
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getByRank(@PathVariable Integer rank) {
+
+        BookConditionResponseDTO dto =
+                InventoryMapper.toBookConditionResponse(service.getByRank(rank));
+
+        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("BookCondition fetched successfully");
+        response.setData(dto);
+
+        return ResponseEntity.ok(response);
     }
 }

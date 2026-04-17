@@ -4,6 +4,7 @@ import com.sprint.BookInventoryMgmt.InventoryMgmt.requestdto.*;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.responsedto.*;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.entity.Inventory;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.service.InventoryService;
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,41 +20,75 @@ public class InventoryController {
     private InventoryService service;
 
     @PostMapping
-    public ResponseEntity<InventoryResponseDTO> save(@RequestBody InventoryRequestDTO dto) {
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> save(@RequestBody InventoryRequestDTO dto) {
+
         Inventory saved = service.saveInventory(InventoryMapper.toInventoryEntity(dto));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(InventoryMapper.toInventoryResponse(saved));
+
+        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.CREATED.value());
+        response.setMessage("Inventory created successfully");
+        response.setData(InventoryMapper.toInventoryResponse(saved));
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<InventoryResponseDTO>> getAll() {
-        return ResponseEntity.ok(
-                service.getAllInventory().stream()
-                        .map(InventoryMapper::toInventoryResponse)
-                        .toList()
-        );
+    public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getAll() {
+
+        List<InventoryResponseDTO> list = service.getAllInventory()
+                .stream()
+                .map(InventoryMapper::toInventoryResponse)
+                .toList();
+
+        ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Inventory fetched successfully");
+        response.setData(list);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InventoryResponseDTO> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(
-                InventoryMapper.toInventoryResponse(service.getById(id))
-        );
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getById(@PathVariable Integer id) {
+
+        InventoryResponseDTO dto =
+                InventoryMapper.toInventoryResponse(service.getById(id));
+
+        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Inventory fetched successfully");
+        response.setData(dto);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/books/{isbn}")
-    public ResponseEntity<List<InventoryResponseDTO>> getByIsbn(@PathVariable String isbn) {
-        return ResponseEntity.ok(
-                service.getByIsbn(isbn).stream()
-                        .map(InventoryMapper::toInventoryResponse)
-                        .toList()
-        );
+    public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getByIsbn(@PathVariable String isbn) {
+
+        List<InventoryResponseDTO> list = service.getByIsbn(isbn)
+                .stream()
+                .map(InventoryMapper::toInventoryResponse)
+                .toList();
+
+        ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Inventory fetched by ISBN successfully");
+        response.setData(list);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/purchase")
-    public ResponseEntity<InventoryResponseDTO> purchase(@PathVariable Integer id) {
-        return ResponseEntity.ok(
-                InventoryMapper.toInventoryResponse(service.markAsPurchased(id))
-        );
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchase(@PathVariable Integer id) {
+
+        InventoryResponseDTO dto =
+                InventoryMapper.toInventoryResponse(service.markAsPurchased(id));
+
+        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Inventory marked as purchased");
+        response.setData(dto);
+
+        return ResponseEntity.ok(response);
     }
 }
