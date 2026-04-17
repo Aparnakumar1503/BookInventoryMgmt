@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.dto.requestdto;
+package com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

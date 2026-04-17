@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.Repository;
+package com.sprint.BookInventoryMgmt.ordermgmt.repository;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.Entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

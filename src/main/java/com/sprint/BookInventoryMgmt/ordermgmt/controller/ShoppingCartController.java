@@ -1,8 +1,8 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.Controller;
+package com.sprint.BookInventoryMgmt.ordermgmt.controller;
 
-import com.sprint.BookInventoryMgmt.OrderMgmt.dto.requestdto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.dto.responsedto.ShoppingCartResponseDTO;
-import com.sprint.BookInventoryMgmt.OrderMgmt.Service.ShoppingCartService;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.service.ShoppingCartService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
