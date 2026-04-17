@@ -1,51 +1,43 @@
-// package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
+package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-// import org.springframework.web.bind.annotation.RestController;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import lombok.RequiredArgsConstructor;
-// import java.util.List;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.Service.PublisherService;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping("/api/v1/publishers")
-// @RequiredArgsConstructor
-// public class PublisherController {
+import java.util.List;
 
-//     private final PublisherRepository publisherRepository;
+@RestController
+@RequestMapping("/api/v1/publishers")
+public class PublisherController {
 
-//     @GetMapping
-//     public List<Publisher> getAll() {
-//         return publisherRepository.findAll();
-//     }
+    private final PublisherService service;
 
-//     @GetMapping("/{id}")
-//     public Publisher getById(@PathVariable Integer id) {
-//         return publisherRepository.findById(id)
-//                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
-//     }
+    public PublisherController(PublisherService service) {
+        this.service = service;
+    }
 
-//     @PostMapping
-//     public Publisher create(@RequestBody Publisher publisher) {
-//         return publisherRepository.save(publisher);
-//     }
+    @GetMapping
+    public List<Publisher> getAll() {
+        return service.getAll();
+    }
 
-//     @PutMapping("/{id}")
-//     public Publisher update(@PathVariable Integer id,
-//                             @RequestBody Publisher publisher) {
+    @GetMapping("/{id}")
+    public Publisher get(@PathVariable Integer id) {
+        return service.getById(id);
+    }
 
-//         publisher.setPublisherId(id);
-//         return publisherRepository.save(publisher);
-//     }
+    @PostMapping
+    public Publisher create(@RequestBody Publisher publisher) {
+        return service.create(publisher);
+    }
 
-//     @DeleteMapping("/{id}")
-//     public void delete(@PathVariable Integer id) {
-//         publisherRepository.deleteById(id);
-//     }
-// }
+    @PutMapping("/{id}")
+    public Publisher update(@PathVariable Integer id, @RequestBody Publisher publisher) {
+        return service.update(id, publisher);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        service.delete(id);
+    }
+}

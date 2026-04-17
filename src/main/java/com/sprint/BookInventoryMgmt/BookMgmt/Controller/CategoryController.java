@@ -1,35 +1,28 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-import java.util.List;
-
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
+import com.sprint.BookInventoryMgmt.BookMgmt.Service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/categories")
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    // ✅ Create Category
-    @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryRepository.save(category);
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
-    // ✅ Get All Categories
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<Category> getAll() {
+        return categoryService.getAllCategories();
     }
 
-
-
-
-
+    @GetMapping("/{id}")
+    public Category getById(@PathVariable Integer id) {
+        return categoryService.getCategoryById(id);
+    }
 }
