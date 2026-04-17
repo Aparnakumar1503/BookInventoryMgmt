@@ -15,5 +15,5 @@ public interface ReviewerService {
 
     ReviewerResponseDTO updateReviewer(int reviewerId, ReviewerRequestDTO reviewerDTO);
 
-    void deleteReviewer(int reviewerId);
+    ReviewerResponseDTO deleteReviewer(int reviewerId); // ✅ changed
 }

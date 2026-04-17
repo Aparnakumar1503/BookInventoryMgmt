@@ -15,5 +15,4 @@ public interface BookReviewService {
 
     List<BookReviewResponseDTO> getReviewsByReviewer(int reviewerId);
 
-    void deleteReview(int id);
-}
+    BookReviewResponseDTO deleteReview(int id);}

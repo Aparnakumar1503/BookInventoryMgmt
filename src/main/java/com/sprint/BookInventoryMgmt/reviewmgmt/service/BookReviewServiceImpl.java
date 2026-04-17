@@ -86,7 +86,21 @@ public class BookReviewServiceImpl implements BookReviewService {
     }
 
     @Override
-    public void deleteReview(int id) {
-        reviewRepository.deleteById(id);
+    public BookReviewResponseDTO deleteReview(int id) {
+
+        BookReview review = reviewRepository.findById(id)
+                .orElseThrow(() ->
+                        new ReviewNotFoundException("Review not found with ID: " + id));
+
+        reviewRepository.delete(review);
+
+        BookReviewResponseDTO dto = new BookReviewResponseDTO();
+        dto.setId(review.getId());
+        dto.setIsbn(review.getIsbn());
+        dto.setReviewerID(review.getReviewerID());
+        dto.setRating(review.getRating());
+        dto.setComments(review.getComments());
+
+        return dto;
     }
 }

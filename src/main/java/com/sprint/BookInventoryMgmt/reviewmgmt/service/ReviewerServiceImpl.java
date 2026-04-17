@@ -63,13 +63,15 @@ public class ReviewerServiceImpl implements ReviewerService {
     }
 
     @Override
-    public void deleteReviewer(int reviewerId) {
+    public ReviewerResponseDTO deleteReviewer(int reviewerId) {
 
-        if (!repository.existsById(reviewerId)) {
-            throw new ReviewerNotFoundException("Reviewer not found with ID: " + reviewerId);
-        }
+        Reviewer reviewer = repository.findById(reviewerId)
+                .orElseThrow(() ->
+                        new ReviewerNotFoundException("Reviewer not found with ID: " + reviewerId));
 
-        repository.deleteById(reviewerId);
+        repository.delete(reviewer);
+
+        return mapToDTO(reviewer);
     }
 
     // 🔥 COMMON MAPPER METHOD
