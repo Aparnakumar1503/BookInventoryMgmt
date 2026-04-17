@@ -1,7 +1,6 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt;
+package com.sprint.BookInventoryMgmt.reviewmgmt.repository;
 
 import com.sprint.BookInventoryMgmt.reviewmgmt.entity.Reviewer;
-import com.sprint.BookInventoryMgmt.reviewmgmt.repository.ReviewerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,7 +24,7 @@ public class ReviewerRepositoryTest {
     void testSaveReviewer() {
         Reviewer r = new Reviewer();
         r.setReviewerID(1);
-        r.setName("Swarnalatha");
+        r.setName("name");
         r.setEmployedBy("Student");
 
         Reviewer saved = repository.save(r);

@@ -19,6 +19,10 @@ public class ReviewerServiceImpl implements ReviewerService {
     @Override
     public ReviewerResponseDTO addReviewer(ReviewerRequestDTO dto) {
 
+        if (dto == null) {
+            throw new IllegalArgumentException("Reviewer DTO cannot be null");
+        }
+
         Reviewer reviewer = new Reviewer();
         reviewer.setName(dto.getName());
         reviewer.setEmployedBy(dto.getEmployedBy());
@@ -50,6 +54,10 @@ public class ReviewerServiceImpl implements ReviewerService {
     @Override
     public ReviewerResponseDTO updateReviewer(int reviewerId, ReviewerRequestDTO dto) {
 
+        if (dto == null) {
+            throw new IllegalArgumentException("Reviewer DTO cannot be null");
+        }
+
         Reviewer existing = repository.findById(reviewerId)
                 .orElseThrow(() ->
                         new ReviewerNotFoundException("Reviewer not found with ID: " + reviewerId));
@@ -76,6 +84,10 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     // 🔥 COMMON MAPPER METHOD
     private ReviewerResponseDTO mapToDTO(Reviewer reviewer) {
+
+        if (reviewer == null) {
+            throw new IllegalArgumentException("Reviewer cannot be null");
+        }
 
         ReviewerResponseDTO dto = new ReviewerResponseDTO();
         dto.setReviewerID(reviewer.getReviewerID());

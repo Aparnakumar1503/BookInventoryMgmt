@@ -24,6 +24,10 @@ public class BookReviewServiceImpl implements BookReviewService {
     @Override
     public BookReviewResponseDTO addReview(BookReviewRequestDTO dto) {
 
+        if (dto == null || dto.getReviewerID() == null) {
+            throw new IllegalArgumentException("Reviewer ID cannot be null");
+        }
+
         if (!reviewerRepository.existsById(dto.getReviewerID())) {
             throw new RuntimeException("Reviewer not found");
         }
