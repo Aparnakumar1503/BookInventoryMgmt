@@ -3,8 +3,10 @@ package com.sprint.BookInventoryMgmt.reviewmgmt.controller;
 import com.sprint.BookInventoryMgmt.reviewmgmt.requestdto.ReviewerRequestDTO;
 import com.sprint.BookInventoryMgmt.reviewmgmt.responsedto.ReviewerResponseDTO;
 import com.sprint.BookInventoryMgmt.reviewmgmt.service.ReviewerService;
-import com.sprint.BookInventoryMgmt.reviewmgmt.util.ResponseStructure;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,59 +18,32 @@ public class ReviewerController {
     @Autowired
     private ReviewerService service;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/add")
-    public ResponseStructure<ReviewerResponseDTO> addReviewer(
-            @RequestBody ReviewerRequestDTO dto) {
-
-        return new ResponseStructure<>(
-                201,
-                "Reviewer added successfully",
-                service.addReviewer(dto)
-        );
+    public ReviewerResponseDTO addReviewer(@Valid @RequestBody ReviewerRequestDTO dto) {
+        return service.addReviewer(dto);
     }
 
     @GetMapping("/{id}")
-    public ResponseStructure<ReviewerResponseDTO> getReviewerById(
-            @PathVariable int id) {
-
-        return new ResponseStructure<>(
-                200,
-                "Reviewer fetched successfully",
-                service.getReviewerById(id)
-        );
+    public ReviewerResponseDTO getReviewerById(@PathVariable int id) {
+        return service.getReviewerById(id);
     }
 
     @GetMapping
-    public ResponseStructure<List<ReviewerResponseDTO>> getAllReviewers() {
-
-        return new ResponseStructure<>(
-                200,
-                "All reviewers fetched successfully",
-                service.getAllReviewers()
-        );
+    public List<ReviewerResponseDTO> getAllReviewers() {
+        return service.getAllReviewers();
     }
 
     @PutMapping("/{id}")
-    public ResponseStructure<ReviewerResponseDTO> updateReviewer(
+    public ReviewerResponseDTO updateReviewer(
             @PathVariable int id,
-            @RequestBody ReviewerRequestDTO dto) {
-
-        return new ResponseStructure<>(
-                200,
-                "Reviewer updated successfully",
-                service.updateReviewer(id, dto)
-        );
+            @Valid @RequestBody ReviewerRequestDTO dto) {
+        return service.updateReviewer(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseStructure<String> deleteReviewer(@PathVariable int id) {
-
+    public ResponseEntity<String> deleteReviewer(@PathVariable int id) {
         service.deleteReviewer(id);
-
-        return new ResponseStructure<>(
-                200,
-                "Reviewer deleted successfully",
-                "Deleted ID: " + id
-        );
+        return ResponseEntity.ok("Review deleted successfully with ID: " + id);
     }
 }
