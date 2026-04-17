@@ -1,7 +1,12 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
 
     private final BookService bookService;
@@ -17,37 +23,85 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // ✅ CREATE
+    @Operation(summary = "Create a new book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book create(@RequestBody Book book) {
-        return bookService.createBook(book);
+    public ResponseStructure<BookResponseDTO> create(@Valid @RequestBody BookRequestDTO dto) {
+
+        BookResponseDTO data = bookService.createBook(dto);
+
+        return new ResponseStructure<>(
+                HttpStatus.CREATED.value(),
+                "Book created successfully",
+                data
+        );
     }
 
+    // ✅ GET BY ISBN
+    @Operation(summary = "Get book by ISBN")
     @GetMapping("/{isbn}")
-    public Book get(@PathVariable String isbn) {
-        return bookService.getBookByIsbn(isbn);
+    public ResponseStructure<BookResponseDTO> get(@PathVariable String isbn) {
+
+        BookResponseDTO data = bookService.getBookByIsbn(isbn);
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Book fetched successfully",
+                data
+        );
     }
 
-    // ✅ FIXED METHOD
+    // ✅ GET ALL / FILTER
+    @Operation(summary = "Get all books or filter by category & publisher")
     @GetMapping
-    public List<Book> getAll(
+    public ResponseStructure<List<BookResponseDTO>> getAll(
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) Integer publisherId) {
 
+        List<BookResponseDTO> data;
+
         if (categoryId != null && publisherId != null) {
-            return bookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
+            data = bookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
+        } else {
+            data = bookService.getAllBooks();
         }
 
-        return bookService.getAllBooks();
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Books fetched successfully",
+                data
+        );
     }
 
+    // ✅ UPDATE
+    @Operation(summary = "Update book")
     @PutMapping("/{isbn}")
-    public Book update(@PathVariable String isbn, @RequestBody Book book) {
-        return bookService.updateBook(isbn, book);
+    public ResponseStructure<BookResponseDTO> update(
+            @PathVariable String isbn,
+            @Valid @RequestBody BookRequestDTO dto) {
+
+        BookResponseDTO data = bookService.updateBook(isbn, dto);
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Book updated successfully",
+                data
+        );
     }
 
+    // ✅ DELETE
+    @Operation(summary = "Delete book")
     @DeleteMapping("/{isbn}")
-    public void delete(@PathVariable String isbn) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseStructure<String> delete(@PathVariable String isbn) {
+
         bookService.deleteBook(isbn);
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Book deleted successfully",
+                "Deleted ISBN: " + isbn
+        );
     }
 }

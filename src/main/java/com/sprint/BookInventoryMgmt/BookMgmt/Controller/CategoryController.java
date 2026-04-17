@@ -1,6 +1,6 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +17,12 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> getAll() {
+    public List<CategoryResponseDTO> getAll() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
-    public Category getById(@PathVariable Integer id) {
+    public CategoryResponseDTO getById(@PathVariable Integer id) {
         return categoryService.getCategoryById(id);
     }
 }

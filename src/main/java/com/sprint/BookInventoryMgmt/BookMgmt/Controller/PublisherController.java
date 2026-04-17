@@ -1,7 +1,10 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.PublisherRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.PublisherResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.PublisherService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,34 +13,37 @@ import java.util.List;
 @RequestMapping("/api/v1/publishers")
 public class PublisherController {
 
-    private final PublisherService service;
+    private final PublisherService publisherService;
 
-    public PublisherController(PublisherService service) {
-        this.service = service;
+    public PublisherController(PublisherService publisherService) {
+        this.publisherService = publisherService;
     }
 
     @GetMapping
-    public List<Publisher> getAll() {
-        return service.getAll();
+    public List<PublisherResponseDTO> getAll() {
+        return publisherService.getAllPublishers();
     }
 
     @GetMapping("/{id}")
-    public Publisher get(@PathVariable Integer id) {
-        return service.getById(id);
+    public PublisherResponseDTO getById(@PathVariable Integer id) {
+        return publisherService.getPublisherById(id);
     }
 
     @PostMapping
-    public Publisher create(@RequestBody Publisher publisher) {
-        return service.create(publisher);
+    @ResponseStatus(HttpStatus.CREATED)
+    public PublisherResponseDTO create(@Valid @RequestBody PublisherRequestDTO dto) {
+        return publisherService.createPublisher(dto);
     }
 
     @PutMapping("/{id}")
-    public Publisher update(@PathVariable Integer id, @RequestBody Publisher publisher) {
-        return service.update(id, publisher);
+    public PublisherResponseDTO update(@PathVariable Integer id,
+                                       @Valid @RequestBody PublisherRequestDTO dto) {
+        return publisherService.updatePublisher(id, dto);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        service.delete(id);
+        publisherService.deletePublisher(id);
     }
 }

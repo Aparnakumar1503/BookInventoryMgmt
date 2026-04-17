@@ -1,10 +1,13 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
+import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -16,13 +19,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDTO> getAllCategories() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Category getCategoryById(Integer id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+    public CategoryResponseDTO getCategoryById(Integer id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+
+        return mapToDTO(category);
+    }
+
+    private CategoryResponseDTO mapToDTO(Category category) {
+        CategoryResponseDTO dto = new CategoryResponseDTO();
+        dto.setCatId(category.getCatId());
+        dto.setCatDescription(category.getCatDescription());
+        return dto;
     }
 }

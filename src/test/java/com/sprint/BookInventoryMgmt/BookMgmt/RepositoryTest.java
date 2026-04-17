@@ -31,46 +31,39 @@ public class RepositoryTest {
     static Publisher publisher;
     static Book book;
 
-@Test
-@Order(1)
-void createData() {
+    @Test
+    @Order(1)
+    void createData() {
 
-    state = stateRepository.save(
-            State.builder()
-                    .stateCode("TN")
-                    .stateName("Tamil Nadu")
-                    .build()
-    );
+        State s = new State();
+        s.setStateCode("TN");
+        s.setStateName("Tamil Nadu");
+        state = stateRepository.save(s);
 
-    category = categoryRepository.save(
-            Category.builder()
-                    .catId(1)
-                    .catDescription("Fiction")
-                    .build()
-    );
+        Category c = new Category();
+        c.setCatId(1);
+        c.setCatDescription("Fiction");
+        category = categoryRepository.save(c);
 
-    publisher = publisherRepository.save(
-            Publisher.builder()
-                    .publisherId(100)
-                    .name("Pearson")
-                    .city("Chennai")
-                    .state(state)
-                    .build()
-    );
+        Publisher p = new Publisher();
+        p.setPublisherId(100);
+        p.setName("Pearson");
+        p.setCity("Chennai");
+        p.setState(state);
+        publisher = publisherRepository.save(p);
 
-    book = bookRepository.save(
-            Book.builder()
-                    .isbn("ISBN123")
-                    .title("Spring Boot Basics")
-                    .description("Learn Spring Boot")
-                    .edition("1st")
-                    .category(category)
-                    .publisher(publisher)
-                    .build()
-    );
+        Book b = new Book();
+        b.setIsbn("ISBN123");
+        b.setTitle("Spring Boot Basics");
+        b.setDescription("Learn Spring Boot");
+        b.setEdition("1st");
+        b.setCategory(category);
+        b.setPublisher(publisher);
 
-    assertTrue(bookRepository.findById("ISBN123").isPresent());
-}
+        book = bookRepository.save(b);
+
+        assertTrue(bookRepository.findById("ISBN123").isPresent());
+    }
 
     @Test
     @Order(2)
@@ -82,20 +75,20 @@ void createData() {
         assertEquals("Spring Boot Basics", found.get().getTitle());
     }
 
-@Test
-@Order(3)
-void updateData() {
+    @Test
+    @Order(3)
+    void updateData() {
 
-    Optional<Book> optional = bookRepository.findById("ISBN123");
-    assertTrue(optional.isPresent(), "Book should exist before update");
+        Optional<Book> optional = bookRepository.findById("ISBN123");
+        assertTrue(optional.isPresent(), "Book should exist before update");
 
-    Book existing = optional.get();
-    existing.setTitle("Spring Boot Advanced");
-    bookRepository.save(existing);
+        Book existing = optional.get();
+        existing.setTitle("Spring Boot Advanced");
+        bookRepository.save(existing);
 
-    assertEquals("Spring Boot Advanced",
-            bookRepository.findById("ISBN123").get().getTitle());
-}
+        assertEquals("Spring Boot Advanced",
+                bookRepository.findById("ISBN123").get().getTitle());
+    }
 
     @Test
     @Order(4)

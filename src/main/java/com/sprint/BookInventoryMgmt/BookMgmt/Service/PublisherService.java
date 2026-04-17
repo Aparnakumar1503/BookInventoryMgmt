@@ -1,12 +1,19 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.PublisherRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.PublisherResponseDTO;
+
 import java.util.List;
 
 public interface PublisherService {
-    List<Publisher> getAll();
-    Publisher getById(Integer id);
-    Publisher create(Publisher publisher);
-    Publisher update(Integer id, Publisher publisher);
-    void delete(Integer id);
+
+    List<PublisherResponseDTO> getAllPublishers();
+
+    PublisherResponseDTO getPublisherById(Integer id);
+
+    PublisherResponseDTO createPublisher(PublisherRequestDTO dto);
+
+    PublisherResponseDTO updatePublisher(Integer id, PublisherRequestDTO dto);
+
+    void deletePublisher(Integer id);
 }
