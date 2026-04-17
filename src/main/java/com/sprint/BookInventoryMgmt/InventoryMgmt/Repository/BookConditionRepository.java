@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface BookConditionRepository extends JpaRepository<BookCondition, Integer> {
 
-    List<BookCondition> findByPriceBetween(Double min, Double max);
+    List<BookCondition> findByPriceBetween(double min, double max);
 
-    List<BookCondition> findByRanksGreaterThan(Integer ranks);
+    List<BookCondition> findByRanksGreaterThan(int rank);
 }
