@@ -1,20 +1,21 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
 
 import java.util.List;
 
 public interface BookService {
 
-    Book createBook(Book book);
+    BookResponseDTO createBook(BookRequestDTO dto);
 
-    Book getBookByIsbn(String isbn);
+    BookResponseDTO getBookByIsbn(String isbn);
 
-    List<Book> getAllBooks();
+    List<BookResponseDTO> getAllBooks();
 
-    Book updateBook(String isbn, Book book);
+    BookResponseDTO updateBook(String isbn, BookRequestDTO dto);
 
     void deleteBook(String isbn);
 
-    List<Book> getBooksByCategoryAndPublisher(Integer catId, Integer publisherId);
+    List<BookResponseDTO> getBooksByCategoryAndPublisher(Integer catId, Integer publisherId);
 }

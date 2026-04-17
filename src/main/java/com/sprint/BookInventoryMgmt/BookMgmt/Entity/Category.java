@@ -1,29 +1,35 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
 
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Category {
 
     @Id
     @Column(name = "cat_id")
     private Integer catId;
 
-    @NotBlank
-    @Column(name = "cat_description", length = 24)
+    @Column(name = "cat_description")
     private String catDescription;
 
     @OneToMany(mappedBy = "category")
-    @JsonIgnore
     private List<Book> books;
+
+    public Category() {}
+
+    public Category(Integer catId, String catDescription) {
+        this.catId = catId;
+        this.catDescription = catDescription;
+    }
+
+    public Integer getCatId() { return catId; }
+    public void setCatId(Integer catId) { this.catId = catId; }
+
+    public String getCatDescription() { return catDescription; }
+    public void setCatDescription(String catDescription) { this.catDescription = catDescription; }
+
+    public List<Book> getBooks() { return books; }
+    public void setBooks(List<Book> books) { this.books = books; }
 }
