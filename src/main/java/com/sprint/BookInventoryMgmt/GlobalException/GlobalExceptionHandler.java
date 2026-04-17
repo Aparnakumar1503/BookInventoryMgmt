@@ -4,6 +4,9 @@ import com.sprint.BookInventoryMgmt.BookMgmt.Exception.BookNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.StateNotFoundException;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.exception.InventoryNotFoundException;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.exception.BookConditionNotFoundException;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.exception.DuplicateInventoryException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,5 +78,23 @@ public class GlobalExceptionHandler {
         body.put("message", message);
 
         return new ResponseEntity<>(body, status);
+    }
+
+    // INVENTORY
+    @ExceptionHandler(InventoryNotFoundException.class)
+    public ResponseEntity<Object> handleInventoryNotFound(InventoryNotFoundException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // BOOK CONDITION
+    @ExceptionHandler(BookConditionNotFoundException.class)
+    public ResponseEntity<Object> handleBookConditionNotFound(BookConditionNotFoundException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // DUPLICATE INVENTORY (optional)
+    @ExceptionHandler(DuplicateInventoryException.class)
+    public ResponseEntity<Object> handleDuplicateInventory(DuplicateInventoryException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

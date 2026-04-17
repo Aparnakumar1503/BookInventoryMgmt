@@ -1,7 +1,6 @@
 package com.sprint.BookInventoryMgmt.InventoryMgmt.service;
 
 import com.sprint.BookInventoryMgmt.InventoryMgmt.entity.Inventory;
-import com.sprint.BookInventoryMgmt.InventoryMgmt.exception.ResourceNotFoundException;
 import com.sprint.BookInventoryMgmt.InventoryMgmt.repository.InventoryRepository;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import org.springframework.beans.factory.annotation.Autowired;
