@@ -1,17 +1,15 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Repository;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.repository;
 
-import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.Inventory;
+import com.sprint.BookInventoryMgmt.InventoryMgmt.entity.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
 
-    // existing methods
     List<Inventory> findByIsbn(String isbn);
 
+    // Extra methods (keep but do not expose in controller)
     List<Inventory> findByPurchasedFalse();
 
     List<Inventory> findByRanksAndPurchased(int ranks, boolean purchased);

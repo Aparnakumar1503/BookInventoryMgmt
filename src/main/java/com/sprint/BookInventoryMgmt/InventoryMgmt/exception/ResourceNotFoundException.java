@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Exception;
+package com.sprint.BookInventoryMgmt.InventoryMgmt.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 
