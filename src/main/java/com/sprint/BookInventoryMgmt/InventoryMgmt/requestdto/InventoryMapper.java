@@ -5,6 +5,8 @@ import com.sprint.BookInventoryMgmt.InventoryMgmt.responsedto.*;
 
 public class InventoryMapper {
 
+    // ================= INVENTORY =================
+
     public static Inventory toInventoryEntity(InventoryRequestDTO dto) {
         Inventory inv = new Inventory();
         inv.setIsbn(dto.getIsbn());
@@ -22,12 +24,25 @@ public class InventoryMapper {
         );
     }
 
+    // ================= BOOK CONDITION =================
+
+    public static BookCondition toBookConditionEntity(BookConditionRequestDTO dto) {
+        BookCondition bc = new BookCondition();
+        bc.setRanks(dto.getRanks());
+        bc.setDescription(dto.getDescription());
+        bc.setFullDescription(dto.getFullDescription());
+        bc.setPrice(dto.getPrice());
+        return bc;
+    }
+
     public static BookConditionResponseDTO toBookConditionResponse(BookCondition bc) {
-        return new BookConditionResponseDTO(
-                bc.getRanks(),
-                bc.getDescription(),
-                bc.getFullDescription(),
-                bc.getPrice()
-        );
+        BookConditionResponseDTO dto = new BookConditionResponseDTO();
+
+        dto.setRanks(bc.getRanks());
+        dto.setDescription(bc.getDescription());
+        dto.setFullDescription(bc.getFullDescription());
+        dto.setPrice(bc.getPrice());
+
+        return dto;
     }
 }
