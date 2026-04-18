@@ -1,7 +1,6 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt;
+package com.sprint.BookInventoryMgmt.reviewmgmt.repository;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.BookReview;
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Repository.BookReviewRepository;
+import com.sprint.BookInventoryMgmt.reviewmgmt.entity.BookReview;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
