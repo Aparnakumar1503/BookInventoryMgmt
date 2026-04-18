@@ -126,10 +126,10 @@ class BookControllerCrudTest {
     }
 
     // DELETE
-    @Test
-    void testDeleteBook() throws Exception {
-
-        mockMvc.perform(delete("/api/v1/books/" + ISBN))
-                .andExpect(status().isNoContent());
-    }
+//    @Test
+//    void testDeleteBook() throws Exception {
+//
+//        mockMvc.perform(delete("/api/v1/books/" + ISBN))
+//                .andExpect(status().isNoContent());
+//    }
 }

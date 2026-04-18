@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.OrderMgmt.Exception;
+package com.sprint.BookInventoryMgmt.ordermgmt.exception;
 
 
 public class PurchaseNotFoundException extends RuntimeException {
