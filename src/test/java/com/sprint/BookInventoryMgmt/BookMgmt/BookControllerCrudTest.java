@@ -8,8 +8,10 @@ import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,35 +39,35 @@ class BookControllerCrudTest {
     @BeforeEach
     void setup() throws Exception {
 
-        // 1. FIRST delete BOOKS (child table)
+        // delete book first
         mockMvc.perform(delete("/api/v1/books/" + ISBN));
 
-        // 2. THEN delete parents
         publisherRepository.deleteAll();
         categoryRepository.deleteAll();
 
-        // 3. Recreate clean state
+        // create category
         Category category = new Category();
         category.setCatId(1);
         category.setCatDescription("Fiction");
         categoryRepository.save(category);
 
+        // create publisher
         Publisher publisher = new Publisher();
         publisher.setPublisherId(1);
         publisher.setName("Test Publisher");
         publisherRepository.save(publisher);
 
-        // 4. Create book again
+        // CREATE BOOK USING DTO FORMAT (IMPORTANT FIX)
         String bookJson = """
-    {
-      "isbn": "ISBN123",
-      "title": "Test Book",
-      "description": "Test Desc",
-      "edition": "1st",
-      "category": { "catId": 1 },
-      "publisher": { "publisherId": 1 }
-    }
-    """;
+        {
+          "isbn": "ISBN123",
+          "title": "Test Book",
+          "description": "Test Desc",
+          "edition": "1st",
+          "categoryId": 1,
+          "publisherId": 1
+        }
+        """;
 
         mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +75,7 @@ class BookControllerCrudTest {
                 .andExpect(status().isCreated());
     }
 
-    // ✅ CREATE
+    // CREATE
     @Test
     void testCreateBook() throws Exception {
 
@@ -83,8 +85,8 @@ class BookControllerCrudTest {
           "title": "Spring Boot Basics",
           "description": "Learn Spring Boot",
           "edition": "1st",
-          "category": { "catId": 1 },
-          "publisher": { "publisherId": 1 }
+          "categoryId": 1,
+          "publisherId": 1
         }
         """;
 
@@ -94,7 +96,7 @@ class BookControllerCrudTest {
                 .andExpect(status().isCreated());
     }
 
-    // ✅ READ
+    // READ
     @Test
     void testGetBook() throws Exception {
 
@@ -102,13 +104,18 @@ class BookControllerCrudTest {
                 .andExpect(status().isOk());
     }
 
-    // ✅ UPDATE
+    // UPDATE
     @Test
     void testUpdateBook() throws Exception {
 
         String body = """
         {
-          "title": "Updated Title"
+          "isbn": "ISBN123",
+          "title": "Updated Title",
+          "description": "Updated Desc",
+          "edition": "2nd",
+          "categoryId": 1,
+          "publisherId": 1
         }
         """;
 
@@ -118,11 +125,11 @@ class BookControllerCrudTest {
                 .andExpect(status().isOk());
     }
 
-    // ✅ DELETE
+    // DELETE
     @Test
     void testDeleteBook() throws Exception {
 
         mockMvc.perform(delete("/api/v1/books/" + ISBN))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 }
