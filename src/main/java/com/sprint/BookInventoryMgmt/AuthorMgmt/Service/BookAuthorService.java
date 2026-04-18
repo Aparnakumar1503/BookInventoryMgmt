@@ -1,16 +1,15 @@
 package com.sprint.BookInventoryMgmt.AuthorMgmt.Service;
 
+import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.BookAuthor;
 import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.BookAuthorId;
-import com.sprint.BookInventoryMgmt.AuthorMgmt.dto.requestdto.BookAuthorRequestDTO;
-import com.sprint.BookInventoryMgmt.AuthorMgmt.dto.responsedto.BookAuthorResponseDTO;
 
 import java.util.List;
 
 public interface BookAuthorService {
 
-    BookAuthorResponseDTO assignAuthorToBook(BookAuthorRequestDTO bookAuthor);
+    BookAuthor assignAuthorToBook(BookAuthor bookAuthor);
 
-    List<BookAuthorResponseDTO> getAllMappings();
+    List<BookAuthor> getAllMappings();
 
     void removeMapping(BookAuthorId id);
 }
