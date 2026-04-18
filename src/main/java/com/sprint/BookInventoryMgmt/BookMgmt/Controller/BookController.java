@@ -2,11 +2,13 @@ package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
+
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 @Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
-
-    private final BookRepository bookRepository;
+    @Autowired
+    private BookService bookService;
 
     // ✅ CREATE
     @Operation(summary = "Create a new book")
@@ -100,3 +102,4 @@ public class BookController {
                 "Deleted ISBN: " + isbn
         );
     }
+}
