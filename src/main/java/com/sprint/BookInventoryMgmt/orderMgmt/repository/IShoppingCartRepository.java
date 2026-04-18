@@ -11,6 +11,18 @@ import java.util.List;
 public interface IShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     List<ShoppingCart> findByUserId(Long userId);
 
     List<ShoppingCart> findByIsbn(String isbn);
