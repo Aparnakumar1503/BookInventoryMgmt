@@ -1,51 +1,49 @@
-// package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
+package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-// import org.springframework.web.bind.annotation.RestController;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.PutMapping;
-// import org.springframework.web.bind.annotation.DeleteMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import lombok.RequiredArgsConstructor;
-// import java.util.List;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.PublisherRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.PublisherResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.Service.PublisherService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-// @RestController
-// @RequestMapping("/api/v1/publishers")
-// @RequiredArgsConstructor
-// public class PublisherController {
+import java.util.List;
 
-//     private final PublisherRepository publisherRepository;
+@RestController
+@RequestMapping("/api/v1/publishers")
+public class PublisherController {
 
-//     @GetMapping
-//     public List<Publisher> getAll() {
-//         return publisherRepository.findAll();
-//     }
+    private final PublisherService publisherService;
 
-//     @GetMapping("/{id}")
-//     public Publisher getById(@PathVariable Integer id) {
-//         return publisherRepository.findById(id)
-//                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
-//     }
+    public PublisherController(PublisherService publisherService) {
+        this.publisherService = publisherService;
+    }
 
-//     @PostMapping
-//     public Publisher create(@RequestBody Publisher publisher) {
-//         return publisherRepository.save(publisher);
-//     }
+    @GetMapping
+    public List<PublisherResponseDTO> getAll() {
+        return publisherService.getAllPublishers();
+    }
 
-//     @PutMapping("/{id}")
-//     public Publisher update(@PathVariable Integer id,
-//                             @RequestBody Publisher publisher) {
+    @GetMapping("/{id}")
+    public PublisherResponseDTO getById(@PathVariable Integer id) {
+        return publisherService.getPublisherById(id);
+    }
 
-//         publisher.setPublisherId(id);
-//         return publisherRepository.save(publisher);
-//     }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PublisherResponseDTO create(@Valid @RequestBody PublisherRequestDTO dto) {
+        return publisherService.createPublisher(dto);
+    }
 
-//     @DeleteMapping("/{id}")
-//     public void delete(@PathVariable Integer id) {
-//         publisherRepository.deleteById(id);
-//     }
-// }
+    @PutMapping("/{id}")
+    public PublisherResponseDTO update(@PathVariable Integer id,
+                                       @Valid @RequestBody PublisherRequestDTO dto) {
+        return publisherService.updatePublisher(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Integer id) {
+        publisherService.deletePublisher(id);
+    }
+}

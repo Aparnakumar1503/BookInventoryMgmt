@@ -1,112 +1,104 @@
-// package com.sprint.BookInventoryMgmt.BookMgmt.Service;
+package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
+import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.BookMgmt.Exception.BookNotFoundException;
+import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
+import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
+import com.sprint.BookInventoryMgmt.BookMgmt.Mapper.BookMapper;
+import com.sprint.BookInventoryMgmt.BookMgmt.Repository.BookRepository;
+import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
+import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
+import org.springframework.stereotype.Service;
 
-// import java.util.List;
-// import java.util.stream.Collectors;
+import java.util.List;
+import java.util.stream.Collectors;
 
-// import org.springframework.stereotype.Service;
+@Service
+public class BookServiceImpl implements BookService {
 
-// import com.sprint.BookInventoryMgmt.BookMgmt.DTO.*;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Entity.*;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Repository.*;
+    private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
+    private final PublisherRepository publisherRepository;
 
-// @Service
-// public class BookServiceImpl implements BookService {
+    public BookServiceImpl(BookRepository bookRepository,
+                           CategoryRepository categoryRepository,
+                           PublisherRepository publisherRepository) {
+        this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
+        this.publisherRepository = publisherRepository;
+    }
 
-//     private final BookRepository bookRepository;
-//     private final CategoryRepository categoryRepo;
-//     private final PublisherRepository publisherRepo;
+    @Override
+    public BookResponseDTO createBook(BookRequestDTO dto) {
 
-//     // ✅ Manual constructor (instead of Lombok)
-//     public BookServiceImpl(BookRepository bookRepository,
-//                            CategoryRepository categoryRepo,
-//                            PublisherRepository publisherRepo) {
-//         this.bookRepository = bookRepository;
-//         this.categoryRepo = categoryRepo;
-//         this.publisherRepo = publisherRepo;
-//     }
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-//     // 🔁 Entity → DTO (NO builder)
-//     private BookResponseDTO mapToDTO(Book book) {
-//         return new BookResponseDTO(
-//                 book.getIsbn(),
-//                 book.getTitle(),
-//                 book.getDescription(),
-//                 book.getEdition(),
-//                 book.getCategory().getCatId(),
-//                 book.getPublisher().getPublisherId()
-//         );
-//     }
+        Publisher publisher = publisherRepository.findById(dto.getPublisherId())
+                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found"));
 
-//     @Override
-//     public List<BookResponseDTO> getAllBooks() {
-//         return bookRepository.findAll()
-//                 .stream()
-//                 .map(this::mapToDTO)
-//                 .collect(Collectors.toList());
-//     }
+        Book book = BookMapper.toEntity(dto, category, publisher);
+        Book saved = bookRepository.save(book);
 
-//     @Override
-//     public BookResponseDTO getBookById(String isbn) {
-//         Book book = bookRepository.findById(isbn)
-//                 .orElseThrow(() -> new RuntimeException("Book not found"));
-//         return mapToDTO(book);
-//     }
+        return BookMapper.toResponse(saved);
+    }
 
-//     @Override
-//     public BookResponseDTO createBook(BookRequestDTO dto) {
+    @Override
+    public BookResponseDTO getBookByIsbn(String isbn) {
+        Book book = bookRepository.findById(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-//         Category category = categoryRepo.findById(dto.getCategoryId())
-//                 .orElseThrow(() -> new RuntimeException("Category not found"));
+        return BookMapper.toResponse(book);
+    }
 
-//         Publisher publisher = publisherRepo.findById(dto.getPublisherId())
-//                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
+    @Override
+    public List<BookResponseDTO> getAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(BookMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
-//         Book book = new Book();
-//         book.setIsbn(dto.getIsbn());
-//         book.setTitle(dto.getTitle());
-//         book.setDescription(dto.getDescription());
-//         book.setEdition(dto.getEdition());
-//         book.setCategory(category);
-//         book.setPublisher(publisher);
+    @Override
+    public BookResponseDTO updateBook(String isbn, BookRequestDTO dto) {
 
-//         return mapToDTO(bookRepository.save(book));
-//     }
+        Book existing = bookRepository.findById(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-//     @Override
-//     public BookResponseDTO updateBook(String isbn, BookRequestDTO dto) {
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-//         Book book = bookRepository.findById(isbn)
-//                 .orElseThrow(() -> new RuntimeException("Book not found"));
+        Publisher publisher = publisherRepository.findById(dto.getPublisherId())
+                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found"));
 
-//         Category category = categoryRepo.findById(dto.getCategoryId())
-//                 .orElseThrow(() -> new RuntimeException("Category not found"));
+        existing.setTitle(dto.getTitle());
+        existing.setDescription(dto.getDescription());
+        existing.setEdition(dto.getEdition());
+        existing.setCategory(category);
+        existing.setPublisher(publisher);
 
-//         Publisher publisher = publisherRepo.findById(dto.getPublisherId())
-//                 .orElseThrow(() -> new RuntimeException("Publisher not found"));
+        Book updated = bookRepository.save(existing);
 
-//         book.setTitle(dto.getTitle());
-//         book.setDescription(dto.getDescription());
-//         book.setEdition(dto.getEdition());
-//         book.setCategory(category);
-//         book.setPublisher(publisher);
+        return BookMapper.toResponse(updated);
+    }
 
-//         return mapToDTO(bookRepository.save(book));
-//     }
+    @Override
+    public void deleteBook(String isbn) {
+        Book book = bookRepository.findById(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
-//     @Override
-//     public void deleteBook(String isbn) {
-//         bookRepository.deleteById(isbn);
-//     }
+        bookRepository.delete(book);
+    }
 
-//     @Override
-//     public List<BookResponseDTO> searchBooks(Integer categoryId, Integer publisherId) {
-
-//         return bookRepository.findAll()
-//                 .stream()
-//                 .filter(b -> categoryId == null || b.getCategory().getCatId().equals(categoryId))
-//                 .filter(b -> publisherId == null || b.getPublisher().getPublisherId().equals(publisherId))
-//                 .map(this::mapToDTO)
-//                 .collect(Collectors.toList());
-//     }
-// }
+    @Override
+    public List<BookResponseDTO> getBooksByCategoryAndPublisher(Integer catId, Integer publisherId) {
+        return bookRepository.findByCategoryCatIdAndPublisherPublisherId(catId, publisherId)
+                .stream()
+                .map(BookMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+}

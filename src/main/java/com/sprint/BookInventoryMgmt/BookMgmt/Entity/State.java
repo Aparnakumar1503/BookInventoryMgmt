@@ -1,21 +1,22 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "state")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class State {
 
     @Id
     @Column(name = "state_code")
     private String stateCode;
 
-    @Column(name = "state_name")
     private String stateName;
+
+    public State() {}
+
+    public String getStateCode() { return stateCode; }
+    public void setStateCode(String stateCode) { this.stateCode = stateCode; }
+
+    public String getStateName() { return stateName; }
+    public void setStateName(String stateName) { this.stateName = stateName; }
 }

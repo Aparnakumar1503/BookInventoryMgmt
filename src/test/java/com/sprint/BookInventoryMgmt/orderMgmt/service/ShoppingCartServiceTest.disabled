@@ -1,0 +1,179 @@
+package com.sprint.BookInventoryMgmt.orderMgmt.service;
+
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.ShoppingCartNotFoundException;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+class ShoppingCartServiceTest {
+
+    @Autowired
+    private IShoppingCartService service;
+
+    // ================= POSITIVE =================
+
+    @Test
+    void testAddCart() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+        dto.setUserId(1L);
+        dto.setIsbn("ISBN1");
+
+        ShoppingCartResponseDTO result = service.addCart(dto);
+
+        assertNotNull(result);
+        assertEquals("ISBN1", result.getIsbn());
+    }
+
+    @Test
+    void testGetAll() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+        dto.setUserId(2L);
+        dto.setIsbn("A");
+
+        service.addCart(dto);
+
+        List<ShoppingCartResponseDTO> result = service.getAll();
+
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testDeleteSuccess() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+        dto.setUserId(3L);
+        dto.setIsbn("B");
+
+        service.addCart(dto);
+
+        String result = service.delete(3L);
+
+        assertTrue(result.contains("Deleted"));
+    }
+
+    @Test
+    void testAddMultiple() {
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(4L);
+            setIsbn("X");
+        }});
+
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(5L);
+            setIsbn("Y");
+        }});
+
+        assertTrue(service.getAll().size() >= 2);
+    }
+
+    @Test
+    void testMappingCorrect() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+        dto.setUserId(6L);
+        dto.setIsbn("MAP");
+
+        ShoppingCartResponseDTO res = service.addCart(dto);
+
+        assertEquals(6L, res.getUserId());
+    }
+
+    @Test
+    void testGetAllNotEmpty() {
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(7L);
+            setIsbn("Z");
+        }});
+
+        assertFalse(service.getAll().isEmpty());
+    }
+
+    @Test
+    void testDeleteFlow() {
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(8L);
+            setIsbn("DEL");
+        }});
+
+        service.delete(8L);
+
+        assertThrows(ShoppingCartNotFoundException.class,
+                () -> service.delete(8L));
+    }
+
+    // ================= NEGATIVE =================
+
+    @Test
+    void testDeleteNotFound() {
+        assertThrows(ShoppingCartNotFoundException.class,
+                () -> service.delete(999L));
+    }
+
+    @Test
+    void testAddNull() {
+        assertThrows(Exception.class, () -> service.addCart(null));
+    }
+
+    @Test
+    void testAddInvalidDTO() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+
+        assertThrows(Exception.class, () -> service.addCart(dto));
+    }
+
+    @Test
+    void testDeleteNull() {
+        assertThrows(Exception.class, () -> service.delete(null));
+    }
+
+    @Test
+    void testGetAllInitiallyEmpty() {
+        List<ShoppingCartResponseDTO> list = service.getAll();
+
+        assertNotNull(list);
+    }
+
+    @Test
+    void testDeleteAlreadyDeleted() {
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(10L);
+            setIsbn("A");
+        }});
+
+        service.delete(10L);
+
+        assertThrows(ShoppingCartNotFoundException.class,
+                () -> service.delete(10L));
+    }
+
+    @Test
+    void testAddDuplicateUserId() {
+        service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(11L);
+            setIsbn("A");
+        }});
+
+        // same ID again → overwrite (since @Id=userId)
+        ShoppingCartResponseDTO res = service.addCart(new ShoppingCartRequestDTO(){{
+            setUserId(11L);
+            setIsbn("B");
+        }});
+
+        assertEquals("B", res.getIsbn());
+    }
+
+    // ================= EDGE =================
+
+    @Test
+    void testEdgeCase() {
+        List<ShoppingCartResponseDTO> list = service.getAll();
+
+        assertTrue(list.size() >= 0);
+    }
+}

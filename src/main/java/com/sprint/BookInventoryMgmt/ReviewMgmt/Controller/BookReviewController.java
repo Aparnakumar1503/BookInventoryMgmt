@@ -15,32 +15,33 @@ public class BookReviewController {
     @Autowired
     private BookReviewService reviewService;
 
-    // ✅ ADD REVIEW
+
     @PostMapping("/{isbn}/reviews")
     public BookReview addReview(@PathVariable String isbn,
                                 @RequestBody BookReview review) {
 
-        review.setIsbn(isbn); // 🔥 IMPORTANT
+        review.setIsbn(isbn);
         return reviewService.addReview(review);
     }
 
-    // ✅ GET REVIEWS BY ISBN
     @GetMapping("/{isbn}/reviews")
     public List<BookReview> getReviewsByISBN(@PathVariable String isbn) {
         return reviewService.getReviewsByISBN(isbn);
     }
 
-    // ✅ OPTIONAL: GET ALL
-    @GetMapping("/reviews/all")
+    @GetMapping("/reviews/reviewer/{reviewerId}")
+    public List<BookReview> getReviewsByReviewer(@PathVariable int reviewerId) {
+        return reviewService.getReviewsByReviewer(reviewerId);
+    }
+
+    @GetMapping("/reviews")
     public List<BookReview> getAllReviews() {
         return reviewService.getAllReviews();
     }
 
-    // ✅ DELETE
     @DeleteMapping("/reviews/{id}")
     public String deleteReview(@PathVariable int id) {
         reviewService.deleteReview(id);
         return "Review deleted successfully";
     }
 }
-
