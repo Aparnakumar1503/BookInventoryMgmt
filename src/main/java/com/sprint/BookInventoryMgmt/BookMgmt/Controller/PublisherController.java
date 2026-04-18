@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.PublisherRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.PublisherResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.requestdto.PublisherRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.responsedto.PublisherResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.PublisherService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

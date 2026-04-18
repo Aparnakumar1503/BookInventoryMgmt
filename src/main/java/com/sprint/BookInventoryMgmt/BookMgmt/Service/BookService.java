@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.requestdto.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.responsedto.BookResponseDTO;
 
 import java.util.List;
 

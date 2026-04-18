@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.requestdto.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.responsedto.BookResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;

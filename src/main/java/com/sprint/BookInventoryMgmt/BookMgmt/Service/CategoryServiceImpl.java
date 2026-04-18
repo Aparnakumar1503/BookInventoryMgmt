@@ -1,6 +1,6 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.responsedto.CategoryResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;

@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.BookMgmt.Mapper;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.requestdto.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.BookMgmt.DTO.responsedto.BookResponseDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
 import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
@@ -28,13 +28,13 @@ public class BookMapper {
         dto.setDescription(book.getDescription());
         dto.setEdition(book.getEdition());
 
-        // ✅ SAFE CATEGORY
+        // SAFE CATEGORY
         if (book.getCategory() != null) {
             dto.setCategoryId(book.getCategory().getCatId());
             dto.setCategoryName(book.getCategory().getCatDescription());
         }
 
-        // ✅ SAFE PUBLISHER
+        // SAFE PUBLISHER
         if (book.getPublisher() != null) {
             dto.setPublisherId(book.getPublisher().getPublisherId());
             dto.setPublisherName(book.getPublisher().getName());
