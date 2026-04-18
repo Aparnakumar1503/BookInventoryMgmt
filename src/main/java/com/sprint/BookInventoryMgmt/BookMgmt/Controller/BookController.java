@@ -17,11 +17,7 @@ import java.util.List;
 @Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
 
-    private final BookService bookService;
-
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    private final BookRepository bookRepository;
 
     // ✅ CREATE
     @Operation(summary = "Create a new book")
@@ -104,4 +100,3 @@ public class BookController {
                 "Deleted ISBN: " + isbn
         );
     }
-}
