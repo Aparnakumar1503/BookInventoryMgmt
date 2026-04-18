@@ -2,13 +2,11 @@ package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
 
 import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
 import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
-
 import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +16,13 @@ import java.util.List;
 @RequestMapping("/api/v1/books")
 @Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
-    @Autowired
-    private BookService bookService;
 
-    // ✅ CREATE
+    private final BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
     @Operation(summary = "Create a new book")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -36,7 +37,6 @@ public class BookController {
         );
     }
 
-    // ✅ GET BY ISBN
     @Operation(summary = "Get book by ISBN")
     @GetMapping("/{isbn}")
     public ResponseStructure<BookResponseDTO> get(@PathVariable String isbn) {
@@ -50,7 +50,6 @@ public class BookController {
         );
     }
 
-    // ✅ GET ALL / FILTER
     @Operation(summary = "Get all books or filter by category & publisher")
     @GetMapping
     public ResponseStructure<List<BookResponseDTO>> getAll(
@@ -72,7 +71,6 @@ public class BookController {
         );
     }
 
-    // ✅ UPDATE
     @Operation(summary = "Update book")
     @PutMapping("/{isbn}")
     public ResponseStructure<BookResponseDTO> update(
@@ -88,10 +86,8 @@ public class BookController {
         );
     }
 
-    // ✅ DELETE
     @Operation(summary = "Delete book")
     @DeleteMapping("/{isbn}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseStructure<String> delete(@PathVariable String isbn) {
 
         bookService.deleteBook(isbn);
