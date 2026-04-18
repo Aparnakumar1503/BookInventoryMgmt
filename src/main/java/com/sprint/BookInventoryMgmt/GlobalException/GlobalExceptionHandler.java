@@ -5,8 +5,6 @@ import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
 import com.sprint.BookInventoryMgmt.BookMgmt.Exception.StateNotFoundException;
 
-import com.sprint.BookInventoryMgmt.reviewmgmt.exception.ReviewNotFoundException;
-import com.sprint.BookInventoryMgmt.reviewmgmt.exception.ReviewerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -77,15 +75,5 @@ public class GlobalExceptionHandler {
         body.put("message", message);
 
         return new ResponseEntity<>(body, status);
-    }
-
-    @ExceptionHandler(ReviewerNotFoundException.class)
-    public ResponseEntity<Object> handleReviewerNotFound(ReviewerNotFoundException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ReviewNotFoundException.class)
-    public ResponseEntity<Object> handleReviewNotFound(ReviewNotFoundException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
