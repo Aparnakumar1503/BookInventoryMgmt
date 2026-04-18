@@ -29,33 +29,26 @@ class BookControllerCrudTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private static final String ISBN = "ISBN123";
 
     @BeforeEach
     void setup() throws Exception {
 
-        // delete book first
         mockMvc.perform(delete("/api/v1/books/" + ISBN));
 
         publisherRepository.deleteAll();
         categoryRepository.deleteAll();
 
-        // create category
         Category category = new Category();
         category.setCatId(1);
         category.setCatDescription("Fiction");
         categoryRepository.save(category);
 
-        // create publisher
         Publisher publisher = new Publisher();
         publisher.setPublisherId(1);
         publisher.setName("Test Publisher");
         publisherRepository.save(publisher);
 
-        // CREATE BOOK USING DTO FORMAT (IMPORTANT FIX)
         String bookJson = """
         {
           "isbn": "ISBN123",
@@ -73,13 +66,13 @@ class BookControllerCrudTest {
                 .andExpect(status().isCreated());
     }
 
-    // CREATE
+    // ✅ CREATE (use different ISBN)
     @Test
     void testCreateBook() throws Exception {
 
         String body = """
         {
-          "isbn": "ISBN123",
+          "isbn": "ISBN999",
           "title": "Spring Boot Basics",
           "description": "Learn Spring Boot",
           "edition": "1st",
@@ -91,18 +84,20 @@ class BookControllerCrudTest {
         mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.isbn").value("ISBN999"));
     }
 
-    // READ
+    // ✅ READ
     @Test
     void testGetBook() throws Exception {
 
         mockMvc.perform(get("/api/v1/books/" + ISBN))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.isbn").value(ISBN));
     }
 
-    // UPDATE
+    // ✅ UPDATE
     @Test
     void testUpdateBook() throws Exception {
 
@@ -120,14 +115,19 @@ class BookControllerCrudTest {
         mockMvc.perform(put("/api/v1/books/" + ISBN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value("Updated Title"));
     }
 
-    // DELETE
+    // ✅ DELETE
     @Test
     void testDeleteBook() throws Exception {
 
         mockMvc.perform(delete("/api/v1/books/" + ISBN))
                 .andExpect(status().isOk());
+
+        // verify deletion
+        mockMvc.perform(get("/api/v1/books/" + ISBN))
+                .andExpect(status().isNotFound());
     }
 }
