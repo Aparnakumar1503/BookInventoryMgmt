@@ -1,0 +1,11 @@
+package com.sprint.BookInventoryMgmt.authormgmt.exceptions;
+
+public class BookAuthorNotFoundException extends RuntimeException  {
+    public BookAuthorNotFoundException(String message) {
+        super(message);
+    }
+
+    public BookAuthorNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
