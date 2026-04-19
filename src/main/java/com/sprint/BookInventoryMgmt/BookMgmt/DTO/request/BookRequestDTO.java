@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.DTO.request;
+package com.sprint.BookInventoryMgmt.bookmgmt.dto.request;
 
 public class BookRequestDTO {
 

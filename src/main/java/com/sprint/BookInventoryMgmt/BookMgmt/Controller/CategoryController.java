@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
+package com.sprint.BookInventoryMgmt.bookmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Service.CategoryService;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.CategoryResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

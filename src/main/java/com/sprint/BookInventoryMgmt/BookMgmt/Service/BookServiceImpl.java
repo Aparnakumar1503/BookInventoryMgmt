@@ -1,17 +1,17 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Service;
+package com.sprint.BookInventoryMgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.BookNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Mapper.BookMapper;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.BookRepository;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Book;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.BookNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.CategoryNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.PublisherNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.mapper.BookMapper;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.BookRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.CategoryRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.PublisherRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

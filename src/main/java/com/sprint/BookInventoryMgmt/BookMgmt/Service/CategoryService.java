@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Service;
+package com.sprint.BookInventoryMgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.CategoryResponseDTO;
 
 import java.util.List;
 

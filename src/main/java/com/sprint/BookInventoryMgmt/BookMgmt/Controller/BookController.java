@@ -1,8 +1,8 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Controller;
+package com.sprint.BookInventoryMgmt.bookmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Service.BookService;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.service.BookService;
 import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

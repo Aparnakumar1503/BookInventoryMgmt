@@ -1,27 +1,24 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "shopping_cart")
+@Table(name = "shoppingcart")
 public class ShoppingCart {
 
-    @Id
-    @NotNull(message = "User ID cannot be null")
-    private Long userId;
+    @EmbeddedId
+    private ShoppingCartId id;
 
-    @NotBlank(message = "ISBN cannot be blank")
-    private String isbn;
+    public ShoppingCart() {}
 
+    public ShoppingCart(Integer userId, String isbn) {
+        this.id = new ShoppingCartId(userId, isbn);
+    }
 
+    public ShoppingCartId getId() { return id; }
+    public void setId(ShoppingCartId id) { this.id = id; }
+
+    // Convenience getters
+    public Integer getUserId() { return id.getUserId(); }
+    public String getIsbn() { return id.getIsbn(); }
 }

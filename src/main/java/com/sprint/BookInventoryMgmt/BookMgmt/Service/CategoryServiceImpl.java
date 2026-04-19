@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Service;
+package com.sprint.BookInventoryMgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.CategoryResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.CategoryResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.CategoryNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

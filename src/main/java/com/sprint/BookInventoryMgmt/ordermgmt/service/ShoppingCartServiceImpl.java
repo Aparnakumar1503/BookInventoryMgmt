@@ -1,8 +1,9 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
 import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.ShoppingCartRepository;
-import com.sprint.BookInventoryMgmt.ordermgmt.exception.ShoppingCartNotFoundException;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCartId;
+import com.sprint.BookInventoryMgmt.ordermgmt.repository.IShoppingCartRepository;
+import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
 import org.springframework.stereotype.Service;
@@ -10,20 +11,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ShoppingCartServiceImpl implements ShoppingCartService {
+public class ShoppingCartServiceImpl implements IShoppingCartService {
 
-    private final ShoppingCartRepository repo;
+    private final IShoppingCartRepository repo;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository repo) {
+    public ShoppingCartServiceImpl(IShoppingCartRepository repo) {
         this.repo = repo;
     }
 
     @Override
     public ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO dto) {
-
-        ShoppingCart entity = new ShoppingCart();
-        entity.setUserId(dto.getUserId());
-        entity.setIsbn(dto.getIsbn());
+        // use composite key constructor
+        ShoppingCart entity = new ShoppingCart(dto.getUserId(), dto.getIsbn());
 
         ShoppingCart saved = repo.save(entity);
 
@@ -39,15 +38,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public String delete(Long userId) {
+    public String delete(Integer userId, String isbn) {
+        // composite key — need both userId and isbn to identify a cart item
+        ShoppingCartId id = new ShoppingCartId(userId, isbn);
 
-        ShoppingCart cart = repo.findById(userId)
+        ShoppingCart cart = repo.findById(id)
                 .orElseThrow(() ->
-                        new ShoppingCartNotFoundException("Cart not found: " + userId)
+                        new ShoppingCartNotFoundException("Cart not found for userId: " + userId + " isbn: " + isbn)
                 );
 
         repo.delete(cart);
-        return "Cart Deleted Successfully for id: " + userId;
+        return "Cart Deleted Successfully for userId: " + userId + " isbn: " + isbn;
     }
 
     private ShoppingCartResponseDTO mapToDTO(ShoppingCart entity) {

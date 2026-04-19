@@ -1,6 +1,6 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.controller;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.service.ShoppingCartService;
+import com.sprint.BookInventoryMgmt.ordermgmt.service.IShoppingCartService;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +11,9 @@ import java.util.List;
 @RequestMapping("/cart")
 public class ShoppingCartController {
 
-    private final ShoppingCartService service;
+    private final IShoppingCartService service;
 
-    public ShoppingCartController(ShoppingCartService service) {
+    public ShoppingCartController(IShoppingCartService service) {
         this.service = service;
     }
 
@@ -27,8 +27,10 @@ public class ShoppingCartController {
         return service.getAll();
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public String delete(@PathVariable Long userId) {
-        return service.delete(userId);
-
-}}
+    // composite key — need both userId and isbn to delete
+    @DeleteMapping("/delete/{userId}/{isbn}")
+    public String delete(@PathVariable Integer userId,
+                         @PathVariable String isbn) {
+        return service.delete(userId, isbn);
+    }
+}

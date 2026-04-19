@@ -8,8 +8,8 @@ import lombok.Data;
 public class PurchaseLogRequestDTO {
 
     @NotNull(message = "User ID cannot be null")
-    private Long userId;
+    private Integer userId;
 
     @NotNull(message = "Inventory ID cannot be null")
-    private Long inventoryId;
+    private Integer inventoryId;
 }

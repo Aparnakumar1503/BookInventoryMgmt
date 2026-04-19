@@ -1,10 +1,10 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Mapper;
+package com.sprint.BookInventoryMgmt.bookmgmt.mapper;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.BookResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.BookRequestDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.BookResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Book;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
 
 public class BookMapper {
 

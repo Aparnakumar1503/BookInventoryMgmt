@@ -1,5 +1,0 @@
-package com.sprint.BookInventoryMgmt.UserMgmt.DTO;
-
-public class UserResponseDTO {
-
-}

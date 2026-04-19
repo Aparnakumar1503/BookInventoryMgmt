@@ -9,7 +9,7 @@ import lombok.Data;
 public class ShoppingCartRequestDTO {
 
     @NotNull(message = "User ID cannot be null")
-    private Long userId;
+    private Integer userId;
 
     @NotBlank(message = "ISBN cannot be blank")
     private String isbn;

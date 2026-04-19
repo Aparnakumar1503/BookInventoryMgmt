@@ -1,13 +1,13 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Service;
+package com.sprint.BookInventoryMgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.request.PublisherRequestDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.DTO.response.PublisherResponseDTO;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.State;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.StateNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.StateRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.PublisherRequestDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.PublisherResponseDTO;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.State;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.PublisherNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.StateNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.PublisherRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.StateRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

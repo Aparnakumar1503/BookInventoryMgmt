@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.BookMgmt.Entity;
+package com.sprint.BookInventoryMgmt.bookmgmt.entity;
 
 import jakarta.persistence.*;
 import java.util.List;

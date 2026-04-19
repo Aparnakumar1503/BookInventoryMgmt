@@ -1,7 +1,7 @@
 package com.sprint.BookInventoryMgmt.reviewmgmt.service;
 
 import com.sprint.BookInventoryMgmt.reviewmgmt.entity.Reviewer;
-import com.sprint.BookInventoryMgmt.reviewmgmt.exception.ReviewerNotFoundException;
+import com.sprint.BookInventoryMgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.BookInventoryMgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.BookInventoryMgmt.reviewmgmt.requestdto.ReviewerRequestDTO;
 import com.sprint.BookInventoryMgmt.reviewmgmt.responsedto.ReviewerResponseDTO;

@@ -1,6 +1,6 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.controller;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.service.PurchaseLogService;
+import com.sprint.BookInventoryMgmt.ordermgmt.service.IPurchaseLogService;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +11,9 @@ import java.util.List;
 @RequestMapping("/purchase")
 public class PurchaseLogController {
 
-    private final PurchaseLogService service;
+    private final IPurchaseLogService service;
 
-    public PurchaseLogController(PurchaseLogService service) {
+    public PurchaseLogController(IPurchaseLogService service) {
         this.service = service;
     }
 
@@ -27,8 +27,10 @@ public class PurchaseLogController {
         return service.getAll();
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public String delete(@PathVariable Long userId) {
-        return service.delete(userId);
+    // composite key — need both userId and inventoryId to delete
+    @DeleteMapping("/delete/{userId}/{inventoryId}")
+    public String delete(@PathVariable Integer userId,
+                         @PathVariable Integer inventoryId) {
+        return service.delete(userId, inventoryId);
     }
 }
