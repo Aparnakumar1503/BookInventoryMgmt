@@ -1,76 +1,60 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.service;
+package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
-
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.ShoppingCartResponseDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.orderMgmt.repository.IShoppingCartRepository;
-import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.ShoppingCartNotFoundException;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCartId;
+import com.sprint.BookInventoryMgmt.ordermgmt.repository.IShoppingCartRepository;
+import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ShoppingCartServiceImpl implements IShoppingCartService {
 
-    @Autowired
-    IShoppingCartRepository repo;
-
-    public ShoppingCartServiceImpl(){
-
-    }
+    private final IShoppingCartRepository repo;
 
     public ShoppingCartServiceImpl(IShoppingCartRepository repo) {
-
         this.repo = repo;
     }
 
     @Override
     public ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO dto) {
-
-        ShoppingCart entity = new ShoppingCart();
-        entity.setUserId(dto.getUserId());
-        entity.setIsbn(dto.getIsbn());
+        // use composite key constructor
+        ShoppingCart entity = new ShoppingCart(dto.getUserId(), dto.getIsbn());
 
         ShoppingCart saved = repo.save(entity);
 
-        ShoppingCartResponseDTO response = new ShoppingCartResponseDTO();
-        response.setUserId(saved.getUserId());
-        response.setIsbn(saved.getIsbn());
-
-        return response;
+        return mapToDTO(saved);
     }
 
     @Override
     public List<ShoppingCartResponseDTO> getAll() {
-
-        List<ShoppingCart> carts = repo.findAll();
-        List<ShoppingCartResponseDTO> responseList = new ArrayList<>();
-
-        for (ShoppingCart cart : carts) {
-            ShoppingCartResponseDTO dto = new ShoppingCartResponseDTO();
-            dto.setUserId(cart.getUserId());
-            dto.setIsbn(cart.getIsbn());
-
-            responseList.add(dto);
-        }
-
-        return responseList;
+        return repo.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public String delete(Long userId) {
+    public String delete(Integer userId, String isbn) {
+        // composite key — need both userId and isbn to identify a cart item
+        ShoppingCartId id = new ShoppingCartId(userId, isbn);
 
-        ShoppingCart cart = repo.findById(userId)
+        ShoppingCart cart = repo.findById(id)
                 .orElseThrow(() ->
-                        new ShoppingCartNotFoundException("Shopping Cart not found for id: " + userId)
+                        new ShoppingCartNotFoundException("Cart not found for userId: " + userId + " isbn: " + isbn)
                 );
 
         repo.delete(cart);
+        return "Cart Deleted Successfully for userId: " + userId + " isbn: " + isbn;
+    }
 
-        return "Cart Deleted Successfully for id: " + userId;
+    private ShoppingCartResponseDTO mapToDTO(ShoppingCart entity) {
+        ShoppingCartResponseDTO dto = new ShoppingCartResponseDTO();
+        dto.setUserId(entity.getUserId());
+        dto.setIsbn(entity.getIsbn());
+        return dto;
     }
 }

@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.AuthorMgmt.Entity;
+package com.sprint.BookInventoryMgmt.authormgmt.entity;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Book;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Book;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,29 +1,42 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Entity;
+package com.sprint.BookInventoryMgmt.inventorymgmt.entity;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
 
 @Entity
 @Table(name = "inventory")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Inventory {
-    // Verified entity mapping
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inventoryId;
 
-    @NotBlank(message = "ISBN cannot be empty")
-    @Column(name = "isbn", nullable = false, length = 13)
+    @Column(name = "isbn", nullable = false)
     private String isbn;
 
-    @NotNull(message = "Rank is required")
     @Column(name = "ranks", nullable = false)
     private Integer ranks;
 
     @Column(name = "purchased")
     private Boolean purchased = false;
 
+    public Inventory() {}
+
+    public Inventory(Integer inventoryId, String isbn, Integer ranks, Boolean purchased) {
+        this.inventoryId = inventoryId;
+        this.isbn = isbn;
+        this.ranks = ranks;
+        this.purchased = purchased;
+    }
+
+    public Integer getInventoryId() { return inventoryId; }
+    public void setInventoryId(Integer inventoryId) { this.inventoryId = inventoryId; }
+
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
+
+    public Integer getRanks() { return ranks; }
+    public void setRanks(Integer ranks) { this.ranks = ranks; }
+
+    public Boolean getPurchased() { return purchased; }
+    public void setPurchased(Boolean purchased) { this.purchased = purchased; }
 }

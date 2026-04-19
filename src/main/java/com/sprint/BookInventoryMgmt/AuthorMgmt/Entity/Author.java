@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.AuthorMgmt.Entity;
+package com.sprint.BookInventoryMgmt.authormgmt.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

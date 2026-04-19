@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.UserMgmt.DTO;
+package com.sprint.BookInventoryMgmt.usermgmt.dto;
 
 public class UserResponseDTO {
 

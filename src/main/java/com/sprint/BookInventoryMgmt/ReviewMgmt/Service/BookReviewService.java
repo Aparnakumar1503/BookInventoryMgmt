@@ -1,17 +1,18 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt.Service;
+package com.sprint.BookInventoryMgmt.reviewmgmt.service;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.BookReview;
+import com.sprint.BookInventoryMgmt.reviewmgmt.requestdto.BookReviewRequestDTO;
+import com.sprint.BookInventoryMgmt.reviewmgmt.responsedto.BookReviewResponseDTO;
+
 import java.util.List;
 
 public interface BookReviewService {
 
-    BookReview addReview(BookReview review);
+    BookReviewResponseDTO addReview(BookReviewRequestDTO dto);
 
-    List<BookReview> getReviewsByISBN(String isbn);
+    List<BookReviewResponseDTO> getAllReviews();
 
-    List<BookReview> getReviewsByReviewer(int reviewerId);
+    List<BookReviewResponseDTO> getReviewsByISBN(String isbn);
 
-    List<BookReview> getAllReviews();
+    List<BookReviewResponseDTO> getReviewsByReviewer(int reviewerId);
 
-    void deleteReview(int id);
-}
+    BookReviewResponseDTO deleteReview(int id);}

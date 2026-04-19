@@ -1,17 +1,19 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt.Service;
+package com.sprint.BookInventoryMgmt.reviewmgmt.service;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.Reviewer;
+import com.sprint.BookInventoryMgmt.reviewmgmt.requestdto.ReviewerRequestDTO;
+import com.sprint.BookInventoryMgmt.reviewmgmt.responsedto.ReviewerResponseDTO;
+
 import java.util.List;
 
 public interface ReviewerService {
 
-    Reviewer addReviewer(Reviewer reviewer);
+    ReviewerResponseDTO addReviewer(ReviewerRequestDTO reviewerDTO);
 
-    Reviewer getReviewerById(int reviewerId);
+    ReviewerResponseDTO getReviewerById(int reviewerId);
 
-    List<Reviewer> getAllReviewers();
+    List<ReviewerResponseDTO> getAllReviewers();
 
-    Reviewer updateReviewer(int reviewerId, Reviewer reviewer);
+    ReviewerResponseDTO updateReviewer(int reviewerId, ReviewerRequestDTO reviewerDTO);
 
-    void deleteReviewer(int reviewerId);
+    ReviewerResponseDTO deleteReviewer(int reviewerId); // ✅ changed
 }

@@ -1,18 +1,18 @@
-package com.sprint.BookInventoryMgmt.UserMgmt.Service;
+package com.sprint.BookInventoryMgmt.usermgmt.service;
 
-import com.sprint.BookInventoryMgmt.UserMgmt.Entity.User;
-import com.sprint.BookInventoryMgmt.UserMgmt.Exception.InvalidCredentialsException;
-import com.sprint.BookInventoryMgmt.UserMgmt.Exception.UserNotFoundException;
-import com.sprint.BookInventoryMgmt.UserMgmt.Repository.UserMgmtRepository;
+import com.sprint.BookInventoryMgmt.usermgmt.entity.User;
+import com.sprint.BookInventoryMgmt.usermgmt.exceptions.InvalidCredentialsException;
+import com.sprint.BookInventoryMgmt.usermgmt.exceptions.UserNotFoundException;
+import com.sprint.BookInventoryMgmt.usermgmt.repository.IUserMgmtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserMgmtServiceImpl implements UserMgmtService {
+public class UserMgmtServiceImpl implements IUserMgmtService {
     @Autowired
-    private UserMgmtRepository userRepository;
+    private IUserMgmtRepository userRepository;
 
     @Override
     public User createUser(User user) {

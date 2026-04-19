@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.GlobalException;
+package com.sprint.BookInventoryMgmt.globalexception;
 
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.BookNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.CategoryNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.PublisherNotFoundException;
-import com.sprint.BookInventoryMgmt.BookMgmt.Exception.StateNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.BookNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.CategoryNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.PublisherNotFoundException;
+import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.StateNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

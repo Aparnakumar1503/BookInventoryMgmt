@@ -1,15 +1,12 @@
-package com.sprint.BookInventoryMgmt.UserMgmt.Entity;
+package com.sprint.BookInventoryMgmt.usermgmt.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+
 public class User {
 
 	    @Id
@@ -53,6 +50,60 @@ public class User {
 		this.role = role;
 	}
 
+	public @NotBlank(message = "First name is required") String getFirstName() {
+		return firstName;
+	}
 
+	public void setFirstName(@NotBlank(message = "First name is required") String firstName) {
+		this.firstName = firstName;
+	}
+
+	public @NotBlank(message = "Last name is required") String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(@NotBlank(message = "Last name is required") String lastName) {
+		this.lastName = lastName;
+	}
+
+	public @NotBlank(message = "Password is required") @Size(min = 4, message = "Password must be at least 4 characters") String getPassword() {
+		return password;
+	}
+
+	public void setPassword(@NotBlank(message = "Password is required") @Size(min = 4, message = "Password must be at least 4 characters") String password) {
+		this.password = password;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public PermRole getRole() {
+		return role;
+	}
+
+	public void setRole(PermRole role) {
+		this.role = role;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public @NotBlank(message = "Username is required") String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(@NotBlank(message = "Username is required") String userName) {
+		this.userName = userName;
+	}
 }
 

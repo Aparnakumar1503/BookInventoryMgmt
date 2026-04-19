@@ -1,20 +1,18 @@
-package com.sprint.BookInventoryMgmt.AuthorMgmt.Service;
+package com.sprint.BookInventoryMgmt.authormgmt.service;
 
-import com.sprint.BookInventoryMgmt.AuthorMgmt.dto.requestdto.AuthorRequestDTO;
-import com.sprint.BookInventoryMgmt.AuthorMgmt.dto.responsedto.AuthorResponseDTO;
-import jakarta.validation.Valid;
+import com.sprint.BookInventoryMgmt.authormgmt.entity.Author;
 
 import java.util.List;
 
 public interface AuthorService {
 
-    AuthorResponseDTO createAuthor(@Valid AuthorRequestDTO author);
+    Author createAuthor(Author author);
 
-    AuthorResponseDTO getAuthorById(Integer id);
+    Author getAuthorById(Integer id);
 
-    List<AuthorResponseDTO> getAllAuthors();
+    List<Author> getAllAuthors();
 
-    AuthorResponseDTO updateAuthor(Integer id, AuthorRequestDTO author);
+    Author updateAuthor(Integer id, Author author);
 
     void deleteAuthor(Integer id);
 }

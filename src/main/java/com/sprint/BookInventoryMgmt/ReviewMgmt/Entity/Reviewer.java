@@ -1,20 +1,10 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt.Entity;
+package com.sprint.BookInventoryMgmt.reviewmgmt.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 @Entity
 @Table(name = "reviewer")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Reviewer {
 
     @Id
@@ -27,4 +17,37 @@ public class Reviewer {
 
     @Column(name = "EmployedBy")
     private String employedBy;
+
+    public Reviewer() {
+    }
+
+    public Reviewer(Integer reviewerID, String name, String employedBy) {
+        this.reviewerID = reviewerID;
+        this.name = name;
+        this.employedBy = employedBy;
+    }
+
+    public Integer getReviewerID() {
+        return reviewerID;
+    }
+
+    public void setReviewerID(Integer reviewerID) {
+        this.reviewerID = reviewerID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmployedBy() {
+        return employedBy;
+    }
+
+    public void setEmployedBy(String employedBy) {
+        this.employedBy = employedBy;
+    }
 }

@@ -1,75 +1,60 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.service;
+package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.PurchaseNotFoundException;
-import com.sprint.BookInventoryMgmt.orderMgmt.repository.IPurchaseLogRepository;
-
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.PurchaseLogRequestDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
+import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.BookInventoryMgmt.ordermgmt.repository.IPurchaseLogRepository;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
-    @Autowired
-     IPurchaseLogRepository repo;
-
-    public PurchaseLogServiceImpl(){}
+    private final IPurchaseLogRepository repo;
 
     public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
-
         this.repo = repo;
     }
 
     @Override
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
-
-        PurchaseLog entity = new PurchaseLog();
-        entity.setUserId(dto.getUserId());
-        entity.setInventoryId(dto.getInventoryId());
+        // use composite key constructor
+        PurchaseLog entity = new PurchaseLog(dto.getUserId(), dto.getInventoryId());
 
         PurchaseLog saved = repo.save(entity);
 
-        PurchaseLogResponseDTO response = new PurchaseLogResponseDTO();
-        response.setUserId(saved.getUserId());
-        response.setInventoryId(saved.getInventoryId());
-
-        return response;
+        return mapToDTO(saved);
     }
 
     @Override
     public List<PurchaseLogResponseDTO> getAll() {
-
-        List<PurchaseLog> purchases = repo.findAll();
-        List<PurchaseLogResponseDTO> responseList = new ArrayList<>();
-
-        for (PurchaseLog p : purchases) {
-            PurchaseLogResponseDTO dto = new PurchaseLogResponseDTO();
-            dto.setUserId(p.getUserId());
-            dto.setInventoryId(p.getInventoryId());
-
-            responseList.add(dto);
-        }
-
-        return responseList;
+        return repo.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public String delete(Long userId) {
+    public String delete(Integer userId, Integer inventoryId) {
+        // composite key — need both userId and inventoryId to identify a purchase
+        PurchaseLogId id = new PurchaseLogId(userId, inventoryId);
 
-        PurchaseLog purchase = repo.findById(userId)
+        PurchaseLog purchase = repo.findById(id)
                 .orElseThrow(() ->
-                        new PurchaseNotFoundException("Purchase not found for id: " + userId)
+                        new PurchaseNotFoundException("Purchase not found for userId: " + userId + " inventoryId: " + inventoryId)
                 );
 
         repo.delete(purchase);
-
-        return "Deleted Successfully for id: " + userId;
+        return "Deleted Successfully for userId: " + userId + " inventoryId: " + inventoryId;
     }
 
-
+    private PurchaseLogResponseDTO mapToDTO(PurchaseLog entity) {
+        PurchaseLogResponseDTO dto = new PurchaseLogResponseDTO();
+        dto.setUserId(entity.getUserId());
+        dto.setInventoryId(entity.getInventoryId());
+        return dto;
+    }
 }

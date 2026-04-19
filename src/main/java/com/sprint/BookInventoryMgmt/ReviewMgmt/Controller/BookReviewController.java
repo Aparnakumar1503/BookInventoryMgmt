@@ -1,47 +1,76 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt.Controller;
+package com.sprint.BookInventoryMgmt.reviewmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Entity.BookReview;
-import com.sprint.BookInventoryMgmt.ReviewMgmt.Service.BookReviewService;
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.BookInventoryMgmt.reviewmgmt.requestdto.BookReviewRequestDTO;
+import com.sprint.BookInventoryMgmt.reviewmgmt.responsedto.BookReviewResponseDTO;
+import com.sprint.BookInventoryMgmt.reviewmgmt.service.BookReviewService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/books")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/reviews")
 public class BookReviewController {
 
     @Autowired
-    private BookReviewService reviewService;
+    private BookReviewService service;
 
+    @PostMapping("/add")
+    public ResponseStructure<BookReviewResponseDTO> addReview(
+            @Valid @RequestBody BookReviewRequestDTO dto) {
 
-    @PostMapping("/{isbn}/reviews")
-    public BookReview addReview(@PathVariable String isbn,
-                                @RequestBody BookReview review) {
-
-        review.setIsbn(isbn);
-        return reviewService.addReview(review);
+        return new ResponseStructure<>(
+                HttpStatus.CREATED.value(),
+                "Review added successfully",
+                service.addReview(dto)
+        );
     }
 
-    @GetMapping("/{isbn}/reviews")
-    public List<BookReview> getReviewsByISBN(@PathVariable String isbn) {
-        return reviewService.getReviewsByISBN(isbn);
+    @GetMapping
+    public ResponseStructure<List<BookReviewResponseDTO>> getAllReviews() {
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "All reviews fetched successfully",
+                service.getAllReviews()
+        );
     }
 
-    @GetMapping("/reviews/reviewer/{reviewerId}")
-    public List<BookReview> getReviewsByReviewer(@PathVariable int reviewerId) {
-        return reviewService.getReviewsByReviewer(reviewerId);
+    @GetMapping("/isbn/{isbn}")
+    public ResponseStructure<List<BookReviewResponseDTO>> getByISBN(
+            @PathVariable String isbn) {
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Reviews fetched by ISBN",
+                service.getReviewsByISBN(isbn)
+        );
     }
 
-    @GetMapping("/reviews")
-    public List<BookReview> getAllReviews() {
-        return reviewService.getAllReviews();
+    @GetMapping("/reviewer/{reviewerId}")
+    public ResponseStructure<List<BookReviewResponseDTO>> getByReviewer(
+            @PathVariable int reviewerId) {
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Reviews fetched by reviewer",
+                service.getReviewsByReviewer(reviewerId)
+        );
     }
 
-    @DeleteMapping("/reviews/{id}")
-    public String deleteReview(@PathVariable int id) {
-        reviewService.deleteReview(id);
-        return "Review deleted successfully";
+    @DeleteMapping("/{id}")
+    public ResponseStructure<String> deleteReview(@PathVariable int id) {
+
+        service.deleteReview(id);
+
+        return new ResponseStructure<>(
+                HttpStatus.OK.value(),
+                "Review deleted successfully",
+                "Deleted ID: " + id
+        );
     }
 }

@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.service;
+package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
 
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.PurchaseLogResponseDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

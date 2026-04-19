@@ -1,38 +1,24 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.entity;
+package com.sprint.BookInventoryMgmt.ordermgmt.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "purchase_log")
+@Table(name = "purchaselog")
 public class PurchaseLog {
 
-    @Id
-    @NotNull(message = "User ID cannot be null")
-    private Long userId;
+    @EmbeddedId
+    private PurchaseLogId id;
 
-    @NotNull(message = "Inventory ID cannot be null")
-    private Long inventoryId;
+    public PurchaseLog() {}
 
-    public PurchaseLog() {
-    }
-    public PurchaseLog(Long userId, Long inventoryId) {
-        this.userId = userId;
-        this.inventoryId = inventoryId;
-    }
-    public Long getUserId() {
-        return userId;
+    public PurchaseLog(Integer userId, Integer inventoryId) {
+        this.id = new PurchaseLogId(userId, inventoryId);
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    public PurchaseLogId getId() { return id; }
+    public void setId(PurchaseLogId id) { this.id = id; }
 
-    public Long getInventoryId() {
-        return inventoryId;
-    }
-
-    public void setInventoryId(Long inventoryId) {
-        this.inventoryId = inventoryId;
-    }
+    // Convenience getters
+    public Integer getUserId() { return id.getUserId(); }
+    public Integer getInventoryId() { return id.getInventoryId(); }
 }

@@ -1,15 +1,16 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.service;
+package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.PurchaseLogRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.PurchaseLogResponseDTO;
 
 import java.util.List;
 
+
 public interface IPurchaseLogService {
 
-    PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto);
+    PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO requestDTO);
 
     List<PurchaseLogResponseDTO> getAll();
 
-    String delete(Long userId);
+    String delete(Integer userId, Integer inventoryId);
 }

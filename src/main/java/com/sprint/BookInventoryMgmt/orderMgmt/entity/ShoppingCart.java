@@ -1,40 +1,24 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.entity;
+package com.sprint.BookInventoryMgmt.ordermgmt.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "shopping_cart")
+@Table(name = "shoppingcart")
 public class ShoppingCart {
 
-    @Id
-    @NotNull(message = "User ID cannot be null")
-    private Long userId;
+    @EmbeddedId
+    private ShoppingCartId id;
 
-    @NotBlank(message = "ISBN cannot be blank")
-    private String isbn;
+    public ShoppingCart() {}
 
-    public ShoppingCart() {
-    }
-    public ShoppingCart(Long userId, String isbn) {
-        this.userId = userId;
-        this.isbn = isbn;
+    public ShoppingCart(Integer userId, String isbn) {
+        this.id = new ShoppingCartId(userId, isbn);
     }
 
-    public Long getUserId() {
-        return userId;
-    }
+    public ShoppingCartId getId() { return id; }
+    public void setId(ShoppingCartId id) { this.id = id; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+    // Convenience getters
+    public Integer getUserId() { return id.getUserId(); }
+    public String getIsbn() { return id.getIsbn(); }
 }

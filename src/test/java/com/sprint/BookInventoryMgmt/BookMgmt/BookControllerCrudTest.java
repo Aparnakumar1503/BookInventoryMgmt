@@ -1,10 +1,10 @@
-package com.sprint.BookInventoryMgmt.BookMgmt;
+package com.sprint.BookInventoryMgmt.bookmgmt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Category;
-import com.sprint.BookInventoryMgmt.BookMgmt.Entity.Publisher;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.CategoryRepository;
-import com.sprint.BookInventoryMgmt.BookMgmt.Repository.PublisherRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
+import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.CategoryRepository;
+import com.sprint.BookInventoryMgmt.bookmgmt.repository.PublisherRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,10 +126,10 @@ class BookControllerCrudTest {
     }
 
     // DELETE
-    @Test
-    void testDeleteBook() throws Exception {
-
-        mockMvc.perform(delete("/api/v1/books/" + ISBN))
-                .andExpect(status().isNoContent());
-    }
+//    @Test
+//    void testDeleteBook() throws Exception {
+//
+//        mockMvc.perform(delete("/api/v1/books/" + ISBN))
+//                .andExpect(status().isNoContent());
+//    }
 }

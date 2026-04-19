@@ -1,15 +1,14 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.service;
+package com.sprint.BookInventoryMgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.requestDto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.orderMgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestdto.ShoppingCartRequestDTO;
+import com.sprint.BookInventoryMgmt.ordermgmt.dto.responsedto.ShoppingCartResponseDTO;
 
 import java.util.List;
 
+
 public interface IShoppingCartService {
 
-    ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO cart);
-
-    List<ShoppingCartResponseDTO> getAll();
-
-    String delete(Long userId);
-}
+        ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO requestDTO);
+        List<ShoppingCartResponseDTO> getAll();
+        String delete(Integer userId, String isbn); // changed from Long userId
+    }

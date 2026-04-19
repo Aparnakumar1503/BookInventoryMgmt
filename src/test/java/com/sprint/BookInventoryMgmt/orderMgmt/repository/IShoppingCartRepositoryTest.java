@@ -1,18 +1,16 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.repository;
+package com.sprint.BookInventoryMgmt.ordermgmt.repository;
 
-import com.sprint.BookInventoryMgmt.orderMgmt.entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCartId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-
 class IShoppingCartRepositoryTest {
 
     @Autowired
@@ -20,73 +18,75 @@ class IShoppingCartRepositoryTest {
 
     @Test
     void testSaveShoppingCart() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setUserId(1L);
-        cart.setIsbn("ISBN123");
-
-
-        ShoppingCart saved = repository.save(cart);
+        ShoppingCart cart = new ShoppingCart(1, "1-111-11111-4");
+        ShoppingCart saved = repository.saveAndFlush(cart);
 
         assertNotNull(saved);
-        assertEquals("ISBN123", saved.getIsbn());
+        assertEquals(1, saved.getUserId());
+        assertEquals("1-111-11111-4", saved.getIsbn());
     }
 
     @Test
     void testFindByUserId() {
-        ShoppingCart cart1 = new ShoppingCart();
-        cart1.setUserId(1L);
-        cart1.setIsbn("ISBN111");
+        repository.saveAndFlush(new ShoppingCart(1, "1-111-11111-4"));
+        repository.saveAndFlush(new ShoppingCart(1, "1-222-32443-7"));
 
+        List<ShoppingCart> result = repository.findByIdUserId(1);
 
-        ShoppingCart cart2 = new ShoppingCart();
-        cart2.setUserId(2L);
-        cart2.setIsbn("ISBN222");
-
-
-        repository.save(cart1);
-        repository.save(cart2);
-
-        List<ShoppingCart> result = repository.findByUserId(1L);
-
+        assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getUserId());
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(0).getUserId());
     }
 
     @Test
     void testFindByIsbn() {
-        ShoppingCart cart1 = new ShoppingCart();
-        cart1.setUserId(1L);
-        cart1.setIsbn("ISBN999");
+        repository.saveAndFlush(new ShoppingCart(1, "1-111-11111-4"));
+        repository.saveAndFlush(new ShoppingCart(2, "1-222-32443-7"));
 
-
-        ShoppingCart cart2 = new ShoppingCart();
-        cart2.setUserId(2L);
-        cart2.setIsbn("ISBN888");
-
-
-        repository.save(cart1);
-        repository.save(cart2);
-
-        List<ShoppingCart> result = repository.findByIsbn("ISBN999");
-
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        assertEquals("ISBN999", result.get(0).getIsbn());
-    }
-
-    @Test
-    void testFindByUserIdAndIsbn() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setUserId(1L);
-        cart.setIsbn("ISBN777");
-
-
-        repository.save(cart);
-
-        ShoppingCart result = repository.findByUserIdAndIsbn(1L, "ISBN777");
+        List<ShoppingCart> result = repository.findByIdIsbn("1-111-11111-4");
 
         assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("1-111-11111-4", result.get(0).getIsbn());
+    }
 
+    // Custom Query 1 — find by userId and isbn
+    @Test
+    void testFindByUserIdAndIsbn() {
+        repository.saveAndFlush(new ShoppingCart(1, "1-111-11111-4"));
+
+        ShoppingCart result = repository.findByUserIdAndIsbn(1, "1-111-11111-4");
+
+        assertNotNull(result);
+        assertEquals(1, result.getUserId());
+        assertEquals("1-111-11111-4", result.getIsbn());
+    }
+
+    // Custom Query 2 — count by userId
+    @Test
+    void testCountByUserId() {
+        repository.saveAndFlush(new ShoppingCart(1, "1-111-11111-4"));
+        repository.saveAndFlush(new ShoppingCart(1, "1-222-32443-7"));
+        repository.saveAndFlush(new ShoppingCart(1, "1-295-84547-1"));
+
+        Long count = repository.countByUserId(1);
+
+        assertNotNull(count);
+        assertEquals(3L, count);
+    }
+
+    // Custom Query 3 — delete by userId and isbn
+    @Test
+    void testDeleteByUserIdAndIsbn() {
+        repository.saveAndFlush(new ShoppingCart(1, "1-111-11111-4"));
+        repository.saveAndFlush(new ShoppingCart(1, "1-222-32443-7"));
+
+        repository.deleteByUserIdAndIsbn(1, "1-111-11111-4");
+
+        List<ShoppingCart> result = repository.findByIdUserId(1);
+
+        assertEquals(1, result.size());                          // only 1 item remaining
+        assertEquals("1-222-32443-7", result.get(0).getIsbn()); // correct item remains
     }
 }

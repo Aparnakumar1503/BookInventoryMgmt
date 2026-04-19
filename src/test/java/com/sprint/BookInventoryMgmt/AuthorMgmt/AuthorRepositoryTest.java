@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.AuthorMgmt;
+package com.sprint.BookInventoryMgmt.authormgmt;
 //
 //import com.sprint.BookInventoryMgmt.AuthorMgmt.Entity.Author;
 //import com.sprint.BookInventoryMgmt.AuthorMgmt.Repository.AuthorRepository;

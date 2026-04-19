@@ -1,11 +1,10 @@
-package com.sprint.BookInventoryMgmt.orderMgmt.repository;
+package com.sprint.BookInventoryMgmt.ordermgmt.repository;
 
-import com.sprint.BookInventoryMgmt.orderMgmt.entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 
 import java.util.List;
 
@@ -19,58 +18,75 @@ class IPurchaseLogRepositoryTest {
 
     @Test
     void testSavePurchaseLog() {
-       PurchaseLog log = new PurchaseLog();
-        log.setUserId(1L);
-        log.setInventoryId(101L);
-
-
-        PurchaseLog saved = repository.save(log);
+        PurchaseLog purchaseLog = new PurchaseLog(1, 1000000);
+        PurchaseLog saved = repository.saveAndFlush(purchaseLog);
 
         assertNotNull(saved);
-        assertEquals(1L, saved.getUserId());
+        assertEquals(1, saved.getUserId());
+        assertEquals(1000000, saved.getInventoryId());
     }
 
     @Test
     void testFindByUserId() {
-        PurchaseLog log1 = new PurchaseLog();
-        log1.setUserId(1L);
-        log1.setInventoryId(101L);
+        repository.saveAndFlush(new PurchaseLog(1, 1000000));
+        repository.saveAndFlush(new PurchaseLog(1, 1000001));
 
+        List<PurchaseLog> result = repository.findByIdUserId(1);
 
-        PurchaseLog log2 = new PurchaseLog();
-        log2.setUserId(2L);
-        log2.setInventoryId(102L);
-
-
-        repository.save(log1);
-        repository.save(log2);
-
-        List<PurchaseLog> result = repository.findByUserId(1L);
-
+        assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getUserId());
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(0).getUserId());
     }
 
     @Test
     void testFindByInventoryId() {
-        PurchaseLog log1 = new PurchaseLog();
-        log1.setUserId(1L);
-        log1.setInventoryId(200L);
+        repository.saveAndFlush(new PurchaseLog(1, 1000000));
+        repository.saveAndFlush(new PurchaseLog(2, 1000001));
 
+        List<PurchaseLog> result = repository.findByIdInventoryId(1000000);
 
-        PurchaseLog log2 = new PurchaseLog();
-        log2.setUserId(2L);
-        log2.setInventoryId(300L);
-
-
-        repository.save(log1);
-        repository.save(log2);
-
-        List<PurchaseLog> result = repository.findByInventoryId(200L);
-
-        assertFalse(result.isEmpty());
+        assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(200L, result.get(0).getInventoryId());
+        assertEquals(1000000, result.get(0).getInventoryId());
+    }
+
+    // Custom Query 1 — find by userId and inventoryId
+    @Test
+    void testFindByUserIdAndInventoryId() {
+        repository.saveAndFlush(new PurchaseLog(1, 1000000));
+
+        PurchaseLog result = repository.findByUserIdAndInventoryId(1, 1000000);
+
+        assertNotNull(result);
+        assertEquals(1, result.getUserId());
+        assertEquals(1000000, result.getInventoryId());
+    }
+
+    // Custom Query 2 — count by userId
+    @Test
+    void testCountByUserId() {
+        repository.saveAndFlush(new PurchaseLog(1, 1000000));
+        repository.saveAndFlush(new PurchaseLog(1, 1000001));
+        repository.saveAndFlush(new PurchaseLog(1, 1000002));
+
+        Long count = repository.countByUserId(1);
+
+        assertNotNull(count);
+        assertEquals(3L, count);
+    }
+
+    // Custom Query 3 — delete by userId and inventoryId
+    @Test
+    void testDeleteByUserIdAndInventoryId() {
+        repository.saveAndFlush(new PurchaseLog(1, 1000000));
+        repository.saveAndFlush(new PurchaseLog(1, 1000001));
+
+        repository.deleteByUserIdAndInventoryId(1, 1000000);
+
+        List<PurchaseLog> result = repository.findByIdUserId(1);
+
+        assertEquals(1, result.size());                            // only 1 item remaining
+        assertEquals(1000001, result.get(0).getInventoryId());     // correct item remains
     }
 }

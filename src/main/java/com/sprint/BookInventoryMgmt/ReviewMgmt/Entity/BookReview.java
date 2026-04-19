@@ -1,21 +1,13 @@
-package com.sprint.BookInventoryMgmt.ReviewMgmt.Entity;
+package com.sprint.BookInventoryMgmt.reviewmgmt.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Table(name = "bookreview")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "BookReview")
 public class BookReview {
 
     @Id
@@ -23,11 +15,11 @@ public class BookReview {
     private Integer id;
 
     @NotBlank(message = "ISBN cannot be empty")
-    @Column(name = "ISBN",nullable = false)
+    @Column(name = "ISBN", nullable = false)
     private String isbn;
 
     @NotNull(message = "Reviewer ID is required")
-    @Column(name = "ReviewerID",nullable = false)
+    @Column(name = "ReviewerID", nullable = false)
     private Integer reviewerID;
 
     @NotNull(message = "Rating is required")
@@ -36,4 +28,55 @@ public class BookReview {
     private Integer rating;
 
     private String comments;
+
+    public BookReview() {
+    }
+
+    public BookReview(Integer id, String isbn, Integer reviewerID, Integer rating, String comments) {
+        this.id = id;
+        this.isbn = isbn;
+        this.reviewerID = reviewerID;
+        this.rating = rating;
+        this.comments = comments;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public Integer getReviewerID() {
+        return reviewerID;
+    }
+
+    public void setReviewerID(Integer reviewerID) {
+        this.reviewerID = reviewerID;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 }

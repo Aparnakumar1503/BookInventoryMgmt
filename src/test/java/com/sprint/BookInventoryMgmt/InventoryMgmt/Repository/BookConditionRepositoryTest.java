@@ -1,9 +1,8 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.Repository;
+package com.sprint.BookInventoryMgmt.inventorymgmt.repository;
 
-import com.sprint.BookInventoryMgmt.InventoryMgmt.Entity.BookCondition;
+import com.sprint.BookInventoryMgmt.inventorymgmt.entity.BookCondition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookConditionRepositoryTest {
 
     @Autowired
-    private BookConditionRepository repository;
+    private IBookConditionRepository repository;
 
     @Test
     void testSaveBookCondition() {
