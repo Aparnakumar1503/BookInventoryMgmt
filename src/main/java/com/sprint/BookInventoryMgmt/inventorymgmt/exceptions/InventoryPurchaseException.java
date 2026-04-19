@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.exceptions;
+package com.sprint.bookinventorymgmt.inventorymgmt.exceptions;
 
 public class InventoryPurchaseException extends RuntimeException {
     public InventoryPurchaseException(String message) {

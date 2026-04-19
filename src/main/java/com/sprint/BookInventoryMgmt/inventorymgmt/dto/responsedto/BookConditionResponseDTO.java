@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.dto.responsedto;
+package com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto;
 
 public class BookConditionResponseDTO {
 
