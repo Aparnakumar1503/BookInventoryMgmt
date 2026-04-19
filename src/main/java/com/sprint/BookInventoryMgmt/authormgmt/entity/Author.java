@@ -5,10 +5,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "author")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class Author {
 
 	@Id
@@ -27,5 +24,45 @@ public class Author {
 	@Column(name = "Photo")
 	private String photo;
 
+	public Integer getAuthorId() {
+		return authorId;
+	}
 
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
+	}
+
+	public @NotBlank(message = "First name is required") String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(@NotBlank(message = "First name is required") String firstName) {
+		this.firstName = firstName;
+	}
+
+	public @NotBlank(message = "Last name is required") String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(@NotBlank(message = "Last name is required") String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public Author() {
+	}
+
+	public Author(Integer authorId, String firstName, String lastName,String photo) {
+		this.authorId = authorId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.photo = photo;
+	}
 }

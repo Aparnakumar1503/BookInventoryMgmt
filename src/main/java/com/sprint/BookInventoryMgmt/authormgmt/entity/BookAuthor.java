@@ -7,10 +7,7 @@ import lombok.*;
 @Entity
 @Table(name = "bookauthor")
 @IdClass(BookAuthorId.class)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class BookAuthor {
 
 	@Id
@@ -33,4 +30,29 @@ public class BookAuthor {
 
 	@Column(name = "PrimaryAuthor")
 	private String primaryAuthor;
+
+	public BookAuthor() {}
+
+	// All-arg constructor
+	public BookAuthor(String isbn, Integer authorId, Book book, Author author, String primaryAuthor) {
+		this.isbn = isbn;
+		this.authorId = authorId;
+		this.book = book;
+		this.author = author;
+		this.primaryAuthor = primaryAuthor;
+	}
+
+	// Getters
+	public String getIsbn() { return isbn; }
+	public Integer getAuthorId() { return authorId; }
+	public Book getBook() { return book; }
+	public Author getAuthor() { return author; }
+	public String getPrimaryAuthor() { return primaryAuthor; }
+
+	// Setters
+	public void setIsbn(String isbn) { this.isbn = isbn; }
+	public void setAuthorId(Integer authorId) { this.authorId = authorId; }
+	public void setBook(Book book) { this.book = book; }
+	public void setAuthor(Author author) { this.author = author; }
+	public void setPrimaryAuthor(String primaryAuthor) { this.primaryAuthor = primaryAuthor; }
 }

@@ -1,46 +1,103 @@
 package com.sprint.BookInventoryMgmt.authormgmt.service;
 
+import com.sprint.BookInventoryMgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
+import com.sprint.BookInventoryMgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
 import com.sprint.BookInventoryMgmt.authormgmt.entity.Author;
+import com.sprint.BookInventoryMgmt.authormgmt.exceptions.AuthorNotFoundException;
 import com.sprint.BookInventoryMgmt.authormgmt.repository.AuthorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class AuthorServiceImpl implements AuthorService {
+public class AuthorServiceImpl implements IAuthorService {
 
-    private final AuthorRepository repository;
+    @Autowired
+    private AuthorRepository repo;
 
-    public AuthorServiceImpl(AuthorRepository repository) {
-        this.repository = repository;
+    public AuthorServiceImpl(AuthorRepository repo) {
+        this.repo = repo;
     }
 
     @Override
-    public Author createAuthor(Author author) {
-        return repository.save(author);
+    public AuthorResponseDTO addAuthor(AuthorRequestDTO dto) {
+        Author entity = new Author();
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setPhoto(dto.getPhoto());
+
+        Author saved = repo.save(entity);
+        return mapToDTO(saved);
     }
 
     @Override
-    public Author getAuthorById(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+    public List<AuthorResponseDTO> getAllAuthors() {
+        return repo.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public List<Author> getAllAuthors() {
-        return repository.findAll();
+    public AuthorResponseDTO getAuthorById(Integer authorId) {
+        Author author = repo.findById(authorId)
+                .orElseThrow(() ->
+                        new AuthorNotFoundException("Author not found with id: " + authorId));
+        return mapToDTO(author);
     }
 
     @Override
-    public Author updateAuthor(Integer id, Author author) {
-        Author existing = getAuthorById(id);
-        existing.setFirstName(author.getFirstName());
-        existing.setLastName(author.getLastName());
-        existing.setPhoto(author.getPhoto());
-        return repository.save(existing);
+    public AuthorResponseDTO updateAuthor(Integer authorId, AuthorRequestDTO dto) {
+        Author author = repo.findById(authorId)
+                .orElseThrow(() ->
+                        new AuthorNotFoundException("Author not found with id: " + authorId));
+
+        author.setFirstName(dto.getFirstName());
+        author.setLastName(dto.getLastName());
+        author.setPhoto(dto.getPhoto());
+
+        Author updated = repo.save(author);
+        return mapToDTO(updated);
     }
 
     @Override
-    public void deleteAuthor(Integer id) {
-        repository.deleteById(id);
+    public String deleteAuthor(Integer authorId) {
+        Author author = repo.findById(authorId)
+                .orElseThrow(() ->
+                        new AuthorNotFoundException("Author not found with id: " + authorId));
+        repo.delete(author);
+        return "Author deleted successfully with id: " + authorId;
+    }
+
+    @Override
+    public AuthorResponseDTO getAuthorByFirstNameAndLastName(String firstName, String lastName) {
+        Author author = repo.findByFirstNameAndLastName(firstName, lastName);
+        if (author == null) {
+            throw new AuthorNotFoundException("Author not found with name: " + firstName + " " + lastName);
+        }
+        return mapToDTO(author);
+    }
+
+    @Override
+    public List<AuthorResponseDTO> searchByLastName(String keyword) {
+        List<Author> authors = repo.searchByLastName(keyword);
+        if (authors.isEmpty()) {
+            throw new AuthorNotFoundException("No authors found with keyword: " + keyword);
+        }
+        return authors.stream().map(this::mapToDTO).toList();
+    }
+
+    @Override
+    public Long countAllAuthors() {
+        return repo.countAllAuthors();
+    }
+
+    private AuthorResponseDTO mapToDTO(Author entity) {
+        return AuthorResponseDTO.builder()
+                .authorId(entity.getAuthorId())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .photo(entity.getPhoto())
+                .build();
     }
 }
