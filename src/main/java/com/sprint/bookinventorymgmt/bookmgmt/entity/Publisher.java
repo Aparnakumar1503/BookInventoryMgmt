@@ -1,6 +1,9 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.entity;
+package com.sprint.bookinventorymgmt.bookmgmt.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -8,17 +11,25 @@ import java.util.List;
 public class Publisher {
 
     @Id
-    @Column(name = "publisher_id")
+    @Column(name = "publisher_id", nullable = false, unique = true)
+    @NotNull(message = "Publisher ID cannot be null")
     private Integer publisherId;
 
+    @Column(nullable = false)
+    @NotBlank(message = "Publisher name cannot be blank")
+    @Size(min = 2, max = 100, message = "Publisher name must be between 2 and 100 characters")
     private String name;
+
+    @Column(nullable = false)
+    @NotBlank(message = "City cannot be blank")
     private String city;
 
-    @ManyToOne
-    @JoinColumn(name = "state_code")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "state_code", nullable = false)
+    @NotNull(message = "State is required")
     private State state;
 
-    @OneToMany(mappedBy = "publisher")
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<Book> books;
 
     public Publisher() {}

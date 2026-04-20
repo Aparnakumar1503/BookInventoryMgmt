@@ -1,25 +1,36 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.entity;
+package com.sprint.bookinventorymgmt.bookmgmt.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "book")
 public class Book {
 
     @Id
-    @Column(name = "isbn")
+    @Column(name = "isbn", nullable = false, unique = true)
+    @NotBlank(message = "ISBN cannot be blank")
     private String isbn;
 
+    @Column(nullable = false)
+    @NotBlank(message = "Title cannot be blank")
     private String title;
+
     private String description;
+
+    @Column(nullable = false)
+    @NotBlank(message = "Edition cannot be blank")
     private String edition;
 
     @ManyToOne
-    @JoinColumn(name = "cat_id")
+    @JoinColumn(name = "cat_id", nullable = false)
+    @NotNull(message = "Category is required")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "publisher_id")
+    @JoinColumn(name = "publisher_id", nullable = false)
+    @NotNull(message = "Publisher is required")
     private Publisher publisher;
 
     public Book() {}

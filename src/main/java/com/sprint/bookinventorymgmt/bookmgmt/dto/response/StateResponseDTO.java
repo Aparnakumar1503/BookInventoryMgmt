@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.dto.response;
+package com.sprint.bookinventorymgmt.bookmgmt.dto.response;
 
 public class StateResponseDTO {
 
@@ -12,9 +12,19 @@ public class StateResponseDTO {
         this.stateName = stateName;
     }
 
-    public String getStateCode() { return stateCode; }
-    public void setStateCode(String stateCode) { this.stateCode = stateCode; }
+    public String getStateCode() {
+        return stateCode;
+    }
 
-    public String getStateName() { return stateName; }
-    public void setStateName(String stateName) { this.stateName = stateName; }
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
 }

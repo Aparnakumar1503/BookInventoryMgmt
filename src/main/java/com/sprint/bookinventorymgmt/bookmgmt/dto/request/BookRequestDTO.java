@@ -1,13 +1,30 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.dto.request;
+package com.sprint.bookinventorymgmt.bookmgmt.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class BookRequestDTO {
 
+    @NotBlank(message = "ISBN is required")
+    @Size(min = 3, max = 20, message = "ISBN must be between 3 and 20 characters")
     private String isbn;
+
+    @NotBlank(message = "Title is required")
+    @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters")
     private String title;
+
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
+
+    @NotBlank(message = "Edition is required")
+    @Size(min = 1, max = 20, message = "Edition must be between 1 and 20 characters")
     private String edition;
 
+    @NotNull(message = "Category ID is required")
     private Integer categoryId;
+
+    @NotNull(message = "Publisher ID is required")
     private Integer publisherId;
 
     public BookRequestDTO() {}

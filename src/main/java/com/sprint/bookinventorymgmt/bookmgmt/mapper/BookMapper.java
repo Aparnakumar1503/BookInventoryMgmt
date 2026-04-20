@@ -1,14 +1,21 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.mapper;
+package com.sprint.bookinventorymgmt.bookmgmt.mapper;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.BookResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.Book;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.request.BookRequestDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.BookResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.Book;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.Category;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.Publisher;
 
 public class BookMapper {
 
+    private BookMapper() {
+        // prevent instantiation
+    }
+
     public static Book toEntity(BookRequestDTO dto, Category category, Publisher publisher) {
+
+        if (dto == null) return null;
+
         Book book = new Book();
         book.setIsbn(dto.getIsbn());
         book.setTitle(dto.getTitle());
@@ -16,10 +23,13 @@ public class BookMapper {
         book.setEdition(dto.getEdition());
         book.setCategory(category);
         book.setPublisher(publisher);
+
         return book;
     }
 
     public static BookResponseDTO toResponse(Book book) {
+
+        if (book == null) return null;
 
         BookResponseDTO dto = new BookResponseDTO();
 
@@ -28,13 +38,13 @@ public class BookMapper {
         dto.setDescription(book.getDescription());
         dto.setEdition(book.getEdition());
 
-        // ✅ SAFE CATEGORY
+        // CATEGORY
         if (book.getCategory() != null) {
             dto.setCategoryId(book.getCategory().getCatId());
             dto.setCategoryName(book.getCategory().getCatDescription());
         }
 
-        // ✅ SAFE PUBLISHER
+        // PUBLISHER
         if (book.getPublisher() != null) {
             dto.setPublisherId(book.getPublisher().getPublisherId());
             dto.setPublisherName(book.getPublisher().getName());
