@@ -10,7 +10,7 @@ public class PermRole {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "RoleNumber")
 	private Integer roleNumber;
-	
+
 	@NotBlank(message = "Role name is required")
 	@Column(name = "PermRole", length = 30)
 	private String permRole;
@@ -40,6 +40,5 @@ public class PermRole {
 		this.permRole = permRole;
 	}
 }
-
 
 

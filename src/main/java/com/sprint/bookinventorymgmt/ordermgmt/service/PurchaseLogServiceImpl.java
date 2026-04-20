@@ -6,6 +6,7 @@ import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundExcepti
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
