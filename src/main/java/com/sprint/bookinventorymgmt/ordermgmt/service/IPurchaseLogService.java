@@ -5,7 +5,6 @@ import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogRespons
 
 import java.util.List;
 
-
 public interface IPurchaseLogService {
 
     PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO requestDTO);

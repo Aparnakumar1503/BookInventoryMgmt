@@ -3,7 +3,7 @@ package com.sprint.BookInventoryMgmt.ordermgmt.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "purchaselog")
+@Table(name = "purchase_log")
 public class PurchaseLog {
 
     @EmbeddedId

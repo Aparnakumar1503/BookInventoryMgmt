@@ -1,5 +1,6 @@
 package com.sprint.BookInventoryMgmt.ordermgmt.controller;
 
+import com.sprint.BookInventoryMgmt.common.ResponseStructure;
 import com.sprint.BookInventoryMgmt.ordermgmt.service.IPurchaseLogService;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
@@ -17,20 +18,32 @@ public class PurchaseLogController {
         this.service = service;
     }
 
+    // ✅ ADD PURCHASE
     @PostMapping("/add")
-    public PurchaseLogResponseDTO addPurchase(@RequestBody PurchaseLogRequestDTO requestDTO) {
-        return service.addPurchase(requestDTO);
+    public ResponseStructure<PurchaseLogResponseDTO> addPurchase(
+            @RequestBody PurchaseLogRequestDTO requestDTO) {
+
+        PurchaseLogResponseDTO response = service.addPurchase(requestDTO);
+
+        return ResponseStructure.of(200, "Purchase added successfully", response);
     }
 
+    // ✅ GET ALL PURCHASES
     @GetMapping("/get")
-    public List<PurchaseLogResponseDTO> getAll() {
-        return service.getAll();
+    public ResponseStructure<List<PurchaseLogResponseDTO>> getAll() {
+
+        List<PurchaseLogResponseDTO> list = service.getAll();
+
+        return ResponseStructure.of(200, "Purchases fetched successfully", list);
     }
 
-    // composite key — need both userId and inventoryId to delete
+    // ✅ DELETE PURCHASE
     @DeleteMapping("/delete/{userId}/{inventoryId}")
-    public String delete(@PathVariable Integer userId,
-                         @PathVariable Integer inventoryId) {
-        return service.delete(userId, inventoryId);
+    public ResponseStructure<String> delete(@PathVariable Integer userId,
+                                            @PathVariable Integer inventoryId) {
+
+        String msg = service.delete(userId, inventoryId);
+
+        return ResponseStructure.of(200, "Purchase deleted successfully", msg);
     }
 }

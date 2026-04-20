@@ -1,8 +1,9 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.BookInventoryMgmt.OrderMgmt.service;
 
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
+import com.sprint.BookInventoryMgmt.ordermgmt.service.IShoppingCartService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
