@@ -1,7 +1,8 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.repository;
+package com.sprint.BookInventoryMgmt.OrderMgmt.Repository;
 
 import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
 import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
+import com.sprint.BookInventoryMgmt.ordermgmt.repository.IPurchaseLogRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
