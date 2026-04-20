@@ -10,5 +10,5 @@ public interface IShoppingCartService {
 
         ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO requestDTO);
         List<ShoppingCartResponseDTO> getAll();
-        String delete(Integer userId, String isbn); // changed from Long userId
+        String delete(Integer userId, String isbn);
     }
