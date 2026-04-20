@@ -13,7 +13,8 @@ import java.util.List;
 @Service
 public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
-    private final IPurchaseLogRepository repo;
+    @Autowired
+    private  IPurchaseLogRepository repo;
 
     public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
         this.repo = repo;
