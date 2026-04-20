@@ -1,8 +1,8 @@
-package com.sprint.BookInventoryMgmt.authormgmt.controller;
+package com.sprint.bookinventorymgmt.authormgmt.controller;
 
-import com.sprint.BookInventoryMgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
-import com.sprint.BookInventoryMgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
-import com.sprint.BookInventoryMgmt.authormgmt.service.IAuthorService;
+import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
+import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
+import com.sprint.bookinventorymgmt.authormgmt.service.IAuthorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,42 +1,42 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.service;
+package com.sprint.bookinventorymgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.PublisherRequestDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.PublisherResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.Publisher;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.State;
-import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.PublisherNotFoundException;
-import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.StateNotFoundException;
-import com.sprint.BookInventoryMgmt.bookmgmt.repository.PublisherRepository;
-import com.sprint.BookInventoryMgmt.bookmgmt.repository.StateRepository;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.request.PublisherRequestDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.PublisherResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.Publisher;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.State;
+import com.sprint.bookinventorymgmt.bookmgmt.exception.PublisherNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.exception.StateNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.repository.PublisherRepository;
+import com.sprint.bookinventorymgmt.bookmgmt.repository.StateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class PublisherServiceImpl implements PublisherService {
+@Transactional
+public class PublisherServiceImpl implements IPublisherService {
 
-    private final PublisherRepository publisherRepository;
-    private final StateRepository stateRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
 
-    public PublisherServiceImpl(PublisherRepository publisherRepository,
-                                StateRepository stateRepository) {
-        this.publisherRepository = publisherRepository;
-        this.stateRepository = stateRepository;
-    }
+    @Autowired
+    private StateRepository stateRepository;
 
     @Override
     public List<PublisherResponseDTO> getAllPublishers() {
         return publisherRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public PublisherResponseDTO getPublisherById(Integer id) {
         Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found with id: " + id));
+                .orElseThrow(() ->
+                        new PublisherNotFoundException("Publisher not found with ID: " + id));
 
         return mapToDTO(publisher);
     }
@@ -45,42 +45,45 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherResponseDTO createPublisher(PublisherRequestDTO dto) {
 
         State state = stateRepository.findById(dto.getStateCode())
-                .orElseThrow(() -> new StateNotFoundException("State not found with code: " + dto.getStateCode()));
+                .orElseThrow(() ->
+                        new StateNotFoundException("State not found with code: " + dto.getStateCode()));
 
         Publisher publisher = new Publisher();
         publisher.setName(dto.getName());
         publisher.setCity(dto.getCity());
         publisher.setState(state);
 
-        Publisher saved = publisherRepository.save(publisher);
-
-        return mapToDTO(saved);
+        return mapToDTO(publisherRepository.save(publisher));
     }
 
     @Override
     public PublisherResponseDTO updatePublisher(Integer id, PublisherRequestDTO dto) {
 
         Publisher existing = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found with id: " + id));
+                .orElseThrow(() ->
+                        new PublisherNotFoundException("Publisher not found with ID: " + id));
 
         State state = stateRepository.findById(dto.getStateCode())
-                .orElseThrow(() -> new StateNotFoundException("State not found with code: " + dto.getStateCode()));
+                .orElseThrow(() ->
+                        new StateNotFoundException("State not found with code: " + dto.getStateCode()));
 
         existing.setName(dto.getName());
         existing.setCity(dto.getCity());
         existing.setState(state);
 
-        Publisher updated = publisherRepository.save(existing);
-
-        return mapToDTO(updated);
+        return mapToDTO(publisherRepository.save(existing));
     }
 
     @Override
-    public void deletePublisher(Integer id) {
+    public String deletePublisher(Integer id) {
+
         Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException("Publisher not found with id: " + id));
+                .orElseThrow(() ->
+                        new PublisherNotFoundException("Publisher not found with ID: " + id));
 
         publisherRepository.delete(publisher);
+
+        return "Publisher deleted successfully with ID: " + id;
     }
 
     private PublisherResponseDTO mapToDTO(Publisher publisher) {

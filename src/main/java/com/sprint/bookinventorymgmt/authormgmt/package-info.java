@@ -1,1 +1,1 @@
-package com.sprint.BookInventoryMgmt.authormgmt;
+package com.sprint.bookinventorymgmt.authormgmt;

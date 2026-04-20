@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.exceptions;
+package com.sprint.bookinventorymgmt.reviewmgmt.exceptions;
 
 public class ReviewNotFoundException extends RuntimeException {
 

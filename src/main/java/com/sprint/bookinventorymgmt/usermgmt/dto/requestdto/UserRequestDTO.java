@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto;
+package com.sprint.bookinventorymgmt.usermgmt.dto.requestdto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

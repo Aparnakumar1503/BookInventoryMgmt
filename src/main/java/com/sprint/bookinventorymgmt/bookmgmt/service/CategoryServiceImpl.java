@@ -1,43 +1,41 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.service;
+package com.sprint.bookinventorymgmt.bookmgmt.service;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.CategoryResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.entity.Category;
-import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.CategoryNotFoundException;
-import com.sprint.BookInventoryMgmt.bookmgmt.repository.CategoryRepository;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.CategoryResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.entity.Category;
+import com.sprint.bookinventorymgmt.bookmgmt.exception.CategoryNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements ICategoryService {
 
-    private final CategoryRepository categoryRepository;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public CategoryResponseDTO getCategoryById(Integer id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category not found with ID: " + id));
 
         return mapToDTO(category);
     }
 
     private CategoryResponseDTO mapToDTO(Category category) {
-        CategoryResponseDTO dto = new CategoryResponseDTO();
-        dto.setCatId(category.getCatId());
-        dto.setCatDescription(category.getCatDescription());
-        return dto;
+        return new CategoryResponseDTO(
+                category.getCatId(),
+                category.getCatDescription()
+        );
     }
 }

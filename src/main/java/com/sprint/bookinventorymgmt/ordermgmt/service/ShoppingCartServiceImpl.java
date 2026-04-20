@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.bookinventorymgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCart;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.ShoppingCartId;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.IShoppingCartRepository;
-import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCart;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCartId;
+import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

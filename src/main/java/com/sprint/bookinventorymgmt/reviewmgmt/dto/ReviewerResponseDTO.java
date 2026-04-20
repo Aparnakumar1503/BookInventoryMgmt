@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.dto;
+package com.sprint.bookinventorymgmt.reviewmgmt.dto;
 
 public class ReviewerResponseDTO {
 

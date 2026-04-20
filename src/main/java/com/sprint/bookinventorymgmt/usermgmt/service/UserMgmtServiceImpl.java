@@ -1,14 +1,14 @@
-package com.sprint.BookInventoryMgmt.usermgmt.service;
+package com.sprint.bookinventorymgmt.usermgmt.service;
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.UserRequestDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.UserResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.entity.PermRole;
-import com.sprint.BookInventoryMgmt.usermgmt.entity.User;
-import com.sprint.BookInventoryMgmt.usermgmt.exceptions.InvalidCredentialsException;
-import com.sprint.BookInventoryMgmt.usermgmt.exceptions.PermRoleNotFoundException;
-import com.sprint.BookInventoryMgmt.usermgmt.exceptions.UserNotFoundException;
-import com.sprint.BookInventoryMgmt.usermgmt.repository.IPermRoleRepository;
-import com.sprint.BookInventoryMgmt.usermgmt.repository.IUserMgmtRepository;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
+import com.sprint.bookinventorymgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
+import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

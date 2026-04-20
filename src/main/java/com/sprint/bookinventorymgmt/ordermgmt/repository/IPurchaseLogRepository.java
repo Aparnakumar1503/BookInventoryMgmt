@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.repository;
+package com.sprint.bookinventorymgmt.ordermgmt.repository;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

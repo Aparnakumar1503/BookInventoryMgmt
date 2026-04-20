@@ -1,28 +1,43 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.controller;
+package com.sprint.bookinventorymgmt.bookmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.CategoryResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.service.CategoryService;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.CategoryResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.service.ICategoryService;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
+@Tag(name = "Category APIs", description = "CRUD operations for Categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    @Autowired
+    private ICategoryService ICategoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
+    @Operation(summary = "Get all categories")
     @GetMapping
-    public List<CategoryResponseDTO> getAll() {
-        return categoryService.getAllCategories();
+    public ResponseStructure<List<CategoryResponseDTO>> getAll() {
+
+        return ResponseBuilder.success(
+                200,
+                "Categories fetched successfully",
+                ICategoryService.getAllCategories()
+        );
     }
 
+    @Operation(summary = "Get category by ID")
     @GetMapping("/{id}")
-    public CategoryResponseDTO getById(@PathVariable Integer id) {
-        return categoryService.getCategoryById(id);
+    public ResponseStructure<CategoryResponseDTO> getById(@PathVariable Integer id) {
+
+        return ResponseBuilder.success(
+                200,
+                "Category fetched successfully",
+                ICategoryService.getCategoryById(id)
+        );
     }
 }

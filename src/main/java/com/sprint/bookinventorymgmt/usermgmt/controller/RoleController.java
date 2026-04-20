@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.usermgmt.controller;
+package com.sprint.bookinventorymgmt.usermgmt.controller;
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.UserResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.service.IPermRoleService;
-import com.sprint.BookInventoryMgmt.usermgmt.service.IUserMgmtService;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.service.IPermRoleService;
+import com.sprint.bookinventorymgmt.usermgmt.service.IUserMgmtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +37,8 @@ public class RoleController {
         UserResponseDTO user = userService.getUserById(userId);
 
         // build request with existing user details and new roleId
-        com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.UserRequestDTO requestDTO =
-                com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.UserRequestDTO.builder()
+        com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO requestDTO =
+                com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO.builder()
                         .firstName(user.getFirstName())
                         .lastName(user.getLastName())
                         .phoneNumber(user.getPhoneNumber())

@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.dto.response;
+package com.sprint.bookinventorymgmt.bookmgmt.dto.response;
 
 public class PublisherResponseDTO {
 

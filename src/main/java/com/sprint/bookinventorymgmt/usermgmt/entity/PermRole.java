@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.entity;
+package com.sprint.bookinventorymgmt.usermgmt.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,10 +1,10 @@
-package com.sprint.BookInventoryMgmt.authormgmt.service;
+package com.sprint.bookinventorymgmt.authormgmt.service;
 
-import com.sprint.BookInventoryMgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
-import com.sprint.BookInventoryMgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
-import com.sprint.BookInventoryMgmt.authormgmt.entity.Author;
-import com.sprint.BookInventoryMgmt.authormgmt.exceptions.AuthorNotFoundException;
-import com.sprint.BookInventoryMgmt.authormgmt.repository.AuthorRepository;
+import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
+import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
+import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

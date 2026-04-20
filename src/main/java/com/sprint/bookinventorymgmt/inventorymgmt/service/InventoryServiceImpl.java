@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.service;
+package com.sprint.bookinventorymgmt.inventorymgmt.service;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.entity.Inventory;
-import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.*;
-import com.sprint.BookInventoryMgmt.inventorymgmt.repository.IInventoryRepository;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.*;
+import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

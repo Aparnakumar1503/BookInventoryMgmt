@@ -1,9 +1,14 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.controller;
+package com.sprint.bookinventorymgmt.bookmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.PublisherRequestDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.PublisherResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.service.PublisherService;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.request.PublisherRequestDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.PublisherResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.service.IPublisherService;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,39 +16,69 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/publishers")
+@Tag(name = "Publisher APIs", description = "CRUD operations for Publishers")
 public class PublisherController {
 
-    private final PublisherService publisherService;
+    @Autowired
+    private IPublisherService IPublisherService;
 
-    public PublisherController(PublisherService publisherService) {
-        this.publisherService = publisherService;
-    }
-
+    @Operation(summary = "Get all publishers")
     @GetMapping
-    public List<PublisherResponseDTO> getAll() {
-        return publisherService.getAllPublishers();
+    public ResponseStructure<List<PublisherResponseDTO>> getAll() {
+
+        return ResponseBuilder.success(
+                200,
+                "Publishers fetched successfully",
+                IPublisherService.getAllPublishers()
+        );
     }
 
+    @Operation(summary = "Get publisher by ID")
     @GetMapping("/{id}")
-    public PublisherResponseDTO getById(@PathVariable Integer id) {
-        return publisherService.getPublisherById(id);
+    public ResponseStructure<PublisherResponseDTO> getById(@PathVariable Integer id) {
+
+        return ResponseBuilder.success(
+                200,
+                "Publisher fetched successfully",
+                IPublisherService.getPublisherById(id)
+        );
     }
 
+    @Operation(summary = "Create publisher")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublisherResponseDTO create(@Valid @RequestBody PublisherRequestDTO dto) {
-        return publisherService.createPublisher(dto);
+    public ResponseStructure<PublisherResponseDTO> create(@Valid @RequestBody PublisherRequestDTO dto) {
+
+        return ResponseBuilder.success(
+                201,
+                "Publisher created successfully",
+                IPublisherService.createPublisher(dto)
+        );
     }
 
+    @Operation(summary = "Update publisher")
     @PutMapping("/{id}")
-    public PublisherResponseDTO update(@PathVariable Integer id,
-                                       @Valid @RequestBody PublisherRequestDTO dto) {
-        return publisherService.updatePublisher(id, dto);
+    public ResponseStructure<PublisherResponseDTO> update(
+            @PathVariable Integer id,
+            @Valid @RequestBody PublisherRequestDTO dto) {
+
+        return ResponseBuilder.success(
+                200,
+                "Publisher updated successfully",
+                IPublisherService.updatePublisher(id, dto)
+        );
     }
 
+    @Operation(summary = "Delete publisher")
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
-        publisherService.deletePublisher(id);
+    public ResponseStructure<String> delete(@PathVariable Integer id) {
+
+        String response = IPublisherService.deletePublisher(id);
+
+        return ResponseBuilder.success(
+                200,
+                "Publisher deleted successfully",
+                response
+        );
     }
 }
