@@ -1,8 +1,8 @@
-package com.sprint.BookInventoryMgmt.usermgmt.service;
+package com.sprint.bookinventorymgmt.usermgmt.service;
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.PermRoleRequestDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.entity.PermRole;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.PermRoleRequestDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 
 import java.util.List;
 

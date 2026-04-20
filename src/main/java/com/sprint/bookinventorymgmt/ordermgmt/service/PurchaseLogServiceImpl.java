@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.bookinventorymgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
-import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.PurchaseNotFoundException;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.IPurchaseLogRepository;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,8 @@ import java.util.List;
 @Service
 public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
-    private final IPurchaseLogRepository repo;
+    @Autowired
+    private  IPurchaseLogRepository repo;
 
     public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
         this.repo = repo;

@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.dto;
+package com.sprint.bookinventorymgmt.reviewmgmt.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

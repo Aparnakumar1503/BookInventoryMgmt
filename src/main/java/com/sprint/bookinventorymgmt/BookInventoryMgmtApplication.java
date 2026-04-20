@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt;
+package com.sprint.bookinventorymgmt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

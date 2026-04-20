@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.exceptions;
+package com.sprint.bookinventorymgmt.inventorymgmt.exceptions;
 
 public class DatabaseOperationException extends RuntimeException {
     public DatabaseOperationException(String message) {

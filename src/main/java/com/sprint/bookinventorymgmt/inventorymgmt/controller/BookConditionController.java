@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.controller;
+package com.sprint.bookinventorymgmt.inventorymgmt.controller;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.entity.BookCondition;
-import com.sprint.BookInventoryMgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
-import com.sprint.BookInventoryMgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
-import com.sprint.BookInventoryMgmt.inventorymgmt.dto.requestdto.InventoryMapper;
-import com.sprint.BookInventoryMgmt.inventorymgmt.service.IBookConditionService;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
+import com.sprint.bookinventorymgmt.inventorymgmt.service.IBookConditionService;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 
 import jakarta.validation.Valid;
 

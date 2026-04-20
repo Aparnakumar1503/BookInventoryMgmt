@@ -1,23 +1,30 @@
-package com.sprint.BookInventoryMgmt.common;
+package com.sprint.bookinventorymgmt.common;
+
+import java.time.LocalDateTime;
 
 public class ResponseStructure<T> {
 
     private int statusCode;
     private String message;
     private T data;
+    private LocalDateTime timestamp;
 
-    public ResponseStructure() {}
+    public ResponseStructure() {
+        this.timestamp = LocalDateTime.now();
+    }
 
     public ResponseStructure(int statusCode, String message, T data) {
+        this(statusCode, message, data, LocalDateTime.now());
+    }
+
+    public ResponseStructure(int statusCode, String message, T data, LocalDateTime timestamp) {
         this.statusCode = statusCode;
         this.message = message;
         this.data = data;
+        this.timestamp = timestamp;
     }
 
-    // ✅ Use this everywhere instead of builder
-    public static <T> ResponseStructure<T> of(int statusCode, String message, T data) {
-        return new ResponseStructure<>(statusCode, message, data);
-    }
+    // GETTERS & SETTERS
 
     public int getStatusCode() { return statusCode; }
     public void setStatusCode(int statusCode) { this.statusCode = statusCode; }
@@ -27,4 +34,7 @@ public class ResponseStructure<T> {
 
     public T getData() { return data; }
     public void setData(T data) { this.data = data; }
+
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

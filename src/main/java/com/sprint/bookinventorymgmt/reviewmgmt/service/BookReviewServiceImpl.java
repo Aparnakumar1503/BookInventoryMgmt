@@ -1,11 +1,11 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.service;
+package com.sprint.bookinventorymgmt.reviewmgmt.service;
 
-import com.sprint.BookInventoryMgmt.reviewmgmt.entity.BookReview;
-import com.sprint.BookInventoryMgmt.reviewmgmt.exceptions.ReviewNotFoundException;
-import com.sprint.BookInventoryMgmt.reviewmgmt.repository.BookReviewRepository;
-import com.sprint.BookInventoryMgmt.reviewmgmt.repository.ReviewerRepository;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.BookReviewRequestDTO;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.BookReviewResponseDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
+import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

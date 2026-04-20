@@ -1,10 +1,10 @@
-package com.sprint.BookInventoryMgmt.authormgmt.repository;
+package com.sprint.bookinventorymgmt.authormgmt.repository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sprint.BookInventoryMgmt.authormgmt.entity.BookAuthor;
-import com.sprint.BookInventoryMgmt.authormgmt.entity.BookAuthorId;
+import com.sprint.bookinventorymgmt.authormgmt.entity.BookAuthor;
+import com.sprint.bookinventorymgmt.authormgmt.entity.BookAuthorId;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

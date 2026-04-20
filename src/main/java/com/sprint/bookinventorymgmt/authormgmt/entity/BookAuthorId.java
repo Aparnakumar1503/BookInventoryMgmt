@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.authormgmt.entity;
+package com.sprint.bookinventorymgmt.authormgmt.entity;
 
 
 import lombok.*;

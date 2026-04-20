@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.usermgmt.controller;
+package com.sprint.bookinventorymgmt.usermgmt.controller;
 
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.UserRequestDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.UserResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.service.IUserMgmtService;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.service.IUserMgmtService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

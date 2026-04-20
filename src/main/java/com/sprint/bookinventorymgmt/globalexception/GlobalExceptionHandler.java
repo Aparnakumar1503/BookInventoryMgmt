@@ -1,12 +1,12 @@
-package com.sprint.BookInventoryMgmt.globalexception;
+package com.sprint.bookinventorymgmt.globalexception;
 
-//import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.authormgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.reviewmgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.usermgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+//import com.sprint.bookinventorymgmt.bookmgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.authormgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.usermgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.ordermgmt.exceptions.*;
+//import com.sprint.bookinventorymgmt.common.ResponseStructure;
 //import jakarta.validation.ConstraintViolationException;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
