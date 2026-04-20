@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.exceptions;
+package com.sprint.bookinventorymgmt.usermgmt.exceptions;
 
 public class PermRoleNotFoundException extends RuntimeException {
     public PermRoleNotFoundException(String message) {

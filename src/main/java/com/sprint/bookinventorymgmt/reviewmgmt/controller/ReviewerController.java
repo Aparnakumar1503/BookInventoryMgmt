@@ -1,9 +1,9 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.controller;
+package com.sprint.bookinventorymgmt.reviewmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.ReviewerRequestDTO;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.ReviewerResponseDTO;
-import com.sprint.BookInventoryMgmt.reviewmgmt.service.ReviewerService;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.service.ReviewerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

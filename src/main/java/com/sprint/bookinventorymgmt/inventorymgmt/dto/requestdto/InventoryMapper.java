@@ -1,8 +1,8 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.dto.requestdto;
+package com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
-import com.sprint.BookInventoryMgmt.inventorymgmt.dto.responsedto.InventoryResponseDTO;
-import com.sprint.BookInventoryMgmt.inventorymgmt.entity.*;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.InventoryResponseDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.*;
 
 public class InventoryMapper {
 

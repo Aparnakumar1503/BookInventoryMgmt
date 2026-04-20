@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.entity;
+package com.sprint.bookinventorymgmt.reviewmgmt.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;

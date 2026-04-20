@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.dto.requestdto;
+package com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto;
 
 import jakarta.validation.constraints.*;
 

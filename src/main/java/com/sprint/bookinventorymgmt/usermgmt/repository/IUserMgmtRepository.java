@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.repository;
+package com.sprint.bookinventorymgmt.usermgmt.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.sprint.BookInventoryMgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 @Repository
 public interface IUserMgmtRepository extends JpaRepository <User,Integer>{
 	Optional<User> findByUserName(String userName);

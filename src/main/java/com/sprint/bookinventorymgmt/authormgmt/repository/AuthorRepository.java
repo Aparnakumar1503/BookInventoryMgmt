@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.authormgmt.repository;
+package com.sprint.bookinventorymgmt.authormgmt.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sprint.BookInventoryMgmt.authormgmt.entity.Author;
+import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

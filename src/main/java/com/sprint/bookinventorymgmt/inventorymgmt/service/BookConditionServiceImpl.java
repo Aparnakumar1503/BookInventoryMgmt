@@ -1,12 +1,12 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.service;
+package com.sprint.bookinventorymgmt.inventorymgmt.service;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.entity.BookCondition;
-import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.BookConditionNotFoundException;
-import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.DatabaseOperationException;
-import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.BookConditionNotFoundException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.DatabaseOperationException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.repository.IBookConditionRepository;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.inventorymgmt.repository.IBookConditionRepository;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
