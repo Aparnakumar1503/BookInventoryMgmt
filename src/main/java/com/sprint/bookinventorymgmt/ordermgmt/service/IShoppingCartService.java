@@ -10,5 +10,6 @@ public interface IShoppingCartService {
 
         ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO requestDTO);
         List<ShoppingCartResponseDTO> getAll();
+        List<ShoppingCartResponseDTO> getByUserId(Integer userId);
         String delete(Integer userId, String isbn);
     }

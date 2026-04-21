@@ -4,5 +4,7 @@ export interface Teammate {
   readonly role: string;
   readonly moduleId: string;
   readonly moduleName: string;
+  readonly modules: readonly string[];
+  readonly username: string;
   readonly email: string;
 }

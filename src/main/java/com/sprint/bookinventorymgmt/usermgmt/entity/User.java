@@ -29,7 +29,7 @@ public class User {
 
 	    @NotBlank(message = "Password is required")
 	    @Size(min = 4, message = "Password must be at least 4 characters")
-	    @Column(name = "Password", nullable = false, length = 30)
+	    @Column(name = "Password", nullable = false, length = 100)
 	    private String password;
 
 	    @ManyToOne(fetch = FetchType.EAGER)

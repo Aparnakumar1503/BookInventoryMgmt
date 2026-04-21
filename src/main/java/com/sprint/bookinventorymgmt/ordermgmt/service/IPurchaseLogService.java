@@ -11,6 +11,7 @@ public interface IPurchaseLogService {
     PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO requestDTO);
 
     List<PurchaseLogResponseDTO> getAll();
+    List<PurchaseLogResponseDTO> getByUserId(Integer userId);
 
     String delete(Integer userId, Integer inventoryId);
 }

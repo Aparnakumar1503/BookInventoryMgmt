@@ -1,8 +1,7 @@
-<p>endpoint-form works!</p>
 @if (module && endpoint) {
   <section class="bg-gradient-to-br from-blue-50 via-white to-teal-50">
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <a [routerLink]="['/module', moduleId]" class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-black text-blue-700 shadow-sm transition hover:bg-blue-700 hover:text-white">
+      <a [routerLink]="['/member', moduleId]" class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-black text-blue-700 shadow-sm transition hover:bg-blue-700 hover:text-white">
         Back to {{ module.name }}
       </a>
 
@@ -15,7 +14,7 @@
           <div class="mt-8 rounded-2xl bg-blue-50 p-5">
             <p class="text-sm font-black uppercase tracking-wide text-blue-800">Module</p>
             <p class="mt-2 text-lg font-black text-slate-950">{{ module.name }}</p>
-            <p class="mt-1 text-sm font-semibold text-slate-600">{{ module.owner.email }}</p>
+            <p class="mt-1 text-sm font-semibold text-slate-600">{{ module.owner.name }} · {{ module.owner.username }}</p>
           </div>
         </aside>
 

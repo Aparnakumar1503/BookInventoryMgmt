@@ -17,7 +17,7 @@ export class EndpointResultComponent implements OnInit {
 
   ngOnInit(): void {
     window.setTimeout(() => {
-      void this.router.navigate(['/module', this.moduleId ?? 'books']);
+      void this.router.navigate(['/member', this.moduleId ?? 'books']);
     }, 2500);
   }
 }

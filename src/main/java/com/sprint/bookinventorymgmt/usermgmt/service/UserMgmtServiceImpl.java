@@ -11,6 +11,7 @@ import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +22,20 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
     private IUserMgmtRepository userRepo;
     @Autowired
     private IPermRoleRepository permRoleRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserMgmtServiceImpl(IUserMgmtRepository userRepo, IPermRoleRepository permRoleRepo) {
+    public UserMgmtServiceImpl(
+            IUserMgmtRepository userRepo,
+            IPermRoleRepository permRoleRepo,
+            PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.permRoleRepo = permRoleRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserResponseDTO addUser(UserRequestDTO dto) {
-        if (userRepo.existsByUserName(dto.getUserName())) {
+        if (userRepo.existsByUserNameIgnoreCase(dto.getUserName())) {
             throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
         }
 
@@ -42,7 +48,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         entity.setLastName(dto.getLastName());
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setUserName(dto.getUserName());
-        entity.setPassword(dto.getPassword());
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity.setRole(role);
 
         User saved = userRepo.save(entity);
@@ -71,7 +77,8 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + userId));
 
-        if (!user.getUserName().equals(dto.getUserName()) && userRepo.existsByUserName(dto.getUserName())) {
+        if (!user.getUserName().equalsIgnoreCase(dto.getUserName())
+                && userRepo.existsByUserNameIgnoreCase(dto.getUserName())) {
             throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
         }
 
@@ -83,7 +90,9 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         user.setLastName(dto.getLastName());
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         user.setRole(role);
 
         User updated = userRepo.save(user);
@@ -101,7 +110,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
 
     @Override
     public UserResponseDTO getUserByUserName(String userName) {
-        User user = userRepo.findByUserName(userName)
+        User user = userRepo.findByUserNameIgnoreCase(userName)
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with username: " + userName));
         return mapToDTO(user);
@@ -122,7 +131,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + userId));
 
-        int updated = userRepo.updatePassword(userId, newPassword);
+        int updated = userRepo.updatePassword(userId, passwordEncoder.encode(newPassword));
         if (updated > 0) {
             return "Password updated successfully for userId: " + userId;
         }
@@ -132,9 +141,12 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
     //  new login method
     @Override
     public UserResponseDTO login(String userName, String password) {
-        User user = userRepo.findByUserNameAndPassword(userName, password)
+        User user = userRepo.findByUserNameIgnoreCase(userName)
                 .orElseThrow(() ->
                         new InvalidCredentialsException("Invalid username or password"));
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid username or password");
+        }
         return mapToDTO(user);
     }
 

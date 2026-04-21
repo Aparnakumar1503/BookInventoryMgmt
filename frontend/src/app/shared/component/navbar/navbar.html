@@ -1,23 +1,37 @@
-<p>navbar works!</p>
 <header class="sticky top-0 z-40 border-b border-white/40 bg-white/85 backdrop-blur-xl">
   <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
     <a routerLink="/" class="group flex items-center gap-3">
       <span class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-teal-500 font-black text-white shadow-lg shadow-teal-500/25 transition group-hover:scale-105">BI</span>
       <span>
         <span class="block text-sm font-black uppercase tracking-wide text-slate-950">Book Inventory</span>
-        <span class="block text-xs font-semibold text-teal-700">API Testing Platform</span>
+        <span class="block text-xs font-semibold text-teal-700">Secure API Demo</span>
       </span>
     </a>
 
     <div class="hidden items-center gap-2 lg:flex">
-      @for (module of modules; track module.id) {
+      @for (module of modules(); track module.id) {
         <a
-          [routerLink]="['/module', module.id]"
+          [routerLink]="['/member', module.id]"
           class="rounded-full px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-blue-50 hover:text-blue-700"
         >
           {{ module.name }}
         </a>
       }
     </div>
+
+    @if (currentUser(); as user) {
+      <div class="flex items-center gap-3">
+        <div class="hidden rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 sm:block">
+          {{ user.firstName }} {{ user.lastName }}
+        </div>
+        <button
+          type="button"
+          (click)="logout()"
+          class="rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white transition hover:bg-slate-800"
+        >
+          Logout
+        </button>
+      </div>
+    }
   </nav>
 </header>

@@ -113,7 +113,12 @@ INSERT IGNORE INTO `users` (`LastName`, `FirstName`, `PhoneNumber`, `UserName`, 
 INSERT IGNORE INTO `users` (`LastName`, `FirstName`, `PhoneNumber`, `UserName`, `Password`, `RoleNumber`) VALUES
 ('Thunderbird','Manager','(828) 555-2443','thunderbird@mail.net','password', 2),
 ('Discord','Manager','(664) 555-2443','discord@cats.net','password', 3),
-('Slack','Manager','(593) 555-2443','slack@aol.net','password', 4);
+('Slack','Manager','(593) 555-2443','slack@aol.net','password', 4),
+('Aparna','Owner','(716) 555-1001','Aparna','password', 3),
+('Moses','Owner','(716) 555-1002','Moses','password', 3),
+('Sobika','Owner','(716) 555-1003','Sobika','password', 3),
+('Janapriya','Owner','(716) 555-1004','Janapriya','password', 3),
+('SwarnaLatha','Owner','(716) 555-1005','SwarnaLatha','password', 3);
 
 -- -------------------------------------------------------------
 -- 9. BOOK (depends on: category, publisher)

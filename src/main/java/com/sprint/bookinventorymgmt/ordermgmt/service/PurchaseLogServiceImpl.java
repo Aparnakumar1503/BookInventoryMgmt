@@ -57,6 +57,14 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
     }
 
     @Override
+    public List<PurchaseLogResponseDTO> getByUserId(Integer userId) {
+        return repo.findByIdUserId(userId)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    @Override
     public String delete(Integer userId, Integer inventoryId) {
         // composite key — need both userId and inventoryId to identify a purchase
         PurchaseLogId id = new PurchaseLogId(userId, inventoryId);

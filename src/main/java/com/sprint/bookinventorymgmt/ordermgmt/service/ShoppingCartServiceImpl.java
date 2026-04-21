@@ -49,6 +49,14 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
     }
 
     @Override
+    public List<ShoppingCartResponseDTO> getByUserId(Integer userId) {
+        return repo.findByIdUserId(userId)
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    @Override
     public String delete(Integer userId, String isbn) {
         // composite key — need both userId and isbn to identify a cart item
         ShoppingCartId id = new ShoppingCartId(userId, isbn);

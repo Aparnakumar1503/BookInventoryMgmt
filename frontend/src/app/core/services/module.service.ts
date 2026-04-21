@@ -10,6 +10,10 @@ export class ModuleService {
     return MODULES;
   }
 
+  getModulesByIds(moduleIds: readonly string[]): readonly ModuleConfig[] {
+    return MODULES.filter((module) => moduleIds.includes(module.id));
+  }
+
   getTeammates(): readonly Teammate[] {
     return TEAMMATES;
   }

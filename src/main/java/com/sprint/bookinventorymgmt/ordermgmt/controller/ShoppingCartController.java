@@ -7,12 +7,17 @@ import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartRespon
 import com.sprint.bookinventorymgmt.ordermgmt.service.IShoppingCartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/api/v1/cart")
 public class ShoppingCartController {
 
     private final IShoppingCartService service;
@@ -21,9 +26,25 @@ public class ShoppingCartController {
         this.service = service;
     }
 
-    @PostMapping("/add")
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseStructure<List<ShoppingCartResponseDTO>>> getByUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Cart items fetched successfully",
+                        service.getByUserId(userId)
+                )
+        );
+    }
+
+    @PostMapping("/{userId}/items/{isbn}")
     public ResponseEntity<ResponseStructure<ShoppingCartResponseDTO>> addCart(
-            @RequestBody ShoppingCartRequestDTO requestDTO) {
+            @PathVariable Integer userId,
+            @PathVariable String isbn) {
+        ShoppingCartRequestDTO requestDTO = new ShoppingCartRequestDTO();
+        requestDTO.setUserId(userId);
+        requestDTO.setIsbn(isbn);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ResponseBuilder.success(
@@ -34,18 +55,7 @@ public class ShoppingCartController {
                 );
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<ResponseStructure<List<ShoppingCartResponseDTO>>> getAll() {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Cart items fetched successfully",
-                        service.getAll()
-                )
-        );
-    }
-
-    @DeleteMapping("/delete/{userId}/{isbn}")
+    @DeleteMapping("/{userId}/items/{isbn}")
     public ResponseEntity<ResponseStructure<String>> delete(
             @PathVariable Integer userId,
             @PathVariable String isbn) {
