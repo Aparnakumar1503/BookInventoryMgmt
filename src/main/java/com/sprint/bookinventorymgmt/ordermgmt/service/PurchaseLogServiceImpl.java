@@ -4,7 +4,6 @@ import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
 import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
 import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
-import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.EmptyCartException;
 import com.sprint.BookInventoryMgmt.ordermgmt.repository.IPurchaseLogRepository;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
@@ -26,6 +25,12 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
     @Override
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
 
+        // ✅ FIX 1: NULL VALIDATION
+        if (dto == null || dto.getUserId() == null || dto.getInventoryId() == null) {
+            throw new IllegalArgumentException("Invalid purchase data");
+        }
+
+        // ✅ CHECK DUPLICATE
         PurchaseLog existing = repo.findByUserIdAndInventoryId(
                 dto.getUserId(), dto.getInventoryId()
         );
@@ -42,15 +47,11 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
         return mapToDTO(saved);
     }
 
-    // ✅ GET ALL
+    // ✅ GET ALL (FIXED — NO EXCEPTION)
     @Override
     public List<PurchaseLogResponseDTO> getAll() {
 
         List<PurchaseLog> purchases = repo.findAll();
-
-        if (purchases.isEmpty()) {
-            throw new EmptyCartException("No purchases found");
-        }
 
         List<PurchaseLogResponseDTO> list = new ArrayList<>();
 
@@ -58,12 +59,16 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
             list.add(mapToDTO(purchase));
         }
 
-        return list;
+        return list; // ✅ always return list (even empty)
     }
 
     // ✅ DELETE
     @Override
     public String delete(Integer userId, Integer inventoryId) {
+
+        if (userId == null || inventoryId == null) {
+            throw new IllegalArgumentException("Invalid delete data");
+        }
 
         PurchaseLogId id = new PurchaseLogId(userId, inventoryId);
 
