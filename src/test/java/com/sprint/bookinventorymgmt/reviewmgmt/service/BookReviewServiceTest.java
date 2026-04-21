@@ -1,11 +1,13 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.service;
 
-import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
-import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
-import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
-import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
+import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,8 +45,6 @@ class BookReviewServiceTest {
         review.setComments("Good");
     }
 
-    // ================= 4 POSITIVE TEST CASES =================
-
     @Test
     void addReview_success() {
         when(reviewerRepository.existsById(101)).thenReturn(true);
@@ -79,29 +79,32 @@ class BookReviewServiceTest {
         assertNotNull(service.deleteReview(1));
     }
 
-    // ================= 3 NEGATIVE TEST CASES =================
-
     @Test
     void addReview_invalidReviewer() {
         when(reviewerRepository.existsById(101)).thenReturn(false);
 
         BookReviewRequestDTO dto = new BookReviewRequestDTO("1-111", 101, 5, "Good");
 
-        assertThrows(RuntimeException.class,
-                () -> service.addReview(dto));
+        assertThrows(ReviewerNotFoundException.class, () -> service.addReview(dto));
     }
 
     @Test
     void deleteReview_notFound() {
         when(reviewRepository.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(ReviewNotFoundException.class,
-                () -> service.deleteReview(99));
+        assertThrows(ReviewNotFoundException.class, () -> service.deleteReview(99));
     }
 
     @Test
     void addReview_nullDTO() {
-        assertThrows(IllegalArgumentException.class,
-                () -> service.addReview(null));
+        assertThrows(InvalidRatingException.class, () -> service.addReview(null));
+    }
+
+    @Test
+    void addReview_invalidRating() {
+        BookReviewRequestDTO dto = new BookReviewRequestDTO("1-111", 101, 11, "Bad");
+
+        assertThrows(InvalidRatingException.class, () -> service.addReview(dto));
+        verifyNoInteractions(reviewerRepository, reviewRepository);
     }
 }

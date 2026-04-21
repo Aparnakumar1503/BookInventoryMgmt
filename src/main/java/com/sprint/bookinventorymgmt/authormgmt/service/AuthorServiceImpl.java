@@ -4,6 +4,8 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
 import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
 import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,14 @@ public class AuthorServiceImpl implements IAuthorService {
 
     @Override
     public AuthorResponseDTO addAuthor(AuthorRequestDTO dto) {
+        validateAuthorRequest(dto);
+
+        Author existingAuthor = repo.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName());
+        if (existingAuthor != null) {
+            throw new DuplicateAuthorException(
+                    "Author already exists with name: " + dto.getFirstName() + " " + dto.getLastName());
+        }
+
         Author entity = new Author();
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
@@ -48,6 +58,8 @@ public class AuthorServiceImpl implements IAuthorService {
 
     @Override
     public AuthorResponseDTO updateAuthor(Integer authorId, AuthorRequestDTO dto) {
+        validateAuthorRequest(dto);
+
         Author author = repo.findById(authorId)
                 .orElseThrow(() ->
                         new AuthorNotFoundException("Author not found with id: " + authorId));
@@ -99,5 +111,13 @@ public class AuthorServiceImpl implements IAuthorService {
                 .lastName(entity.getLastName())
                 .photo(entity.getPhoto())
                 .build();
+    }
+
+    private void validateAuthorRequest(AuthorRequestDTO dto) {
+        if (dto == null
+                || dto.getFirstName() == null || dto.getFirstName().isBlank()
+                || dto.getLastName() == null || dto.getLastName().isBlank()) {
+            throw new InvalidBookDataException("Author first name and last name cannot be null or empty");
+        }
     }
 }

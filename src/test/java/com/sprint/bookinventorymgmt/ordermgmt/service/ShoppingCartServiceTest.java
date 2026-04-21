@@ -2,6 +2,8 @@ package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.DuplicateCartItemException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.EmptyCartException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,10 @@ class ShoppingCartServiceTest {
     @Autowired
     private IShoppingCartService service;
 
-    // ================= POSITIVE =================
-
     @Test
     void testAddCart() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(1);       // ✅ Integer not Long
+        dto.setUserId(1);
         dto.setIsbn("ISBN1");
 
         ShoppingCartResponseDTO result = service.addCart(dto);
@@ -34,7 +34,7 @@ class ShoppingCartServiceTest {
     @Test
     void testGetAll() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(2);       // ✅ Integer
+        dto.setUserId(2);
         dto.setIsbn("A");
 
         service.addCart(dto);
@@ -47,12 +47,12 @@ class ShoppingCartServiceTest {
     @Test
     void testDeleteSuccess() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(3);       // ✅ Integer
+        dto.setUserId(3);
         dto.setIsbn("B");
 
         service.addCart(dto);
 
-        String result = service.delete(3, "B");  // ✅ composite key
+        String result = service.delete(3, "B");
 
         assertTrue(result.contains("Deleted"));
     }
@@ -60,11 +60,11 @@ class ShoppingCartServiceTest {
     @Test
     void testAddMultiple() {
         ShoppingCartRequestDTO dto1 = new ShoppingCartRequestDTO();
-        dto1.setUserId(4);      // ✅ Integer
+        dto1.setUserId(4);
         dto1.setIsbn("X");
 
         ShoppingCartRequestDTO dto2 = new ShoppingCartRequestDTO();
-        dto2.setUserId(5);      // ✅ Integer
+        dto2.setUserId(5);
         dto2.setIsbn("Y");
 
         service.addCart(dto1);
@@ -76,18 +76,18 @@ class ShoppingCartServiceTest {
     @Test
     void testMappingCorrect() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(6);       // ✅ Integer
+        dto.setUserId(6);
         dto.setIsbn("MAP");
 
         ShoppingCartResponseDTO res = service.addCart(dto);
 
-        assertEquals(6, res.getUserId());  // ✅ Integer comparison
+        assertEquals(6, res.getUserId());
     }
 
     @Test
     void testGetAllNotEmpty() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(7);       // ✅ Integer
+        dto.setUserId(7);
         dto.setIsbn("Z");
 
         service.addCart(dto);
@@ -98,40 +98,35 @@ class ShoppingCartServiceTest {
     @Test
     void testDeleteFlow() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(8);       // ✅ Integer
+        dto.setUserId(8);
         dto.setIsbn("DEL");
 
         service.addCart(dto);
-        service.delete(8, "DEL");  // ✅ composite key
+        service.delete(8, "DEL");
 
-        assertThrows(ShoppingCartNotFoundException.class,
-                () -> service.delete(8, "DEL"));
+        assertThrows(ShoppingCartNotFoundException.class, () -> service.delete(8, "DEL"));
     }
-
-    // ================= NEGATIVE =================
 
     @Test
     void testDeleteNotFound() {
-        assertThrows(ShoppingCartNotFoundException.class,
-                () -> service.delete(999, "NOTEXIST")); // ✅ composite key
+        assertThrows(ShoppingCartNotFoundException.class, () -> service.delete(999, "NOTEXIST"));
     }
 
     @Test
     void testAddNull() {
-        assertThrows(Exception.class, () -> service.addCart(null));
+        assertThrows(EmptyCartException.class, () -> service.addCart(null));
     }
 
     @Test
     void testAddInvalidDTO() {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        // no userId or isbn set
 
-        assertThrows(Exception.class, () -> service.addCart(dto));
+        assertThrows(EmptyCartException.class, () -> service.addCart(dto));
     }
 
     @Test
     void testDeleteNull() {
-        assertThrows(Exception.class, () -> service.delete(null, null)); // ✅ composite key
+        assertThrows(Exception.class, () -> service.delete(null, null));
     }
 
     @Test
@@ -139,5 +134,16 @@ class ShoppingCartServiceTest {
         List<ShoppingCartResponseDTO> list = service.getAll();
 
         assertNotNull(list);
+    }
+
+    @Test
+    void testAddDuplicateCartItem() {
+        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+        dto.setUserId(12);
+        dto.setIsbn("DUP-CART");
+
+        service.addCart(dto);
+
+        assertThrows(DuplicateCartItemException.class, () -> service.addCart(dto));
     }
 }

@@ -4,6 +4,7 @@ import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
@@ -28,6 +29,10 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
 
     @Override
     public UserResponseDTO addUser(UserRequestDTO dto) {
+        if (userRepo.existsByUserName(dto.getUserName())) {
+            throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
+        }
+
         PermRole role = permRoleRepo.findById(dto.getRoleNumber())
                 .orElseThrow(() ->
                         new PermRoleNotFoundException("Role not found with id: " + dto.getRoleNumber()));
@@ -65,6 +70,10 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + userId));
+
+        if (!user.getUserName().equals(dto.getUserName()) && userRepo.existsByUserName(dto.getUserName())) {
+            throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
+        }
 
         PermRole role = permRoleRepo.findById(dto.getRoleNumber())
                 .orElseThrow(() ->

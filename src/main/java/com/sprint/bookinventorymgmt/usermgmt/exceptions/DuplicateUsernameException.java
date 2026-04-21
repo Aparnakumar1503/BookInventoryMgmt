@@ -1,4 +1,8 @@
 package com.sprint.bookinventorymgmt.usermgmt.exceptions;
 
-public class DuplicateUsernameException {
+public class DuplicateUsernameException extends RuntimeException {
+
+    public DuplicateUsernameException(String message) {
+        super(message);
+    }
 }

@@ -2,7 +2,7 @@ package com.sprint.bookinventorymgmt.bookmgmt.service;
 
 import com.sprint.bookinventorymgmt.bookmgmt.dto.response.CategoryResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.entity.Category;
-import com.sprint.bookinventorymgmt.bookmgmt.exception.CategoryNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.CategoryNotFoundException;
 import com.sprint.bookinventorymgmt.bookmgmt.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

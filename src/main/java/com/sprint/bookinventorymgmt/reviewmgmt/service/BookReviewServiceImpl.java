@@ -1,7 +1,9 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.service;
 
 import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
@@ -24,11 +26,15 @@ public class BookReviewServiceImpl implements BookReviewService {
     public BookReviewResponseDTO addReview(BookReviewRequestDTO dto) {
 
         if (dto == null || dto.getReviewerID() == null) {
-            throw new IllegalArgumentException("Reviewer ID cannot be null");
+            throw new InvalidRatingException("Reviewer ID cannot be null");
+        }
+
+        if (dto.getRating() == null || dto.getRating() < 1 || dto.getRating() > 10) {
+            throw new InvalidRatingException("Rating must be between 1 and 10");
         }
 
         if (!reviewerRepository.existsById(dto.getReviewerID())) {
-            throw new RuntimeException("Reviewer not found");
+            throw new ReviewerNotFoundException("Reviewer not found with ID: " + dto.getReviewerID());
         }
 
         BookReview review = new BookReview();

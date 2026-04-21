@@ -1,8 +1,10 @@
 package com.sprint.bookinventorymgmt.usermgmt.service;
+
 import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 public class UserMgmtServiceTest {
     @Mock
     private IUserMgmtRepository userRepo;
@@ -53,10 +56,9 @@ public class UserMgmtServiceTest {
                 .build();
     }
 
-    // ==================== POSITIVE (3) ====================
-
     @Test
     void testAddUser_Positive() {
+        when(userRepo.existsByUserName("johndoe")).thenReturn(false);
         when(permRoleRepo.findById(1)).thenReturn(Optional.of(permRole));
         when(userRepo.save(any(User.class))).thenReturn(user);
 
@@ -65,7 +67,7 @@ public class UserMgmtServiceTest {
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("johndoe", result.getUserName());
-        verify(userRepo, times(1)).save(any(User.class));
+        verify(userRepo).save(any(User.class));
     }
 
     @Test
@@ -77,7 +79,7 @@ public class UserMgmtServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getUserId());
         assertEquals("johndoe", result.getUserName());
-        verify(userRepo, times(1)).findById(1);
+        verify(userRepo).findById(1);
     }
 
     @Test
@@ -89,13 +91,12 @@ public class UserMgmtServiceTest {
 
         assertNotNull(result);
         assertEquals("johndoe", result.getUserName());
-        verify(userRepo, times(1)).findByUserNameAndPassword("johndoe", "pass123");
+        verify(userRepo).findByUserNameAndPassword("johndoe", "pass123");
     }
-
-    // ==================== NEGATIVE (3) ====================
 
     @Test
     void testAddUser_Negative_RoleNotFound() {
+        when(userRepo.existsByUserName("johndoe")).thenReturn(false);
         when(permRoleRepo.findById(99)).thenReturn(Optional.empty());
 
         UserRequestDTO invalidDTO = UserRequestDTO.builder()
@@ -106,18 +107,24 @@ public class UserMgmtServiceTest {
                 .roleNumber(99)
                 .build();
 
-        assertThrows(PermRoleNotFoundException.class, () ->
-                service.addUser(invalidDTO));
-        verify(permRoleRepo, times(1)).findById(99);
+        assertThrows(PermRoleNotFoundException.class, () -> service.addUser(invalidDTO));
+        verify(permRoleRepo).findById(99);
+    }
+
+    @Test
+    void testAddUser_Negative_DuplicateUsername() {
+        when(userRepo.existsByUserName("johndoe")).thenReturn(true);
+
+        assertThrows(DuplicateUsernameException.class, () -> service.addUser(requestDTO));
+        verify(userRepo, never()).save(any(User.class));
     }
 
     @Test
     void testGetUserById_Negative_NotFound() {
         when(userRepo.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () ->
-                service.getUserById(99));
-        verify(userRepo, times(1)).findById(99);
+        assertThrows(UserNotFoundException.class, () -> service.getUserById(99));
+        verify(userRepo).findById(99);
     }
 
     @Test
@@ -125,12 +132,9 @@ public class UserMgmtServiceTest {
         when(userRepo.findByUserNameAndPassword("johndoe", "wrongpass"))
                 .thenReturn(Optional.empty());
 
-        assertThrows(InvalidCredentialsException.class, () ->
-                service.login("johndoe", "wrongpass"));
-        verify(userRepo, times(1)).findByUserNameAndPassword("johndoe", "wrongpass");
+        assertThrows(InvalidCredentialsException.class, () -> service.login("johndoe", "wrongpass"));
+        verify(userRepo).findByUserNameAndPassword("johndoe", "wrongpass");
     }
-
-    // ==================== EDGE CASE (1) ====================
 
     @Test
     void testGetAllUsers_Edge_EmptyList() {
@@ -139,7 +143,7 @@ public class UserMgmtServiceTest {
         List<UserResponseDTO> result = service.getAllUsers();
 
         assertNotNull(result);
-        assertTrue(result.isEmpty()); // valid but empty — edge case
-        verify(userRepo, times(1)).findAll();
+        assertTrue(result.isEmpty());
+        verify(userRepo).findAll();
     }
 }
