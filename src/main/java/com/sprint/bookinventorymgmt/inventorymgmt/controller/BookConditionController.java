@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.InventoryMgmt.controller;
+package com.sprint.BookInventoryMgmt.inventorymgmt.controller;
 
 import com.sprint.BookInventoryMgmt.inventorymgmt.entity.BookCondition;
 import com.sprint.BookInventoryMgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
