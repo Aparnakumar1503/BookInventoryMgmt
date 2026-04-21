@@ -6,9 +6,10 @@ import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class PermRoleServiceImpl implements IPermRoleService {
 
     @Autowired

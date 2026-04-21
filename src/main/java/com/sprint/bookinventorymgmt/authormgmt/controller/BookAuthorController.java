@@ -3,6 +3,8 @@ package com.sprint.bookinventorymgmt.authormgmt.controller;
 import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.BookAuthorRequestDTO;
 import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.BookAuthorResponseDTO;
 import com.sprint.bookinventorymgmt.authormgmt.service.IBookAuthorService;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +20,34 @@ public class BookAuthorController {
         this.service = service;
     }
 
-    // POST /api/v1/books/{isbn}/authors/{authorId}
     @PostMapping("/{isbn}/authors/{authorId}")
-    public ResponseEntity<BookAuthorResponseDTO> addBookAuthor(@PathVariable String isbn,
-                                                               @PathVariable Integer authorId,
-                                                               @Valid @RequestBody BookAuthorRequestDTO requestDTO) {
+    public ResponseEntity<ResponseStructure<BookAuthorResponseDTO>> addBookAuthor(
+            @PathVariable String isbn,
+            @PathVariable Integer authorId,
+            @Valid @RequestBody BookAuthorRequestDTO requestDTO) {
         requestDTO.setIsbn(isbn);
         requestDTO.setAuthorId(authorId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.addBookAuthor(requestDTO));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        ResponseBuilder.success(
+                                HttpStatus.CREATED.value(),
+                                "Book author mapping created successfully",
+                                service.addBookAuthor(requestDTO)
+                        )
+                );
     }
 
-    // DELETE /api/v1/books/{isbn}/authors/{authorId}
     @DeleteMapping("/{isbn}/authors/{authorId}")
-    public ResponseEntity<String> deleteBookAuthor(@PathVariable String isbn,
-                                                   @PathVariable Integer authorId) {
-        return ResponseEntity.ok(service.deleteByIsbn(isbn));
+    public ResponseEntity<ResponseStructure<String>> deleteBookAuthor(
+            @PathVariable String isbn,
+            @PathVariable Integer authorId) {
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Book author mappings deleted successfully",
+                        service.deleteByIsbn(isbn)
+                )
+        );
     }
 }
