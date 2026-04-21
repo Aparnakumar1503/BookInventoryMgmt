@@ -8,6 +8,7 @@ import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class PermRoleServiceImpl implements IPermRoleService {
@@ -30,10 +31,14 @@ public class PermRoleServiceImpl implements IPermRoleService {
 
     @Override
     public List<PermRoleResponseDTO> getAllRoles() {
-        return repo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<PermRole> roles = repo.findAll();
+        List<PermRoleResponseDTO> response = new ArrayList<>();
+
+        for (PermRole role : roles) {
+            response.add(mapToDTO(role));
+        }
+
+        return response;
     }
 
     @Override
@@ -78,7 +83,13 @@ public class PermRoleServiceImpl implements IPermRoleService {
         if (roles.isEmpty()) {
             throw new PermRoleNotFoundException("No roles found with keyword: " + keyword);
         }
-        return roles.stream().map(this::mapToDTO).toList();
+
+        List<PermRoleResponseDTO> response = new ArrayList<>();
+        for (PermRole role : roles) {
+            response.add(mapToDTO(role));
+        }
+
+        return response;
     }
 
     @Override
@@ -87,9 +98,9 @@ public class PermRoleServiceImpl implements IPermRoleService {
     }
 
     private PermRoleResponseDTO mapToDTO(PermRole entity) {
-        return PermRoleResponseDTO.builder()
-                .roleNumber(entity.getRoleNumber())
-                .permRole(entity.getPermRole())
-                .build();
+        PermRoleResponseDTO dto = new PermRoleResponseDTO();
+        dto.setRoleNumber(entity.getRoleNumber());
+        dto.setPermRole(entity.getPermRole());
+        return dto;
     }
 }

@@ -11,6 +11,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,41 +58,56 @@ public class BookReviewServiceImpl implements BookReviewService {
 
     @Override
     public List<BookReviewResponseDTO> getAllReviews() {
-        return reviewRepository.findAll().stream().map(r -> {
+        List<BookReview> reviews = reviewRepository.findAll();
+        List<BookReviewResponseDTO> response = new ArrayList<>();
+
+        for (BookReview r : reviews) {
             BookReviewResponseDTO dto = new BookReviewResponseDTO();
             dto.setId(r.getId());
             dto.setIsbn(r.getIsbn());
             dto.setReviewerID(r.getReviewerID());
             dto.setRating(r.getRating());
             dto.setComments(r.getComments());
-            return dto;
-        }).toList();
+            response.add(dto);
+        }
+
+        return response;
     }
 
     @Override
     public List<BookReviewResponseDTO> getReviewsByISBN(String isbn) {
-        return reviewRepository.findByIsbn(isbn).stream().map(r -> {
+        List<BookReview> reviews = reviewRepository.findByIsbn(isbn);
+        List<BookReviewResponseDTO> response = new ArrayList<>();
+
+        for (BookReview r : reviews) {
             BookReviewResponseDTO dto = new BookReviewResponseDTO();
             dto.setId(r.getId());
             dto.setIsbn(r.getIsbn());
             dto.setReviewerID(r.getReviewerID());
             dto.setRating(r.getRating());
             dto.setComments(r.getComments());
-            return dto;
-        }).toList();
+            response.add(dto);
+        }
+
+        return response;
     }
 
     @Override
     public List<BookReviewResponseDTO> getReviewsByReviewer(int reviewerId) {
-        return reviewRepository.findByReviewerID(reviewerId).stream().map(r -> {
+        List<BookReview> reviews = reviewRepository.findByReviewerID(reviewerId);
+        List<BookReviewResponseDTO> response = new ArrayList<>();
+
+        for (BookReview r : reviews) {
             BookReviewResponseDTO dto = new BookReviewResponseDTO();
             dto.setId(r.getId());
             dto.setIsbn(r.getIsbn());
             dto.setReviewerID(r.getReviewerID());
             dto.setRating(r.getRating());
             dto.setComments(r.getComments());
-            return dto;
-        }).toList();
+            response.add(dto);
+        }
+
+        return response;
     }
 
     @Override

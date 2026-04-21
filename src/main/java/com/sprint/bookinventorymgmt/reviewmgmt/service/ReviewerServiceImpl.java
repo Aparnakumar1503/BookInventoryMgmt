@@ -9,6 +9,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundExcept
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,11 +46,14 @@ public class ReviewerServiceImpl implements ReviewerService {
 
     @Override
     public List<ReviewerResponseDTO> getAllReviewers() {
+        List<Reviewer> reviewers = repository.findAll();
+        List<ReviewerResponseDTO> response = new ArrayList<>();
 
-        return repository.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        for (Reviewer reviewer : reviewers) {
+            response.add(mapToDTO(reviewer));
+        }
+
+        return response;
     }
 
     @Override

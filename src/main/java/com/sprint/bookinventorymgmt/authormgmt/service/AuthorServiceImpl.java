@@ -10,6 +10,7 @@ import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class AuthorServiceImpl implements IAuthorService {
@@ -42,10 +43,14 @@ public class AuthorServiceImpl implements IAuthorService {
 
     @Override
     public List<AuthorResponseDTO> getAllAuthors() {
-        return repo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<Author> authors = repo.findAll();
+        List<AuthorResponseDTO> response = new ArrayList<>();
+
+        for (Author author : authors) {
+            response.add(mapToDTO(author));
+        }
+
+        return response;
     }
 
     @Override
@@ -96,7 +101,13 @@ public class AuthorServiceImpl implements IAuthorService {
         if (authors.isEmpty()) {
             throw new AuthorNotFoundException("No authors found with keyword: " + keyword);
         }
-        return authors.stream().map(this::mapToDTO).toList();
+
+        List<AuthorResponseDTO> response = new ArrayList<>();
+        for (Author author : authors) {
+            response.add(mapToDTO(author));
+        }
+
+        return response;
     }
 
     @Override
@@ -105,12 +116,12 @@ public class AuthorServiceImpl implements IAuthorService {
     }
 
     private AuthorResponseDTO mapToDTO(Author entity) {
-        return AuthorResponseDTO.builder()
-                .authorId(entity.getAuthorId())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .photo(entity.getPhoto())
-                .build();
+        AuthorResponseDTO dto = new AuthorResponseDTO();
+        dto.setAuthorId(entity.getAuthorId());
+        dto.setFirstName(entity.getFirstName());
+        dto.setLastName(entity.getLastName());
+        dto.setPhoto(entity.getPhoto());
+        return dto;
     }
 
     private void validateAuthorRequest(AuthorRequestDTO dto) {

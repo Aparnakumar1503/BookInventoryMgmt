@@ -43,10 +43,11 @@ public class InventoryController {
     @GetMapping
     public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getAll() {
 
-        List<InventoryResponseDTO> list = service.getAllInventory()
-                .stream()
-                .map(InventoryMapper::toInventoryResponse)
-                .toList();
+        List<Inventory> inventories = service.getAllInventory();
+        List<InventoryResponseDTO> list = new java.util.ArrayList<>();
+        for (Inventory inventory : inventories) {
+            list.add(InventoryMapper.toInventoryResponse(inventory));
+        }
 
         ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
@@ -75,10 +76,11 @@ public class InventoryController {
     @GetMapping("/books/{isbn}")
     public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getByIsbn(@PathVariable String isbn) {
 
-        List<InventoryResponseDTO> list = service.getByIsbn(isbn)
-                .stream()
-                .map(InventoryMapper::toInventoryResponse)
-                .toList();
+        List<Inventory> inventories = service.getByIsbn(isbn);
+        List<InventoryResponseDTO> list = new java.util.ArrayList<>();
+        for (Inventory inventory : inventories) {
+            list.add(InventoryMapper.toInventoryResponse(inventory));
+        }
 
         ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());

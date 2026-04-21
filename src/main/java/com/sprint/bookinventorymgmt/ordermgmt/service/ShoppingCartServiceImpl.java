@@ -10,6 +10,7 @@ import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequest
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,10 +43,14 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
 
     @Override
     public List<ShoppingCartResponseDTO> getAll() {
-        return repo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<ShoppingCart> cartItems = repo.findAll();
+        List<ShoppingCartResponseDTO> response = new ArrayList<>();
+
+        for (ShoppingCart cartItem : cartItems) {
+            response.add(mapToDTO(cartItem));
+        }
+
+        return response;
     }
 
     @Override
