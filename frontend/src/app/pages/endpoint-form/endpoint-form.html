@@ -1,0 +1,129 @@
+<p>endpoint-form works!</p>
+@if (module && endpoint) {
+  <section class="bg-gradient-to-br from-blue-50 via-white to-teal-50">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <a [routerLink]="['/module', moduleId]" class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-black text-blue-700 shadow-sm transition hover:bg-blue-700 hover:text-white">
+        Back to {{ module.name }}
+      </a>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <aside class="rounded-3xl border border-white/70 bg-white/85 p-8 shadow-2xl shadow-blue-950/5">
+          <span class="rounded-full px-3 py-1 text-xs font-black" [class]="methodClass(endpoint.method)">{{ endpoint.method }}</span>
+          <h1 class="mt-6 text-4xl font-black text-slate-950">{{ endpoint.name }}</h1>
+          <code class="mt-5 block break-all rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-teal-100">{{ endpoint.path }}</code>
+          <p class="mt-5 text-base font-medium leading-7 text-slate-600">{{ endpoint.description }}</p>
+          <div class="mt-8 rounded-2xl bg-blue-50 p-5">
+            <p class="text-sm font-black uppercase tracking-wide text-blue-800">Module</p>
+            <p class="mt-2 text-lg font-black text-slate-950">{{ module.name }}</p>
+            <p class="mt-1 text-sm font-semibold text-slate-600">{{ module.owner.email }}</p>
+          </div>
+        </aside>
+
+        <div class="space-y-6">
+          <form [formGroup]="form" (ngSubmit)="submit()" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/5 sm:p-8">
+            @if (pathFields().length) {
+              <div formGroupName="pathParams">
+                <h2 class="text-xl font-black text-slate-950">Path Params</h2>
+                <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                  @for (field of pathFields(); track field.key) {
+                    <label class="block">
+                      <span class="text-sm font-black text-slate-700">{{ field.label }}</span>
+                      <input
+                        class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        [type]="inputType(field)"
+                        [placeholder]="field.placeholder ?? ''"
+                        [formControlName]="field.key"
+                      />
+                      @if (hasError('pathParams', field.key)) {
+                        <span class="mt-2 block text-sm font-bold text-rose-600">Required field</span>
+                      }
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (queryFields().length) {
+              <div class="mt-8" formGroupName="queryParams">
+                <h2 class="text-xl font-black text-slate-950">Query Params</h2>
+                <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                  @for (field of queryFields(); track field.key) {
+                    <label class="block">
+                      <span class="text-sm font-black text-slate-700">{{ field.label }}</span>
+                      @if (field.type === 'boolean') {
+                        <span class="mt-2 flex min-h-12 items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
+                          <input class="h-5 w-5 accent-blue-700" type="checkbox" [formControlName]="field.key" />
+                          <span class="text-sm font-bold text-slate-600">Enabled</span>
+                        </span>
+                      } @else if (field.type === 'select') {
+                        <select class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" [formControlName]="field.key">
+                          <option value="">Choose</option>
+                          @for (option of field.options ?? []; track option.value) {
+                            <option [value]="option.value">{{ option.label }}</option>
+                          }
+                        </select>
+                      } @else {
+                        <input class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" />
+                      }
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (bodyFields().length) {
+              <div class="mt-8" formGroupName="body">
+                <h2 class="text-xl font-black text-slate-950">{{ endpoint.body?.title }}</h2>
+                <div class="mt-5 grid gap-5 sm:grid-cols-2">
+                  @for (field of bodyFields(); track field.key) {
+                    <label class="block">
+                      <span class="text-sm font-black text-slate-700">{{ field.label }}</span>
+                      @if (field.type === 'textarea') {
+                        <textarea class="mt-2 min-h-32 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key"></textarea>
+                      } @else if (field.type === 'boolean') {
+                        <span class="mt-2 flex min-h-12 items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
+                          <input class="h-5 w-5 accent-blue-700" type="checkbox" [formControlName]="field.key" />
+                          <span class="text-sm font-bold text-slate-600">Enabled</span>
+                        </span>
+                      } @else if (field.type === 'select') {
+                        <select class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" [formControlName]="field.key">
+                          <option value="">Choose</option>
+                          @for (option of field.options ?? []; track option.value) {
+                            <option [value]="option.value">{{ option.label }}</option>
+                          }
+                        </select>
+                      } @else {
+                        <input class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" />
+                      }
+                      @if (hasError('body', field.key)) {
+                        <span class="mt-2 block text-sm font-bold text-rose-600">Required field</span>
+                      }
+                    </label>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="mt-8 flex flex-wrap items-center gap-4">
+              <button type="submit" class="rounded-2xl bg-gradient-to-r from-blue-700 to-teal-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60" [disabled]="isLoading()">
+                Send Request
+              </button>
+              @if (isLoading()) {
+                <app-loading-spinner />
+              }
+            </div>
+          </form>
+
+          <app-response-viewer [response]="response()" />
+        </div>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="grid min-h-[70vh] place-items-center bg-gradient-to-br from-blue-50 to-teal-50 px-4">
+    <div class="max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl shadow-blue-950/10">
+      <h1 class="text-3xl font-black text-slate-950">Endpoint not found</h1>
+      <a routerLink="/" class="mt-6 inline-flex rounded-full bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800">Go home</a>
+    </div>
+  </section>
+}
