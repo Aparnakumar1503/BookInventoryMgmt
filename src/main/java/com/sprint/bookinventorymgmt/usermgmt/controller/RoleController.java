@@ -1,52 +1,66 @@
 package com.sprint.bookinventorymgmt.usermgmt.controller;
 
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.service.IPermRoleService;
 import com.sprint.bookinventorymgmt.usermgmt.service.IUserMgmtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RestController
 public class RoleController {
     @Autowired
     private IPermRoleService permRoleService;
     @Autowired
-    private  IUserMgmtService userService;
+    private IUserMgmtService userService;
 
     public RoleController(IPermRoleService permRoleService, IUserMgmtService userService) {
         this.permRoleService = permRoleService;
         this.userService = userService;
     }
 
-    // GET /api/v1/roles
     @GetMapping("/api/v1/roles")
-    public ResponseEntity<List<PermRoleResponseDTO>> getAllRoles() {
-        return ResponseEntity.ok(permRoleService.getAllRoles());
+    public ResponseEntity<ResponseStructure<List<PermRoleResponseDTO>>> getAllRoles() {
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Roles fetched successfully",
+                        permRoleService.getAllRoles()
+                )
+        );
     }
 
-    // PUT /api/v1/users/{userId}/roles/{roleId}
     @PutMapping("/api/v1/users/{userId}/roles/{roleId}")
-    public ResponseEntity<UserResponseDTO> updateUserRole(@PathVariable Integer userId,
-                                                          @PathVariable Integer roleId) {
-        // fetch user — update role using roleId
+    public ResponseEntity<ResponseStructure<UserResponseDTO>> updateUserRole(
+            @PathVariable Integer userId,
+            @PathVariable Integer roleId) {
         UserResponseDTO user = userService.getUserById(userId);
 
-        // build request with existing user details and new roleId
-        com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO requestDTO =
-                com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO.builder()
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .phoneNumber(user.getPhoneNumber())
-                        .userName(user.getUserName())
-                        .password("") // password not changed here
-                        .roleNumber(roleId) // update to new role
-                        .build();
+        UserRequestDTO requestDTO = UserRequestDTO.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .userName(user.getUserName())
+                .password("")
+                .roleNumber(roleId)
+                .build();
 
-        return ResponseEntity.ok(userService.updateUser(userId, requestDTO));
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "User role updated successfully",
+                        userService.updateUser(userId, requestDTO)
+                )
+        );
     }
 }
