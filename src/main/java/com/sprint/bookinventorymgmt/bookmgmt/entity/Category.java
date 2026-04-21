@@ -1,6 +1,9 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.entity;
+package com.sprint.bookinventorymgmt.bookmgmt.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -8,13 +11,16 @@ import java.util.List;
 public class Category {
 
     @Id
-    @Column(name = "cat_id")
+    @Column(name = "cat_id", nullable = false, unique = true)
+    @NotNull(message = "Category ID cannot be null")
     private Integer catId;
 
-    @Column(name = "cat_description")
+    @Column(name = "cat_description", nullable = false)
+    @NotBlank(message = "Category description cannot be blank")
+    @Size(min = 2, max = 100, message = "Category description must be between 2 and 100 characters")
     private String catDescription;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Book> books;
 
     public Category() {}

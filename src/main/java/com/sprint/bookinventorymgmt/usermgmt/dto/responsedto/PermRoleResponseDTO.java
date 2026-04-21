@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto;
+package com.sprint.bookinventorymgmt.usermgmt.dto.responsedto;
 
 import lombok.Builder;
 

@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.authormgmt.service;
+package com.sprint.bookinventorymgmt.authormgmt.service;
 
-import com.sprint.BookInventoryMgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
-import com.sprint.BookInventoryMgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
+import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
+import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
 
 import java.util.List;
 

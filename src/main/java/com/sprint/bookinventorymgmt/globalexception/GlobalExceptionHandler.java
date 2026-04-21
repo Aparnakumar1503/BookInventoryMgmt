@@ -1,137 +1,154 @@
-package com.sprint.BookInventoryMgmt.globalexception;
+package com.sprint.bookinventorymgmt.globalexception;
 
-//import com.sprint.BookInventoryMgmt.bookmgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.inventorymgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.authormgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.reviewmgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.usermgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.*;
-//import com.sprint.BookInventoryMgmt.common.ResponseStructure;
-//import jakarta.validation.ConstraintViolationException;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.MethodArgumentNotValidException;
-//import org.springframework.web.bind.annotation.ExceptionHandler;
-//import org.springframework.web.bind.annotation.RestControllerAdvice;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@RestControllerAdvice
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.BookAlreadyExistsException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.BookNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.CategoryNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.InvalidIsbnFormatException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.PublisherNotFoundException;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.BookConditionNotFoundException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.DatabaseOperationException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.DuplicateInventoryException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InsufficientInventoryException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidConditionRankException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryNotFoundException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryPurchaseException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookNotAvailableException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.CheckoutFailedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.DuplicateCartItemException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.EmptyCartException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.DuplicateReviewException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotAllowedException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.UnauthorizedRoleAccessException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ── COMMON build() method ──────────────────────────────────────────────
-//    private ResponseEntity<ResponseStructure<String>> build(HttpStatus status, String message) {
-//        return ResponseEntity.status(status)
-//                .body(ResponseStructure.of(status.value(), message, null)); // ← of() not builder()
-//    }
-//
-//    // ── VALIDATION 1 — @Valid on @RequestBody ──────────────────────────────
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ResponseStructure<Map<String, String>>> handleValidation(
-//            MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getFieldErrors()
-//                .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
-//        return ResponseEntity.badRequest()
-//                .body(ResponseStructure.of(400, "Validation failed", errors)); // ← of() not builder()
-//    }
-//
-//    // ── VALIDATION 2 — @PathVariable / @RequestParam ───────────────────────
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public ResponseEntity<ResponseStructure<Map<String, String>>> handleConstraintViolation(
-//            ConstraintViolationException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getConstraintViolations()
-//                .forEach(cv -> errors.put(
-//                        cv.getPropertyPath().toString(),
-//                        cv.getMessage()
-//                ));
-//        return ResponseEntity.badRequest()
-//                .body(ResponseStructure.of(400, "Constraint violation", errors)); // ← of() not builder()
-//    }
-//
-//    // ── 400 BAD REQUEST ────────────────────────────────────────────────────
-//    @ExceptionHandler({
-//            InvalidBookDataException.class,
-//            InvalidInventoryDataException.class,
-//            InvalidUserDataException.class,
-//            InvalidIsbnFormatException.class,
-//            InvalidConditionRankException.class,
-//            InvalidPasswordException.class,
-//            EmptyCartException.class,
-//            InvalidRatingException.class
-//    })
-//    public ResponseEntity<ResponseStructure<String>> handleBadRequest(RuntimeException ex) {
-//        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
-//    }
-//
-//    // ── 403 FORBIDDEN ──────────────────────────────────────────────────────
-//    @ExceptionHandler({
-//            UnauthorizedRoleAccessException.class,
-//            ReviewNotAllowedException.class
-//    })
-//    public ResponseEntity<ResponseStructure<String>> handleForbidden(RuntimeException ex) {
-//        return build(HttpStatus.FORBIDDEN, ex.getMessage());
-//    }
-//
-//    // ── 404 NOT FOUND ──────────────────────────────────────────────────────
-//    @ExceptionHandler({
-//            BookNotFoundException.class,
-//            CategoryNotFoundException.class,
-//            PublisherNotFoundException.class,
-//            AuthorNotFoundException.class,
-//            BookAuthorNotFoundException.class,
-//            InventoryNotFoundException.class,
-//            BookConditionNotFoundException.class,
-//            ReviewerNotFoundException.class,
-//            BookReviewNotFoundException.class,
-//            UserNotFoundException.class,
-//            RoleNotFoundException.class,
-//            PurchaseNotFoundException.class,
-//            ShoppingCartNotFoundException.class
-//    })
-//    public ResponseEntity<ResponseStructure<String>> handleNotFound(RuntimeException ex) {
-//        return build(HttpStatus.NOT_FOUND, ex.getMessage());
-//    }
-//
-//    // ── 409 CONFLICT ───────────────────────────────────────────────────────
-//    @ExceptionHandler({
-//            DuplicateBookException.class,
-//            DuplicateAuthorException.class,
-//            DuplicateBookAuthorException.class,
-//            DuplicateInventoryException.class,
-//            InventoryPurchaseException.class,
-//            DuplicateUsernameException.class,
-//            DuplicateReviewException.class,
-//            BookAlreadyPurchasedException.class,
-//            BookNotAvailableException.class,
-//            DuplicateCartItemException.class
-//    })
-//    public ResponseEntity<ResponseStructure<String>> handleConflict(RuntimeException ex) {
-//        return build(HttpStatus.CONFLICT, ex.getMessage());
-//    }
-//
-//    // ── 422 UNPROCESSABLE ──────────────────────────────────────────────────
-//    @ExceptionHandler({
-//            InsufficientInventoryException.class,
-//            CheckoutFailedException.class,
-//            OrderProcessingException.class
-//    })
-//    public ResponseEntity<ResponseStructure<String>> handleUnprocessable(RuntimeException ex) {
-//        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
-//    }
-//
-//    // ── 500 INTERNAL SERVER ERROR ──────────────────────────────────────────
-//    @ExceptionHandler(DatabaseOperationException.class)
-//    public ResponseEntity<ResponseStructure<String>> handleDatabase(RuntimeException ex) {
-//        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-//    }
-//
-//    // ── GENERIC FALLBACK ───────────────────────────────────────────────────
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ResponseStructure<String>> handleGeneric(Exception ex) {
-//        return build(HttpStatus.INTERNAL_SERVER_ERROR,
-//                "An unexpected error occurred: " + ex.getMessage());
-//    }
+    private ResponseEntity<ResponseStructure<String>> build(HttpStatus status, String message) {
+        return ResponseEntity.status(status)
+                .body(ResponseBuilder.error(status.value(), message));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseStructure<Map<String, String>>> handleValidation(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+        return ResponseEntity.badRequest()
+                .body(ResponseBuilder.error(400, "Validation failed", errors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ResponseStructure<Map<String, String>>> handleConstraintViolation(
+            ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations()
+                .forEach(cv -> errors.put(cv.getPropertyPath().toString(), cv.getMessage()));
+        return ResponseEntity.badRequest()
+                .body(ResponseBuilder.error(400, "Constraint violation", errors));
+    }
+
+    @ExceptionHandler({
+            InvalidBookDataException.class,
+            InvalidInventoryDataException.class,
+            InvalidCredentialsException.class,
+            InvalidIsbnFormatException.class,
+            InvalidConditionRankException.class,
+            EmptyCartException.class,
+            InvalidRatingException.class
+    })
+    public ResponseEntity<ResponseStructure<String>> handleBadRequest(RuntimeException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            UnauthorizedRoleAccessException.class,
+            ReviewNotAllowedException.class
+    })
+    public ResponseEntity<ResponseStructure<String>> handleForbidden(RuntimeException ex) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            BookNotFoundException.class,
+            CategoryNotFoundException.class,
+            PublisherNotFoundException.class,
+            AuthorNotFoundException.class,
+            BookAuthorNotFoundException.class,
+            InventoryNotFoundException.class,
+            BookConditionNotFoundException.class,
+            ReviewerNotFoundException.class,
+            ReviewNotFoundException.class,
+            UserNotFoundException.class,
+            PermRoleNotFoundException.class,
+            PurchaseNotFoundException.class,
+            ShoppingCartNotFoundException.class
+    })
+    public ResponseEntity<ResponseStructure<String>> handleNotFound(RuntimeException ex) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            BookAlreadyExistsException.class,
+            DuplicateAuthorException.class,
+            DuplicateBookAuthorException.class,
+            DuplicateInventoryException.class,
+            InventoryPurchaseException.class,
+            DuplicateUsernameException.class,
+            DuplicateReviewException.class,
+            BookAlreadyPurchasedException.class,
+            BookNotAvailableException.class,
+            DuplicateCartItemException.class
+    })
+    public ResponseEntity<ResponseStructure<String>> handleConflict(RuntimeException ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler({
+            InsufficientInventoryException.class,
+            CheckoutFailedException.class,
+            OrderProcessingException.class
+    })
+    public ResponseEntity<ResponseStructure<String>> handleUnprocessable(RuntimeException ex) {
+        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    }
+
+    @ExceptionHandler(DatabaseOperationException.class)
+    public ResponseEntity<ResponseStructure<String>> handleDatabase(RuntimeException ex) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseStructure<String>> handleGeneric(Exception ex) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred: " + ex.getMessage());
+    }
 }

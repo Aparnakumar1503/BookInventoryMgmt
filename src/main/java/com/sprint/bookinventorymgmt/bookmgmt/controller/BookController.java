@@ -1,9 +1,10 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.controller;
+package com.sprint.bookinventorymgmt.bookmgmt.controller;
 
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.request.BookRequestDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.dto.response.BookResponseDTO;
-import com.sprint.BookInventoryMgmt.bookmgmt.service.BookService;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.request.BookRequestDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.dto.response.BookResponseDTO;
+import com.sprint.bookinventorymgmt.bookmgmt.service.IBookService;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,10 +18,10 @@ import java.util.List;
 @Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
 
-    private final BookService bookService;
+    private final IBookService IBookService;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(IBookService IBookService) {
+        this.IBookService = IBookService;
     }
 
     @Operation(summary = "Create a new book")
@@ -28,12 +29,12 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseStructure<BookResponseDTO> create(@Valid @RequestBody BookRequestDTO dto) {
 
-        BookResponseDTO data = bookService.createBook(dto);
+        BookResponseDTO response = IBookService.createBook(dto);
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.CREATED.value(),
                 "Book created successfully",
-                data
+                response
         );
     }
 
@@ -41,33 +42,40 @@ public class BookController {
     @GetMapping("/{isbn}")
     public ResponseStructure<BookResponseDTO> get(@PathVariable String isbn) {
 
-        BookResponseDTO data = bookService.getBookByIsbn(isbn);
+        BookResponseDTO response = IBookService.getBookByIsbn(isbn);
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book fetched successfully",
-                data
+                response
         );
     }
 
-    @Operation(summary = "Get all books or filter by category & publisher")
+    @Operation(summary = "Get all books or filter by category and publisher")
     @GetMapping
     public ResponseStructure<List<BookResponseDTO>> getAll(
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) Integer publisherId) {
 
-        List<BookResponseDTO> data;
+        List<BookResponseDTO> response;
 
         if (categoryId != null && publisherId != null) {
-            data = bookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
+            response = IBookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
+
+        } else if (categoryId != null) {
+            response = IBookService.getBooksByCategory(categoryId);   // 🔥 ADD THIS
+
+        } else if (publisherId != null) {
+            response = IBookService.getBooksByPublisher(publisherId); // 🔥 ADD THIS
+
         } else {
-            data = bookService.getAllBooks();
+            response = IBookService.getAllBooks();
         }
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Books fetched successfully",
-                data
+                response
         );
     }
 
@@ -77,12 +85,12 @@ public class BookController {
             @PathVariable String isbn,
             @Valid @RequestBody BookRequestDTO dto) {
 
-        BookResponseDTO data = bookService.updateBook(isbn, dto);
+        BookResponseDTO response = IBookService.updateBook(isbn, dto);
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book updated successfully",
-                data
+                response
         );
     }
 
@@ -90,12 +98,12 @@ public class BookController {
     @DeleteMapping("/{isbn}")
     public ResponseStructure<String> delete(@PathVariable String isbn) {
 
-        bookService.deleteBook(isbn);
+        String response = IBookService.deleteBook(isbn);
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book deleted successfully",
-                "Deleted ISBN: " + isbn
+                response
         );
     }
 }

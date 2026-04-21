@@ -1,10 +1,10 @@
-package com.sprint.BookInventoryMgmt.usermgmt.service;
+package com.sprint.bookinventorymgmt.usermgmt.service;
 
 import java.util.List;
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.UserRequestDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.UserResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 
 public interface IUserMgmtService {
     UserResponseDTO addUser(UserRequestDTO requestDTO);

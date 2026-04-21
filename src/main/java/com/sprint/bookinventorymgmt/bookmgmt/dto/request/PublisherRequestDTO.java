@@ -1,16 +1,19 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.dto.request;
+package com.sprint.bookinventorymgmt.bookmgmt.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class PublisherRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "Publisher name is required")
+    @Size(min = 2, max = 100, message = "Publisher name must be between 2 and 100 characters")
     private String name;
 
+    @Size(max = 100, message = "City cannot exceed 100 characters")
     private String city;
 
-    @NotNull
+    @NotBlank(message = "State code is required")
+    @Size(min = 2, max = 10, message = "State code must be between 2 and 10 characters")
     private String stateCode;
 
     public PublisherRequestDTO() {}
@@ -21,12 +24,27 @@ public class PublisherRequestDTO {
         this.stateCode = stateCode;
     }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getStateCode() { return stateCode; }
-    public void setStateCode(String stateCode) { this.stateCode = stateCode; }
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStateCode() {
+        return stateCode;
+    }
+
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
+    }
 }

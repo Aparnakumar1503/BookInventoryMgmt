@@ -1,7 +1,7 @@
-package com.sprint.BookInventoryMgmt.inventorymgmt.service;
+package com.sprint.bookinventorymgmt.inventorymgmt.service;
 
-import com.sprint.BookInventoryMgmt.inventorymgmt.entity.BookCondition;
-import com.sprint.BookInventoryMgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 
 import java.util.List;
 

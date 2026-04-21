@@ -1,11 +1,11 @@
-// package com.sprint.BookInventoryMgmt;
+// package com.sprint.bookinventorymgmt;
 
 // import org.springframework.boot.CommandLineRunner;
 // import org.springframework.context.annotation.Bean;
 // import org.springframework.context.annotation.Configuration;
 
-// import com.sprint.BookInventoryMgmt.BookMgmt.Entity.*;
-// import com.sprint.BookInventoryMgmt.BookMgmt.Repository.*;
+// import com.sprint.bookinventorymgmt.BookMgmt.Entity.*;
+// import com.sprint.bookinventorymgmt.BookMgmt.Repository.*;
 
 // @Configuration
 // public class TestRunner {

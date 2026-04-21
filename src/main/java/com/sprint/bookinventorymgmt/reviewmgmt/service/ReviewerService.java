@@ -1,6 +1,6 @@
-package com.sprint.BookInventoryMgmt.reviewmgmt.service;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.ReviewerRequestDTO;
-import com.sprint.BookInventoryMgmt.reviewmgmt.dto.ReviewerResponseDTO;
+package com.sprint.bookinventorymgmt.reviewmgmt.service;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
+import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
 
 import java.util.List;
 

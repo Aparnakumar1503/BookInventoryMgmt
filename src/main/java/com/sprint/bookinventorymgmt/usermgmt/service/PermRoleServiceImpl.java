@@ -1,15 +1,15 @@
-package com.sprint.BookInventoryMgmt.usermgmt.service;
+package com.sprint.bookinventorymgmt.usermgmt.service;
 
-import com.sprint.BookInventoryMgmt.usermgmt.dto.requestdto.PermRoleRequestDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
-import com.sprint.BookInventoryMgmt.usermgmt.entity.PermRole;
-import com.sprint.BookInventoryMgmt.usermgmt.exceptions.PermRoleNotFoundException;
-import com.sprint.BookInventoryMgmt.usermgmt.exceptions.UserNotFoundException;
-import com.sprint.BookInventoryMgmt.usermgmt.repository.IPermRoleRepository;
+import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.PermRoleRequestDTO;
+import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
+import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class PermRoleServiceImpl implements IPermRoleService {
 
     @Autowired

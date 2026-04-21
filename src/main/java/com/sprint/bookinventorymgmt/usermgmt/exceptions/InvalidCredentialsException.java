@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.usermgmt.exceptions;
+package com.sprint.bookinventorymgmt.usermgmt.exceptions;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException(String message) {

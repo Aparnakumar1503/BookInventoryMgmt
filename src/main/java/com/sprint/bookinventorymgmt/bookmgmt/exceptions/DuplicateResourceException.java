@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.bookmgmt.exceptions;
+package com.sprint.bookinventorymgmt.bookmgmt.exceptions;
 
 public class DuplicateResourceException extends RuntimeException {
 

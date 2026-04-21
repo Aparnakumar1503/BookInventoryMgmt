@@ -1,4 +1,4 @@
-package com.sprint.BookInventoryMgmt.authormgmt.dto.requestdto;
+package com.sprint.bookinventorymgmt.authormgmt.dto.requestdto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

@@ -1,11 +1,15 @@
-package com.sprint.BookInventoryMgmt.ordermgmt.service;
+package com.sprint.bookinventorymgmt.ordermgmt.service;
 
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLog;
-import com.sprint.BookInventoryMgmt.ordermgmt.entity.PurchaseLogId;
-import com.sprint.BookInventoryMgmt.ordermgmt.exceptions.PurchaseNotFoundException;
-import com.sprint.BookInventoryMgmt.ordermgmt.repository.IPurchaseLogRepository;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
-import com.sprint.BookInventoryMgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
+import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.CheckoutFailedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +17,8 @@ import java.util.List;
 @Service
 public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
-    private final IPurchaseLogRepository repo;
+    @Autowired
+    private  IPurchaseLogRepository repo;
 
     public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
         this.repo = repo;
@@ -21,10 +26,24 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Override
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
-        // use composite key constructor
+        if (dto == null || dto.getUserId() == null || dto.getInventoryId() == null) {
+            throw new OrderProcessingException("UserId and inventoryId are required to create a purchase");
+        }
+
+        PurchaseLog existingPurchase = repo.findByUserIdAndInventoryId(dto.getUserId(), dto.getInventoryId());
+        if (existingPurchase != null) {
+            throw new BookAlreadyPurchasedException(
+                    "Purchase already exists for userId: " + dto.getUserId() + " inventoryId: " + dto.getInventoryId());
+        }
+
         PurchaseLog entity = new PurchaseLog(dto.getUserId(), dto.getInventoryId());
 
-        PurchaseLog saved = repo.save(entity);
+        PurchaseLog saved;
+        try {
+            saved = repo.save(entity);
+        } catch (Exception e) {
+            throw new CheckoutFailedException("Failed to create purchase for inventoryId: " + dto.getInventoryId());
+        }
 
         return mapToDTO(saved);
     }
