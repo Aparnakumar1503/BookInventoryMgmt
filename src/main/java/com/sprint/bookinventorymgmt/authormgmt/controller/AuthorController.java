@@ -7,7 +7,6 @@ import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,61 +22,49 @@ public class AuthorController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseStructure<List<AuthorResponseDTO>>> getAllAuthors() {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Authors fetched successfully",
-                        service.getAllAuthors()
-                )
+    public ResponseStructure<List<AuthorResponseDTO>> getAllAuthors() {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Authors fetched successfully",
+                service.getAllAuthors()
         );
     }
 
     @GetMapping("/{authorId}")
-    public ResponseEntity<ResponseStructure<AuthorResponseDTO>> getAuthorById(@PathVariable Integer authorId) {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Author fetched successfully",
-                        service.getAuthorById(authorId)
-                )
+    public ResponseStructure<AuthorResponseDTO> getAuthorById(@PathVariable Integer authorId) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Author fetched successfully",
+                service.getAuthorById(authorId)
         );
     }
 
     @PostMapping
-    public ResponseEntity<ResponseStructure<AuthorResponseDTO>> addAuthor(
-            @Valid @RequestBody AuthorRequestDTO requestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        ResponseBuilder.success(
-                                HttpStatus.CREATED.value(),
-                                "Author created successfully",
-                                service.addAuthor(requestDTO)
-                        )
-                );
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseStructure<AuthorResponseDTO> addAuthor(@Valid @RequestBody AuthorRequestDTO requestDTO) {
+        return ResponseBuilder.success(
+                HttpStatus.CREATED.value(),
+                "Author created successfully",
+                service.addAuthor(requestDTO)
+        );
     }
 
     @PutMapping("/{authorId}")
-    public ResponseEntity<ResponseStructure<AuthorResponseDTO>> updateAuthor(
-            @PathVariable Integer authorId,
-            @Valid @RequestBody AuthorRequestDTO requestDTO) {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Author updated successfully",
-                        service.updateAuthor(authorId, requestDTO)
-                )
+    public ResponseStructure<AuthorResponseDTO> updateAuthor(@PathVariable Integer authorId,
+                                                             @Valid @RequestBody AuthorRequestDTO requestDTO) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Author updated successfully",
+                service.updateAuthor(authorId, requestDTO)
         );
     }
 
     @DeleteMapping("/{authorId}")
-    public ResponseEntity<ResponseStructure<String>> deleteAuthor(@PathVariable Integer authorId) {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Author deleted successfully",
-                        service.deleteAuthor(authorId)
-                )
+    public ResponseStructure<String> deleteAuthor(@PathVariable Integer authorId) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Author deleted successfully",
+                service.deleteAuthor(authorId)
         );
     }
 }
