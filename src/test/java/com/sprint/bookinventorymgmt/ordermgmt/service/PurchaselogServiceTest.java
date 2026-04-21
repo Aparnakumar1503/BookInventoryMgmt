@@ -2,6 +2,8 @@ package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,6 @@ class PurchaseLogServiceTest {
 
     @Autowired
     private IPurchaseLogService service;
-
-    // ================= POSITIVE =================
 
     @Test
     void testAddPurchase() {
@@ -51,7 +51,7 @@ class PurchaseLogServiceTest {
 
         service.addPurchase(dto);
 
-        String result = service.delete(3, 300); // ✅ composite key
+        String result = service.delete(3, 300);
 
         assertTrue(result.contains("Deleted"));
     }
@@ -102,37 +102,31 @@ class PurchaseLogServiceTest {
         dto.setInventoryId(800);
 
         service.addPurchase(dto);
-        service.delete(8, 800); // ✅ composite key
+        service.delete(8, 800);
 
-        assertThrows(PurchaseNotFoundException.class,
-                () -> service.delete(8, 800));
+        assertThrows(PurchaseNotFoundException.class, () -> service.delete(8, 800));
     }
-
-    // ================= NEGATIVE =================
 
     @Test
     void testDeleteNotFound() {
-        assertThrows(PurchaseNotFoundException.class,
-                () -> service.delete(999, 9999)); // ✅ composite key
+        assertThrows(PurchaseNotFoundException.class, () -> service.delete(999, 9999));
     }
 
     @Test
     void testAddNull() {
-        assertThrows(Exception.class, () -> service.addPurchase(null));
+        assertThrows(OrderProcessingException.class, () -> service.addPurchase(null));
     }
 
     @Test
     void testAddInvalidDTO() {
         PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        // no userId or inventoryId set
 
-        assertThrows(Exception.class, () -> service.addPurchase(dto));
+        assertThrows(OrderProcessingException.class, () -> service.addPurchase(dto));
     }
 
     @Test
     void testDeleteNull() {
-        assertThrows(Exception.class,
-                () -> service.delete(null, null)); // ✅ composite key
+        assertThrows(Exception.class, () -> service.delete(null, null));
     }
 
     @Test
@@ -147,12 +141,10 @@ class PurchaseLogServiceTest {
         dto.setInventoryId(1000);
 
         service.addPurchase(dto);
-        service.delete(10, 1000); // ✅ composite key
+        service.delete(10, 1000);
 
-        assertThrows(PurchaseNotFoundException.class,
-                () -> service.delete(10, 1000));
+        assertThrows(PurchaseNotFoundException.class, () -> service.delete(10, 1000));
     }
-
 
     @Test
     void testDuplicateCompositeKey() {
@@ -162,20 +154,12 @@ class PurchaseLogServiceTest {
 
         PurchaseLogRequestDTO dto2 = new PurchaseLogRequestDTO();
         dto2.setUserId(11);
-        dto2.setInventoryId(1100); // same composite key
+        dto2.setInventoryId(1100);
 
         service.addPurchase(dto1);
 
-        // JPA save() with same composite key → overwrites, not throws
-        PurchaseLogResponseDTO res = service.addPurchase(dto2);
-
-        // verify it was saved/overwritten successfully
-        assertNotNull(res);
-        assertEquals(11, res.getUserId());
-        assertEquals(1100, res.getInventoryId());
+        assertThrows(BookAlreadyPurchasedException.class, () -> service.addPurchase(dto2));
     }
-
-    // ================= EDGE =================
 
     @Test
     void testEdgeCase() {

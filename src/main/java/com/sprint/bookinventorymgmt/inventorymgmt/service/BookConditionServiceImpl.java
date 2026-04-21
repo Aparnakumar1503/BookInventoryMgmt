@@ -3,6 +3,7 @@ package com.sprint.bookinventorymgmt.inventorymgmt.service;
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.BookConditionNotFoundException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.DatabaseOperationException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidConditionRankException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
 
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IBookConditionRepository;
@@ -24,6 +25,9 @@ public class BookConditionServiceImpl implements IBookConditionService {
 
         if (bookCondition.getRanks() == null || bookCondition.getPrice() == null) {
             throw new InvalidInventoryDataException("Rank and Price cannot be null");
+        }
+        if (bookCondition.getRanks() <= 0) {
+            throw new InvalidConditionRankException("Rank must be greater than zero");
         }
 
         try {
@@ -70,6 +74,9 @@ public class BookConditionServiceImpl implements IBookConditionService {
 
         if (updated.getPrice() == null) {
             throw new InvalidInventoryDataException("Price cannot be null");
+        }
+        if (updated.getRanks() != null && updated.getRanks() <= 0) {
+            throw new InvalidConditionRankException("Rank must be greater than zero");
         }
 
         BookCondition existing = repository.findById(id)

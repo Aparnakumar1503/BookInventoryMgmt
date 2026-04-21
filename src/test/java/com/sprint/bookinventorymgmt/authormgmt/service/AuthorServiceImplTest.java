@@ -1,8 +1,11 @@
 package com.sprint.bookinventorymgmt.authormgmt.service;
+
 import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
 import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
 import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 public class AuthorServiceImplTest {
     @Mock
     private AuthorRepository repo;
@@ -39,10 +43,9 @@ public class AuthorServiceImplTest {
                 .build();
     }
 
-    // ==================== POSITIVE TEST CASES ====================
-
     @Test
     void testAddAuthor_Positive() {
+        when(repo.findByFirstNameAndLastName("John", "Doe")).thenReturn(null);
         when(repo.save(any(Author.class))).thenReturn(author);
 
         AuthorResponseDTO result = service.addAuthor(requestDTO);
@@ -50,7 +53,7 @@ public class AuthorServiceImplTest {
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("Doe", result.getLastName());
-        verify(repo, times(1)).save(any(Author.class));
+        verify(repo).save(any(Author.class));
     }
 
     @Test
@@ -62,7 +65,7 @@ public class AuthorServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("John", result.get(0).getFirstName());
-        verify(repo, times(1)).findAll();
+        verify(repo).findAll();
     }
 
     @Test
@@ -74,7 +77,7 @@ public class AuthorServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.getAuthorId());
         assertEquals("John", result.getFirstName());
-        verify(repo, times(1)).findById(1);
+        verify(repo).findById(1);
     }
 
     @Test
@@ -93,8 +96,8 @@ public class AuthorServiceImplTest {
 
         assertNotNull(result);
         assertEquals("Jane", result.getFirstName());
-        verify(repo, times(1)).findById(1);
-        verify(repo, times(1)).save(any(Author.class));
+        verify(repo).findById(1);
+        verify(repo).save(any(Author.class));
     }
 
     @Test
@@ -105,7 +108,7 @@ public class AuthorServiceImplTest {
         String result = service.deleteAuthor(1);
 
         assertEquals("Author deleted successfully with id: 1", result);
-        verify(repo, times(1)).delete(author);
+        verify(repo).delete(author);
     }
 
     @Test
@@ -117,7 +120,7 @@ public class AuthorServiceImplTest {
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("Doe", result.getLastName());
-        verify(repo, times(1)).findByFirstNameAndLastName("John", "Doe");
+        verify(repo).findByFirstNameAndLastName("John", "Doe");
     }
 
     @Test
@@ -128,7 +131,7 @@ public class AuthorServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(repo, times(1)).searchByLastName("doe");
+        verify(repo).searchByLastName("doe");
     }
 
     @Test
@@ -139,54 +142,48 @@ public class AuthorServiceImplTest {
 
         assertNotNull(count);
         assertEquals(5L, count);
-        verify(repo, times(1)).countAllAuthors();
+        verify(repo).countAllAuthors();
     }
-
-    // ==================== NEGATIVE TEST CASES ====================
 
     @Test
     void testGetAuthorById_Negative_NotFound() {
         when(repo.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(AuthorNotFoundException.class, () ->
-                service.getAuthorById(99));
-        verify(repo, times(1)).findById(99);
+        assertThrows(AuthorNotFoundException.class, () -> service.getAuthorById(99));
+        verify(repo).findById(99);
     }
 
     @Test
     void testUpdateAuthor_Negative_NotFound() {
         when(repo.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(AuthorNotFoundException.class, () ->
-                service.updateAuthor(99, requestDTO));
-        verify(repo, times(1)).findById(99);
+        assertThrows(AuthorNotFoundException.class, () -> service.updateAuthor(99, requestDTO));
+        verify(repo).findById(99);
     }
 
     @Test
     void testDeleteAuthor_Negative_NotFound() {
         when(repo.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(AuthorNotFoundException.class, () ->
-                service.deleteAuthor(99));
-        verify(repo, times(1)).findById(99);
+        assertThrows(AuthorNotFoundException.class, () -> service.deleteAuthor(99));
+        verify(repo).findById(99);
     }
 
     @Test
     void testGetAuthorByFirstNameAndLastName_Negative_NotFound() {
         when(repo.findByFirstNameAndLastName("Unknown", "Person")).thenReturn(null);
 
-        assertThrows(AuthorNotFoundException.class, () ->
-                service.getAuthorByFirstNameAndLastName("Unknown", "Person"));
-        verify(repo, times(1)).findByFirstNameAndLastName("Unknown", "Person");
+        assertThrows(AuthorNotFoundException.class,
+                () -> service.getAuthorByFirstNameAndLastName("Unknown", "Person"));
+        verify(repo).findByFirstNameAndLastName("Unknown", "Person");
     }
 
     @Test
     void testSearchByLastName_Negative_NotFound() {
         when(repo.searchByLastName("xyz")).thenReturn(Collections.emptyList());
 
-        assertThrows(AuthorNotFoundException.class, () ->
-                service.searchByLastName("xyz"));
-        verify(repo, times(1)).searchByLastName("xyz");
+        assertThrows(AuthorNotFoundException.class, () -> service.searchByLastName("xyz"));
+        verify(repo).searchByLastName("xyz");
     }
 
     @Test
@@ -197,7 +194,7 @@ public class AuthorServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(repo, times(1)).findAll();
+        verify(repo).findAll();
     }
 
     @Test
@@ -206,7 +203,25 @@ public class AuthorServiceImplTest {
 
         Long count = service.countAllAuthors();
 
-        assertEquals(0L, count); // valid but zero — edge case
-        verify(repo, times(1)).countAllAuthors();
+        assertEquals(0L, count);
+        verify(repo).countAllAuthors();
+    }
+
+    @Test
+    void testAddAuthor_Negative_InvalidRequest() {
+        assertThrows(InvalidBookDataException.class, () -> service.addAuthor(null));
+    }
+
+    @Test
+    void testAddAuthor_Negative_DuplicateAuthor() {
+        when(repo.findByFirstNameAndLastName("John", "Doe")).thenReturn(author);
+
+        assertThrows(DuplicateAuthorException.class, () -> service.addAuthor(requestDTO));
+        verify(repo, never()).save(any(Author.class));
+    }
+
+    @Test
+    void testUpdateAuthor_Negative_InvalidRequest() {
+        assertThrows(InvalidBookDataException.class, () -> service.updateAuthor(1, null));
     }
 }

@@ -2,6 +2,8 @@ package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCart;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCartId;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.DuplicateCartItemException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.EmptyCartException;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
@@ -21,7 +23,16 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
 
     @Override
     public ShoppingCartResponseDTO addCart(ShoppingCartRequestDTO dto) {
-        // use composite key constructor
+        if (dto == null || dto.getUserId() == null || dto.getIsbn() == null || dto.getIsbn().isBlank()) {
+            throw new EmptyCartException("UserId and isbn are required to add an item to the cart");
+        }
+
+        ShoppingCart existingCartItem = repo.findByUserIdAndIsbn(dto.getUserId(), dto.getIsbn());
+        if (existingCartItem != null) {
+            throw new DuplicateCartItemException(
+                    "Cart item already exists for userId: " + dto.getUserId() + " isbn: " + dto.getIsbn());
+        }
+
         ShoppingCart entity = new ShoppingCart(dto.getUserId(), dto.getIsbn());
 
         ShoppingCart saved = repo.save(entity);

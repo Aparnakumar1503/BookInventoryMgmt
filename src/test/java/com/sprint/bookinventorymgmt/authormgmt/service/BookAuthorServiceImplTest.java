@@ -4,6 +4,8 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.BookAuthorRequestD
 import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.BookAuthorResponseDTO;
 import com.sprint.bookinventorymgmt.authormgmt.entity.BookAuthor;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.BookAuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,10 +43,9 @@ class BookAuthorServiceImplTest {
                 .build();
     }
 
-    // ==================== POSITIVE TEST CASES ====================
-
     @Test
     void testAddBookAuthor_Positive() {
+        when(repo.findByIsbn("1-111-11111-4")).thenReturn(Collections.emptyList());
         when(repo.save(any(BookAuthor.class))).thenReturn(bookAuthor);
 
         BookAuthorResponseDTO result = service.addBookAuthor(requestDTO);
@@ -52,7 +53,7 @@ class BookAuthorServiceImplTest {
         assertNotNull(result);
         assertEquals("1-111-11111-4", result.getIsbn());
         assertEquals(1, result.getAuthorId());
-        verify(repo, times(1)).save(any(BookAuthor.class));
+        verify(repo).save(any(BookAuthor.class));
     }
 
     @Test
@@ -63,7 +64,7 @@ class BookAuthorServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(repo, times(1)).findAll();
+        verify(repo).findAll();
     }
 
     @Test
@@ -75,7 +76,7 @@ class BookAuthorServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("1-111-11111-4", result.get(0).getIsbn());
-        verify(repo, times(1)).findByIsbn("1-111-11111-4");
+        verify(repo).findByIsbn("1-111-11111-4");
     }
 
     @Test
@@ -87,7 +88,7 @@ class BookAuthorServiceImplTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(1, result.get(0).getAuthorId());
-        verify(repo, times(1)).findByAuthorId(1);
+        verify(repo).findByAuthorId(1);
     }
 
     @Test
@@ -98,7 +99,7 @@ class BookAuthorServiceImplTest {
 
         assertNotNull(result);
         assertEquals("Y", result.getPrimaryAuthor());
-        verify(repo, times(1)).findPrimaryAuthorByIsbn("1-111-11111-4");
+        verify(repo).findPrimaryAuthorByIsbn("1-111-11111-4");
     }
 
     @Test
@@ -109,7 +110,7 @@ class BookAuthorServiceImplTest {
         String result = service.deleteByIsbn("1-111-11111-4");
 
         assertEquals("BookAuthor entries deleted successfully for isbn: 1-111-11111-4", result);
-        verify(repo, times(1)).deleteByIsbn("1-111-11111-4");
+        verify(repo).deleteByIsbn("1-111-11111-4");
     }
 
     @Test
@@ -120,7 +121,7 @@ class BookAuthorServiceImplTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(repo, times(1)).findBooksByAuthorId(1);
+        verify(repo).findBooksByAuthorId(1);
     }
 
     @Test
@@ -131,54 +132,47 @@ class BookAuthorServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(repo, times(1)).findAll();
+        verify(repo).findAll();
     }
-
-    // ==================== NEGATIVE TEST CASES ====================
 
     @Test
     void testGetByIsbn_Negative_NotFound() {
         when(repo.findByIsbn("INVALID")).thenReturn(Collections.emptyList());
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.getByIsbn("INVALID"));
-        verify(repo, times(1)).findByIsbn("INVALID");
+        assertThrows(BookAuthorNotFoundException.class, () -> service.getByIsbn("INVALID"));
+        verify(repo).findByIsbn("INVALID");
     }
 
     @Test
     void testGetByAuthorId_Negative_NotFound() {
         when(repo.findByAuthorId(99)).thenReturn(Collections.emptyList());
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.getByAuthorId(99));
-        verify(repo, times(1)).findByAuthorId(99);
+        assertThrows(BookAuthorNotFoundException.class, () -> service.getByAuthorId(99));
+        verify(repo).findByAuthorId(99);
     }
 
     @Test
     void testGetPrimaryAuthorByIsbn_Negative_NotFound() {
         when(repo.findPrimaryAuthorByIsbn("INVALID")).thenReturn(null);
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.getPrimaryAuthorByIsbn("INVALID"));
-        verify(repo, times(1)).findPrimaryAuthorByIsbn("INVALID");
+        assertThrows(BookAuthorNotFoundException.class, () -> service.getPrimaryAuthorByIsbn("INVALID"));
+        verify(repo).findPrimaryAuthorByIsbn("INVALID");
     }
 
     @Test
     void testDeleteByIsbn_Negative_NotFound() {
         when(repo.findByIsbn("INVALID")).thenReturn(Collections.emptyList());
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.deleteByIsbn("INVALID"));
-        verify(repo, times(1)).findByIsbn("INVALID");
+        assertThrows(BookAuthorNotFoundException.class, () -> service.deleteByIsbn("INVALID"));
+        verify(repo).findByIsbn("INVALID");
     }
 
     @Test
     void testFindBooksByAuthorId_Negative_NotFound() {
         when(repo.findBooksByAuthorId(99)).thenReturn(Collections.emptyList());
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.findBooksByAuthorId(99));
-        verify(repo, times(1)).findBooksByAuthorId(99);
+        assertThrows(BookAuthorNotFoundException.class, () -> service.findBooksByAuthorId(99));
+        verify(repo).findBooksByAuthorId(99);
     }
 
     @Test
@@ -189,19 +183,23 @@ class BookAuthorServiceImplTest {
                 .primaryAuthor("Y")
                 .build();
 
-        when(repo.save(any(BookAuthor.class))).thenThrow(new IllegalArgumentException("ISBN cannot be null"));
-
-        assertThrows(IllegalArgumentException.class, () ->
-                service.addBookAuthor(invalidDTO));
-        verify(repo, times(1)).save(any(BookAuthor.class));
+        assertThrows(InvalidBookDataException.class, () -> service.addBookAuthor(invalidDTO));
+        verify(repo, never()).save(any(BookAuthor.class));
     }
 
     @Test
     void testFindBooksByAuthorId_Negative_NullAuthorId() {
         when(repo.findBooksByAuthorId(null)).thenReturn(Collections.emptyList());
 
-        assertThrows(BookAuthorNotFoundException.class, () ->
-                service.findBooksByAuthorId(null));
-        verify(repo, times(1)).findBooksByAuthorId(null);
+        assertThrows(BookAuthorNotFoundException.class, () -> service.findBooksByAuthorId(null));
+        verify(repo).findBooksByAuthorId(null);
+    }
+
+    @Test
+    void testAddBookAuthor_Negative_DuplicateMapping() {
+        when(repo.findByIsbn("1-111-11111-4")).thenReturn(List.of(bookAuthor));
+
+        assertThrows(DuplicateBookAuthorException.class, () -> service.addBookAuthor(requestDTO));
+        verify(repo, never()).save(any(BookAuthor.class));
     }
 }

@@ -2,8 +2,8 @@ package com.sprint.bookinventorymgmt.bookmgmt.service;
 
 import com.sprint.bookinventorymgmt.bookmgmt.dto.response.StateResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.entity.State;
-import com.sprint.bookinventorymgmt.bookmgmt.exception.DataNotFoundException;
-import com.sprint.bookinventorymgmt.bookmgmt.exception.InvalidInputException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.DataNotFoundException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.InvalidInputException;
 import com.sprint.bookinventorymgmt.bookmgmt.repository.StateRepository;
 import org.springframework.stereotype.Service;
 
