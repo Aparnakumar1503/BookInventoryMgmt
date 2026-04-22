@@ -46,14 +46,13 @@ public class RoleController {
             @PathVariable Integer roleId) {
         UserResponseDTO user = userService.getUserById(userId);
 
-        UserRequestDTO requestDTO = UserRequestDTO.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .phoneNumber(user.getPhoneNumber())
-                .userName(user.getUserName())
-                .password("")
-                .roleNumber(roleId)
-                .build();
+        UserRequestDTO requestDTO = new UserRequestDTO();
+        requestDTO.setFirstName(user.getFirstName());
+        requestDTO.setLastName(user.getLastName());
+        requestDTO.setPhoneNumber(user.getPhoneNumber());
+        requestDTO.setUserName(user.getUserName());
+        requestDTO.setPassword("");
+        requestDTO.setRoleNumber(roleId);
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(

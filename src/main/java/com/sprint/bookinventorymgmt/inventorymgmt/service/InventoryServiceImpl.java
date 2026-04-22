@@ -28,10 +28,14 @@ public class InventoryServiceImpl implements IInventoryService {
         // Duplicate check
         List<Inventory> existing = repository.findByIsbn(inventory.getIsbn());
 
-        boolean duplicate = existing.stream()
-                .anyMatch(inv ->
-                        inv.getRanks().equals(inventory.getRanks())
-                                && Boolean.FALSE.equals(inv.getPurchased()));
+        boolean duplicate = false;
+        for (Inventory inv : existing) {
+            if (inv.getRanks().equals(inventory.getRanks())
+                    && Boolean.FALSE.equals(inv.getPurchased())) {
+                duplicate = true;
+                break;
+            }
+        }
 
         if (duplicate) {
             throw new DuplicateInventoryException(

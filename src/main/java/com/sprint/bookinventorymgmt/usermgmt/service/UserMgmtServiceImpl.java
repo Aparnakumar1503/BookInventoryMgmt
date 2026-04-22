@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,10 +58,14 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
 
     @Override
     public List<UserResponseDTO> getAllUsers() {
-        return userRepo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<User> users = userRepo.findAll();
+        List<UserResponseDTO> response = new ArrayList<>();
+
+        for (User user : users) {
+            response.add(mapToDTO(user));
+        }
+
+        return response;
     }
 
     @Override
@@ -122,7 +127,13 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         if (users.isEmpty()) {
             throw new UserNotFoundException("No users found with role number: " + roleNumber);
         }
-        return users.stream().map(this::mapToDTO).toList();
+
+        List<UserResponseDTO> response = new ArrayList<>();
+        for (User user : users) {
+            response.add(mapToDTO(user));
+        }
+
+        return response;
     }
 
     @Override
@@ -151,15 +162,15 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
     }
 
     private UserResponseDTO mapToDTO(User entity) {
-        return UserResponseDTO.builder()
-                .userId(entity.getUserId())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .phoneNumber(entity.getPhoneNumber())
-                .userName(entity.getUserName())
-                .roleNumber(entity.getRole() != null ? entity.getRole().getRoleNumber() : null)
-                .permRole(entity.getRole() != null ? entity.getRole().getPermRole() : null)
-                .build();
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setUserId(entity.getUserId());
+        dto.setFirstName(entity.getFirstName());
+        dto.setLastName(entity.getLastName());
+        dto.setPhoneNumber(entity.getPhoneNumber());
+        dto.setUserName(entity.getUserName());
+        dto.setRoleNumber(entity.getRole() != null ? entity.getRole().getRoleNumber() : null);
+        dto.setPermRole(entity.getRole() != null ? entity.getRole().getPermRole() : null);
+        return dto;
     }
 
 }

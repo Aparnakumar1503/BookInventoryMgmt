@@ -12,6 +12,7 @@ import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogRespons
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,10 +51,14 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Override
     public List<PurchaseLogResponseDTO> getAll() {
-        return repo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<PurchaseLog> purchaseLogs = repo.findAll();
+        List<PurchaseLogResponseDTO> response = new ArrayList<>();
+
+        for (PurchaseLog purchaseLog : purchaseLogs) {
+            response.add(mapToDTO(purchaseLog));
+        }
+
+        return response;
     }
 
     @Override

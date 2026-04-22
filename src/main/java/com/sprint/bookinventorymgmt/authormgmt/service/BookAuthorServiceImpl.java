@@ -7,6 +7,7 @@ import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorExc
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.BookAuthorRepository;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,9 +24,15 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
     public BookAuthorResponseDTO addBookAuthor(BookAuthorRequestDTO dto) {
         validateBookAuthorRequest(dto);
 
-        boolean alreadyMapped = repo.findByIsbn(dto.getIsbn())
-                .stream()
-                .anyMatch(bookAuthor -> dto.getAuthorId().equals(bookAuthor.getAuthorId()));
+        List<BookAuthor> existingBookAuthors = repo.findByIsbn(dto.getIsbn());
+        boolean alreadyMapped = false;
+        for (BookAuthor bookAuthor : existingBookAuthors) {
+            if (dto.getAuthorId().equals(bookAuthor.getAuthorId())) {
+                alreadyMapped = true;
+                break;
+            }
+        }
+
         if (alreadyMapped) {
             throw new DuplicateBookAuthorException(
                     "Book author mapping already exists for isbn: " + dto.getIsbn() + " and authorId: " + dto.getAuthorId());
@@ -42,10 +49,14 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
 
     @Override
     public List<BookAuthorResponseDTO> getAllBookAuthors() {
-        return repo.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+        List<BookAuthor> bookAuthors = repo.findAll();
+        List<BookAuthorResponseDTO> response = new ArrayList<>();
+
+        for (BookAuthor bookAuthor : bookAuthors) {
+            response.add(mapToDTO(bookAuthor));
+        }
+
+        return response;
     }
 
     @Override
@@ -54,7 +65,13 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
         if (list.isEmpty()) {
             throw new BookAuthorNotFoundException("No authors found for isbn: " + isbn);
         }
-        return list.stream().map(this::mapToDTO).toList();
+
+        List<BookAuthorResponseDTO> response = new ArrayList<>();
+        for (BookAuthor bookAuthor : list) {
+            response.add(mapToDTO(bookAuthor));
+        }
+
+        return response;
     }
 
     @Override
@@ -63,7 +80,13 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
         if (list.isEmpty()) {
             throw new BookAuthorNotFoundException("No books found for authorId: " + authorId);
         }
-        return list.stream().map(this::mapToDTO).toList();
+
+        List<BookAuthorResponseDTO> response = new ArrayList<>();
+        for (BookAuthor bookAuthor : list) {
+            response.add(mapToDTO(bookAuthor));
+        }
+
+        return response;
     }
 
     @Override
@@ -91,18 +114,24 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
         if (list.isEmpty()) {
             throw new BookAuthorNotFoundException("No books found for authorId: " + authorId);
         }
-        return list.stream().map(this::mapToDTO).toList();
+
+        List<BookAuthorResponseDTO> response = new ArrayList<>();
+        for (BookAuthor bookAuthor : list) {
+            response.add(mapToDTO(bookAuthor));
+        }
+
+        return response;
     }
 
     private BookAuthorResponseDTO mapToDTO(BookAuthor entity) {
-        return BookAuthorResponseDTO.builder()
-                .isbn(entity.getIsbn())
-                .authorId(entity.getAuthorId())
-                .primaryAuthor(entity.getPrimaryAuthor())
-                .firstName(entity.getAuthor() != null ? entity.getAuthor().getFirstName() : null)
-                .lastName(entity.getAuthor() != null ? entity.getAuthor().getLastName() : null)
-                .bookTitle(entity.getBook() != null ? entity.getBook().getTitle() : null)
-                .build();
+        BookAuthorResponseDTO dto = new BookAuthorResponseDTO();
+        dto.setIsbn(entity.getIsbn());
+        dto.setAuthorId(entity.getAuthorId());
+        dto.setPrimaryAuthor(entity.getPrimaryAuthor());
+        dto.setFirstName(entity.getAuthor() != null ? entity.getAuthor().getFirstName() : null);
+        dto.setLastName(entity.getAuthor() != null ? entity.getAuthor().getLastName() : null);
+        dto.setBookTitle(entity.getBook() != null ? entity.getBook().getTitle() : null);
+        return dto;
     }
 
     private void validateBookAuthorRequest(BookAuthorRequestDTO dto) {

@@ -43,10 +43,11 @@ public class BookConditionController {
     @GetMapping
     public ResponseEntity<ResponseStructure<List<BookConditionResponseDTO>>> getAll() {
 
-        List<BookConditionResponseDTO> list = service.getAllBookConditions()
-                .stream()
-                .map(InventoryMapper::toBookConditionResponse)
-                .toList();
+        List<BookCondition> conditions = service.getAllBookConditions();
+        List<BookConditionResponseDTO> list = new java.util.ArrayList<>();
+        for (BookCondition condition : conditions) {
+            list.add(InventoryMapper.toBookConditionResponse(condition));
+        }
 
         ResponseStructure<List<BookConditionResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
