@@ -83,7 +83,11 @@ export class EndpointFormComponent {
         this.response.set(result);
 
         if (result.ok) {
-          this.storageService.setLastResponse(result, this.moduleId);
+          this.storageService.setLastResponse(result, {
+            moduleId: this.moduleId,
+            endpointId: this.endpointId,
+            payload
+          });
           this.notificationService.success('API request completed successfully.');
           void this.router.navigate(['/result']);
           return;

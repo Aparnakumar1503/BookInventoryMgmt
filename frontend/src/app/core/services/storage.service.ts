@@ -1,8 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { ApiCallResult } from '../models/response.model';
+import { ApiCallResult, StoredRequestContext } from '../models/response.model';
 
 const LAST_RESPONSE_KEY = 'book-inventory:last-response';
 const LAST_MODULE_KEY = 'book-inventory:last-module';
+const LAST_REQUEST_KEY = 'book-inventory:last-request';
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
@@ -10,20 +11,26 @@ export class StorageService {
 
   readonly lastResponse = this.lastResponseSignal.asReadonly();
 
-  setLastResponse(result: ApiCallResult, moduleId: string): void {
+  setLastResponse(result: ApiCallResult, requestContext: StoredRequestContext): void {
     this.lastResponseSignal.set(result);
     this.write(LAST_RESPONSE_KEY, result);
-    this.write(LAST_MODULE_KEY, moduleId);
+    this.write(LAST_MODULE_KEY, requestContext.moduleId);
+    this.write(LAST_REQUEST_KEY, requestContext);
   }
 
   getLastModuleId(): string | null {
     return this.read<string>(LAST_MODULE_KEY);
   }
 
+  getLastRequestContext(): StoredRequestContext | null {
+    return this.read<StoredRequestContext>(LAST_REQUEST_KEY);
+  }
+
   clearLastResponse(): void {
     this.lastResponseSignal.set(null);
     localStorage.removeItem(LAST_RESPONSE_KEY);
     localStorage.removeItem(LAST_MODULE_KEY);
+    localStorage.removeItem(LAST_REQUEST_KEY);
   }
 
   private read<T>(key: string): T | null {
