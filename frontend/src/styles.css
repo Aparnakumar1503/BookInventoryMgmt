@@ -1,3 +1,108 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+:root {
+  --bv-paper: #f5efe4;
+  --bv-panel: rgba(255, 252, 246, 0.88);
+  --bv-panel-solid: #fffdf8;
+  --bv-border: rgba(102, 83, 57, 0.14);
+  --bv-ink: #201812;
+  --bv-primary: #4b61e0;
+  --bv-primary-soft: #e8ecff;
+  --bv-accent: #5f7f6f;
+  --bv-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --bv-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  background:
+    linear-gradient(to right, rgba(112, 97, 76, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(112, 97, 76, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.8), transparent 40%),
+    linear-gradient(180deg, #fbf7ef 0%, #f5efe4 100%);
+  background-size: 72px 72px, 72px 72px, auto, auto;
+}
+
+body {
+  color: var(--bv-ink);
+  font-family: var(--bv-body);
+}
+
+code,
+pre {
+  font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+}
+
+.bv-display {
+  font-family: var(--bv-display);
+  letter-spacing: -0.04em;
+}
+
+.bv-paper-shell {
+  position: relative;
+}
+
+.bv-paper-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(95, 127, 111, 0.08), transparent 22%),
+    radial-gradient(circle at bottom right, rgba(75, 97, 224, 0.1), transparent 24%);
+  pointer-events: none;
+}
+
+.bv-panel {
+  border: 1px solid var(--bv-border);
+  background: var(--bv-panel);
+  box-shadow:
+    0 24px 60px rgba(79, 61, 41, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+}
+
+.bv-card {
+  border: 1px solid var(--bv-border);
+  background: var(--bv-panel-solid);
+  box-shadow: 0 16px 36px rgba(69, 52, 35, 0.08);
+}
+
+.bv-button-primary {
+  background: linear-gradient(135deg, #4b61e0 0%, #3f54d2 55%, #6477e8 100%);
+  color: white;
+  box-shadow: 0 16px 32px rgba(75, 97, 224, 0.22);
+}
+
+.bv-button-secondary {
+  border: 1px solid var(--bv-border);
+  background: rgba(255, 252, 246, 0.88);
+  color: var(--bv-ink);
+}
+
+.bv-code-block {
+  background: #17161f;
+  color: #d9f5ec;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.bv-method-get {
+  background: #e4f5e9;
+  color: #2f7d44;
+}
+
+.bv-method-post {
+  background: #fff0d8;
+  color: #b57b24;
+}
+
+.bv-method-put,
+.bv-method-patch {
+  background: #e4efff;
+  color: #3e67bf;
+}
+
+.bv-method-delete {
+  background: #ffe4df;
+  color: #b5564d;
+}

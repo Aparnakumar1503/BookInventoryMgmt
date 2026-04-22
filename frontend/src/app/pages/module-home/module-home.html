@@ -1,20 +1,26 @@
 @if (module(); as selectedModule) {
-  <section class="bg-gradient-to-br from-blue-50 via-white to-teal-50">
+  <section class="bv-paper-shell relative overflow-hidden">
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <a routerLink="/" class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-black text-blue-700 shadow-sm transition hover:bg-blue-700 hover:text-white">
+      <a routerLink="/" class="bv-button-secondary inline-flex items-center rounded-full px-4 py-2 text-sm font-black transition hover:brightness-105">
         Back
       </a>
 
-      <div class="mt-8 grid gap-8 rounded-3xl border border-white/70 bg-white/80 p-6 shadow-2xl shadow-blue-950/5 lg:grid-cols-[1fr_18rem] lg:p-10">
+      <div class="bv-panel mt-8 grid gap-8 rounded-[2.4rem] p-6 lg:grid-cols-[1fr_18rem] lg:p-10">
         <div>
-          <p class="text-sm font-black uppercase tracking-wide text-teal-700">{{ selectedModule.owner.name }} · {{ selectedModule.owner.role }}</p>
-          <h1 class="mt-4 text-4xl font-black text-slate-950 sm:text-5xl">{{ selectedModule.name }}</h1>
+          <div class="inline-flex rounded-full bg-[rgba(116,128,212,0.08)] px-4 py-2 text-sm font-black text-[var(--bv-primary)]">
+            {{ selectedModule.owner.name }} · {{ selectedModule.owner.role }}
+          </div>
+          <h1 class="bv-display mt-5 text-5xl leading-none text-slate-950 sm:text-6xl">{{ selectedModule.name }}</h1>
           <p class="mt-4 max-w-3xl text-lg font-medium leading-8 text-slate-600">{{ selectedModule.tagline }}</p>
           <p class="mt-4 max-w-3xl text-base font-medium leading-7 text-slate-500">{{ selectedModule.description }}</p>
-          <p class="mt-4 text-sm font-semibold text-slate-500">Covered modules: {{ selectedModule.owner.modules.join(', ') }}</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            @for (moduleName of selectedModule.owner.modules; track moduleName) {
+              <span class="rounded-full border border-[color:var(--bv-border)] bg-white/70 px-4 py-2 text-sm font-bold text-slate-700">{{ moduleName }}</span>
+            }
+          </div>
         </div>
-        <div class="rounded-3xl bg-slate-950 p-6 text-white">
-          <p class="text-sm font-black uppercase tracking-wide text-teal-300">Demo Access</p>
+        <div class="rounded-[2rem] bg-[#18161d] p-6 text-white shadow-2xl shadow-slate-950/20">
+          <p class="text-sm font-black uppercase tracking-[0.24em] text-[#8be1bf]">Demo Access</p>
           <p class="mt-4 text-5xl font-black">{{ selectedModule.endpoints.length }}</p>
           <p class="mt-2 text-sm font-semibold text-slate-300">Configured endpoints</p>
           <p class="mt-6 text-sm font-semibold text-slate-300">Username: {{ selectedModule.owner.username }}</p>
@@ -30,10 +36,10 @@
     </div>
   </section>
 } @else {
-  <section class="grid min-h-[70vh] place-items-center bg-gradient-to-br from-blue-50 to-teal-50 px-4">
-    <div class="max-w-md rounded-3xl bg-white p-8 text-center shadow-2xl shadow-blue-950/10">
-      <h1 class="text-3xl font-black text-slate-950">Module not found</h1>
-      <a routerLink="/" class="mt-6 inline-flex rounded-full bg-blue-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-800">Go home</a>
+  <section class="grid min-h-[70vh] place-items-center px-4">
+    <div class="bv-card max-w-md rounded-[2rem] p-8 text-center">
+      <h1 class="bv-display text-4xl text-slate-950">Module not found</h1>
+      <a routerLink="/" class="bv-button-primary mt-6 inline-flex rounded-full px-5 py-3 text-sm font-black text-white transition hover:brightness-105">Go home</a>
     </div>
   </section>
 }

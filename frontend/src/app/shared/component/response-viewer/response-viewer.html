@@ -1,8 +1,8 @@
 @if (response(); as apiResponse) {
-  <section class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 shadow-2xl shadow-slate-950/10">
+  <section class="overflow-hidden rounded-[2rem] border border-[color:var(--bv-border)] bg-[#15141d] shadow-2xl shadow-slate-950/10">
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-white/5 px-5 py-4">
       <div>
-        <p class="text-xs font-black uppercase tracking-wide text-slate-400">Response</p>
+        <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Response</p>
         <p class="mt-1 break-all text-sm font-semibold text-white">{{ apiResponse.url }}</p>
       </div>
       <span
@@ -15,6 +15,6 @@
         {{ apiResponse.status || 'ERR' }}
       </span>
     </div>
-    <pre class="max-h-96 overflow-auto p-5 text-sm leading-6 text-teal-100">{{ formattedBody() }}</pre>
+    <pre class="max-h-96 overflow-auto p-5 text-sm leading-6 text-[#d3efe2]">{{ formattedBody() }}</pre>
   </section>
 }

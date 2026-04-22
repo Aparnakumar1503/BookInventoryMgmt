@@ -11,6 +11,21 @@ import { StorageService } from '../../core/services/storage.service';
 import { ResponseViewerComponent } from '../../shared/component/response-viewer/response-viewer';
 
 type ViewMode = 'table' | 'preview' | 'json';
+type PreviewType =
+  | 'books'
+  | 'authors'
+  | 'users'
+  | 'reviewers'
+  | 'reviews'
+  | 'inventory'
+  | 'conditions'
+  | 'cart'
+  | 'orders'
+  | 'publishers'
+  | 'categories'
+  | 'states'
+  | 'roles'
+  | null;
 
 interface ApiEnvelope {
   statusCode?: number;
@@ -86,11 +101,7 @@ export class EndpointResultComponent {
 
   readonly tableRows = computed<Record<string, unknown>[]>(() => {
     const paginated = this.paginatedData();
-    if (paginated) {
-      return this.normalizeRows(paginated.items);
-    }
-
-    return this.normalizeRows(this.responseData());
+    return this.normalizeRows(paginated ? paginated.items : this.responseData());
   });
 
   readonly tableColumns = computed<string[]>(() => {
@@ -107,6 +118,25 @@ export class EndpointResultComponent {
     );
   });
 
+  readonly previewType = computed<PreviewType>(() => {
+    const row = this.tableRows()[0];
+    if (!row) return null;
+    if (this.hasKeys(row, ['title', 'isbn'])) return 'books';
+    if (this.hasKeys(row, ['authorId', 'firstName', 'lastName'])) return 'authors';
+    if (this.hasKeys(row, ['userId', 'userName', 'roleNumber'])) return 'users';
+    if (this.hasKeys(row, ['reviewerID', 'name'])) return 'reviewers';
+    if (this.hasKeys(row, ['rating', 'comments'])) return 'reviews';
+    if (this.hasKeys(row, ['inventoryId', 'isbn', 'ranks'])) return 'inventory';
+    if (this.hasKeys(row, ['ranks', 'description', 'price'])) return 'conditions';
+    if (this.hasKeys(row, ['userId', 'isbn'])) return 'cart';
+    if (this.hasKeys(row, ['userId', 'inventoryId'])) return 'orders';
+    if (this.hasKeys(row, ['publisherId', 'name', 'stateCode'])) return 'publishers';
+    if (this.hasKeys(row, ['catId', 'catDescription'])) return 'categories';
+    if (this.hasKeys(row, ['stateCode', 'stateName'])) return 'states';
+    if (this.hasKeys(row, ['roleNumber', 'permRole'])) return 'roles';
+    return null;
+  });
+
   readonly canPaginate = computed(() => Boolean(
     this.response()?.ok &&
     this.endpoint()?.method === 'GET' &&
@@ -114,37 +144,125 @@ export class EndpointResultComponent {
     this.requestContext()
   ));
 
-  readonly previewSupported = computed(() => {
-    const endpointId = this.requestContext()?.endpointId;
-    return endpointId === 'list-books' || endpointId === 'get-book';
-  });
+  readonly previewSupported = computed(() => this.previewType() !== null);
 
-  readonly bookPreviewItems = computed<BookPreviewItem[]>(() => {
-    if (!this.previewSupported()) {
-      return [];
-    }
-
-    const paginated = this.paginatedData();
-    const source = paginated ? paginated.items : this.responseData();
-    return this.normalizeRows(source)
-      .filter((item) => typeof item['title'] === 'string' && typeof item['isbn'] === 'string')
-      .map((item) => ({
+  readonly bookPreviewItems = computed<BookPreviewItem[]>(() => this.previewType() === 'books'
+    ? this.tableRows().map((item) => ({
         isbn: String(item['isbn'] ?? ''),
         title: String(item['title'] ?? 'Untitled'),
         description: String(item['description'] ?? 'No description available.'),
         edition: String(item['edition'] ?? 'N/A'),
         categoryName: String(item['categoryName'] ?? item['categoryId'] ?? 'Uncategorized'),
         publisherName: String(item['publisherName'] ?? item['publisherId'] ?? 'Unknown publisher')
-      }));
-  });
+      }))
+    : []);
 
-  readonly activeViewLabel = computed(() => {
-    if (this.viewMode() === 'preview') {
-      return 'Preview UI';
-    }
+  readonly authorPreviewItems = computed(() => this.previewType() === 'authors'
+    ? this.tableRows().map((item) => ({
+        authorId: Number(item['authorId'] ?? 0),
+        fullName: `${String(item['firstName'] ?? '')} ${String(item['lastName'] ?? '')}`.trim(),
+        firstName: String(item['firstName'] ?? ''),
+        lastName: String(item['lastName'] ?? '')
+      }))
+    : []);
 
-    return this.viewMode() === 'json' ? 'Raw JSON' : 'Table';
-  });
+  readonly userPreviewItems = computed(() => this.previewType() === 'users'
+    ? this.tableRows().map((item) => ({
+        userId: Number(item['userId'] ?? 0),
+        fullName: `${String(item['firstName'] ?? '')} ${String(item['lastName'] ?? '')}`.trim(),
+        userName: String(item['userName'] ?? ''),
+        phoneNumber: String(item['phoneNumber'] ?? 'Not provided'),
+        roleNumber: Number(item['roleNumber'] ?? 0),
+        permRole: String(item['permRole'] ?? 'Unknown role')
+      }))
+    : []);
+
+  readonly reviewerPreviewItems = computed(() => this.previewType() === 'reviewers'
+    ? this.tableRows().map((item) => ({
+        reviewerID: Number(item['reviewerID'] ?? 0),
+        name: String(item['name'] ?? 'Unnamed reviewer'),
+        employedBy: String(item['employedBy'] ?? 'Independent')
+      }))
+    : []);
+
+  readonly reviewPreviewItems = computed(() => this.previewType() === 'reviews'
+    ? this.tableRows().map((item) => ({
+        id: Number(item['id'] ?? 0),
+        isbn: String(item['isbn'] ?? ''),
+        reviewerID: Number(item['reviewerID'] ?? 0),
+        rating: Number(item['rating'] ?? 0),
+        comments: String(item['comments'] ?? 'No comments provided.')
+      }))
+    : []);
+
+  readonly inventoryPreviewItems = computed(() => this.previewType() === 'inventory'
+    ? this.tableRows().map((item) => ({
+        inventoryId: Number(item['inventoryId'] ?? 0),
+        isbn: String(item['isbn'] ?? ''),
+        ranks: Number(item['ranks'] ?? 0),
+        purchased: Boolean(item['purchased'])
+      }))
+    : []);
+
+  readonly conditionPreviewItems = computed(() => this.previewType() === 'conditions'
+    ? this.tableRows().map((item) => ({
+        ranks: Number(item['ranks'] ?? 0),
+        description: String(item['description'] ?? ''),
+        fullDescription: String(item['fullDescription'] ?? ''),
+        price: Number(item['price'] ?? 0)
+      }))
+    : []);
+
+  readonly cartPreviewItems = computed(() => this.previewType() === 'cart'
+    ? this.tableRows().map((item) => ({
+        userId: Number(item['userId'] ?? 0),
+        isbn: String(item['isbn'] ?? '')
+      }))
+    : []);
+
+  readonly orderPreviewItems = computed(() => this.previewType() === 'orders'
+    ? this.tableRows().map((item) => ({
+        userId: Number(item['userId'] ?? 0),
+        inventoryId: Number(item['inventoryId'] ?? 0)
+      }))
+    : []);
+
+  readonly publisherPreviewItems = computed(() => this.previewType() === 'publishers'
+    ? this.tableRows().map((item) => ({
+        publisherId: Number(item['publisherId'] ?? 0),
+        name: String(item['name'] ?? ''),
+        city: String(item['city'] ?? 'Unknown city'),
+        stateCode: String(item['stateCode'] ?? ''),
+        stateName: String(item['stateName'] ?? '')
+      }))
+    : []);
+
+  readonly categoryPreviewItems = computed(() => this.previewType() === 'categories'
+    ? this.tableRows().map((item) => ({
+        catId: Number(item['catId'] ?? 0),
+        catDescription: String(item['catDescription'] ?? '')
+      }))
+    : []);
+
+  readonly statePreviewItems = computed(() => this.previewType() === 'states'
+    ? this.tableRows().map((item) => ({
+        stateCode: String(item['stateCode'] ?? ''),
+        stateName: String(item['stateName'] ?? '')
+      }))
+    : []);
+
+  readonly rolePreviewItems = computed(() => this.previewType() === 'roles'
+    ? this.tableRows().map((item) => ({
+        roleNumber: Number(item['roleNumber'] ?? 0),
+        permRole: String(item['permRole'] ?? '')
+      }))
+    : []);
+
+  readonly activeViewLabel = computed(() => this.viewMode() === 'preview'
+    ? 'Preview UI'
+    : this.viewMode() === 'json'
+      ? 'Raw JSON'
+      : 'Table');
 
   constructor() {
     if (!this.previewSupported()) {
@@ -153,44 +271,28 @@ export class EndpointResultComponent {
   }
 
   setViewMode(mode: ViewMode): void {
-    if (mode === 'preview' && !this.previewSupported()) {
-      return;
-    }
-
+    if (mode === 'preview' && !this.previewSupported()) return;
     this.viewMode.set(mode);
   }
 
   goToPreviousPage(): void {
     const page = this.paginatedData()?.page ?? 0;
-    if (page > 0) {
-      this.reloadPage(page - 1);
-    }
+    if (page > 0) this.reloadPage(page - 1);
   }
 
   goToNextPage(): void {
     const paginated = this.paginatedData();
-    if (paginated?.hasNext) {
-      this.reloadPage(paginated.page + 1);
-    }
+    if (paginated?.hasNext) this.reloadPage(paginated.page + 1);
   }
 
   formatColumnLabel(column: string): string {
-    return column
-      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-      .replace(/[_-]+/g, ' ')
-      .replace(/\b\w/g, (char) => char.toUpperCase());
+    return column.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
   renderCellValue(row: Record<string, unknown>, column: string): string {
     const value = row[column];
-    if (value === null || value === undefined || value === '') {
-      return '—';
-    }
-
-    if (typeof value === 'object') {
-      return JSON.stringify(value);
-    }
-
+    if (value === null || value === undefined || value === '') return '—';
+    if (typeof value === 'object') return JSON.stringify(value);
     return String(value);
   }
 
@@ -202,43 +304,42 @@ export class EndpointResultComponent {
     return `${index}-${book.isbn}`;
   }
 
+  trackByValue(index: number, item: { [key: string]: string | number | boolean }): string {
+    return `${index}-${Object.values(item).join('-')}`;
+  }
+
   bookAccent(book: BookPreviewItem): string {
     const seed = book.title.length + book.isbn.length;
-    const variants = [
-      'from-blue-600 via-cyan-500 to-teal-400',
-      'from-emerald-600 via-teal-500 to-lime-400',
-      'from-amber-600 via-orange-500 to-rose-400',
-      'from-slate-700 via-blue-700 to-cyan-500'
-    ];
-
+    const variants = ['from-blue-600 via-cyan-500 to-teal-400', 'from-emerald-600 via-teal-500 to-lime-400', 'from-amber-600 via-orange-500 to-rose-400', 'from-slate-700 via-blue-700 to-cyan-500'];
     return variants[seed % variants.length] ?? variants[0];
   }
 
   bookInitials(title: string): string {
-    return title
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? '')
-      .join('') || 'BK';
+    return title.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'BK';
+  }
+
+  previewInitials(value: string): string {
+    return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'BV';
+  }
+
+  ratingStars(rating: number): string[] {
+    const filled = Math.max(0, Math.min(5, Math.round(rating / 2)));
+    return Array.from({ length: 5 }, (_, index) => index < filled ? '★' : '☆');
+  }
+
+  inventoryTone(purchased: boolean): string {
+    return purchased ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
   }
 
   private reloadPage(page: number): void {
     const context = this.requestContext();
     const endpoint = this.endpoint();
     const paginated = this.paginatedData();
-
-    if (!context || !endpoint || !paginated) {
-      return;
-    }
+    if (!context || !endpoint || !paginated) return;
 
     const payload: EndpointRequestPayload = {
       ...context.payload,
-      queryParams: {
-        ...context.payload.queryParams,
-        page,
-        size: paginated.size || 10
-      }
+      queryParams: { ...context.payload.queryParams, page, size: paginated.size || 10 }
     };
 
     this.isLoadingPage.set(true);
@@ -246,35 +347,28 @@ export class EndpointResultComponent {
       .pipe(finalize(() => this.isLoadingPage.set(false)))
       .subscribe((result) => {
         this.response.set(result);
-
         if (result.ok) {
-          const nextContext: StoredRequestContext = {
-            ...context,
-            payload
-          };
+          const nextContext: StoredRequestContext = { ...context, payload };
           this.requestContext.set(nextContext);
           this.storageService.setLastResponse(result, nextContext);
           return;
         }
-
         this.notificationService.error('Could not load the requested page.');
       });
   }
 
   private normalizeRows(value: unknown): Record<string, unknown>[] {
-    if (Array.isArray(value)) {
-      return value.filter((item): item is Record<string, unknown> => this.isRecord(item));
-    }
-
-    if (this.isRecord(value)) {
-      return [value];
-    }
-
+    if (Array.isArray(value)) return value.filter((item): item is Record<string, unknown> => this.isRecord(item));
+    if (this.isRecord(value)) return [value];
     return [];
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  private hasKeys(row: Record<string, unknown>, keys: string[]): boolean {
+    return keys.every((key) => key in row);
   }
 
   private toNumber(value: unknown): number {

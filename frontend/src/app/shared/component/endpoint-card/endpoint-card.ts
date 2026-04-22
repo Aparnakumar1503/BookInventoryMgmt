@@ -13,11 +13,11 @@ export class EndpointCardComponent {
 
   methodClass(method: string): string {
     const classes: Record<string, string> = {
-      GET: 'bg-blue-100 text-blue-800',
-      POST: 'bg-teal-100 text-teal-800',
-      PUT: 'bg-amber-100 text-amber-800',
-      PATCH: 'bg-violet-100 text-violet-800',
-      DELETE: 'bg-rose-100 text-rose-800'
+      GET: 'bv-method-get',
+      POST: 'bv-method-post',
+      PUT: 'bv-method-put',
+      PATCH: 'bv-method-patch',
+      DELETE: 'bv-method-delete'
     };
 
     return classes[method] ?? 'bg-slate-100 text-slate-800';
