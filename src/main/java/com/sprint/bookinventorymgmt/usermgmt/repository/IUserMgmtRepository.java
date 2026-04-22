@@ -14,8 +14,10 @@ import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 @Repository
 public interface IUserMgmtRepository extends JpaRepository <User,Integer>{
 	Optional<User> findByUserName(String userName);
+	Optional<User> findByUserNameIgnoreCase(String userName);
 	List<User> findByLastName(String lastName);
 	boolean existsByUserName(String userName);
+	boolean existsByUserNameIgnoreCase(String userName);
 
 	// Custom Query 1 — find user by username and password (login)
 	@Query("SELECT u FROM User u WHERE u.userName = :userName AND u.password = :password")

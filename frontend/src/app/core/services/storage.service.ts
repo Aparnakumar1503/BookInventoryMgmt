@@ -20,6 +20,12 @@ export class StorageService {
     return this.read<string>(LAST_MODULE_KEY);
   }
 
+  clearLastResponse(): void {
+    this.lastResponseSignal.set(null);
+    localStorage.removeItem(LAST_RESPONSE_KEY);
+    localStorage.removeItem(LAST_MODULE_KEY);
+  }
+
   private read<T>(key: string): T | null {
     try {
       const rawValue = localStorage.getItem(key);

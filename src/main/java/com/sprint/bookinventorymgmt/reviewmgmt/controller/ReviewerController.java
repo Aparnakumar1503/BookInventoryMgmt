@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reviewers")
+@RequestMapping("/api/v1/reviewers")
 public class ReviewerController {
 
     @Autowired
     private ReviewerService service;
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseStructure<ReviewerResponseDTO> addReviewer(
             @Valid @RequestBody ReviewerRequestDTO dto) {
 

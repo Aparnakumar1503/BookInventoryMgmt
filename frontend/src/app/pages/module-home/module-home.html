@@ -1,4 +1,3 @@
-<p>module-home works!</p>
 @if (module(); as selectedModule) {
   <section class="bg-gradient-to-br from-blue-50 via-white to-teal-50">
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -12,12 +11,14 @@
           <h1 class="mt-4 text-4xl font-black text-slate-950 sm:text-5xl">{{ selectedModule.name }}</h1>
           <p class="mt-4 max-w-3xl text-lg font-medium leading-8 text-slate-600">{{ selectedModule.tagline }}</p>
           <p class="mt-4 max-w-3xl text-base font-medium leading-7 text-slate-500">{{ selectedModule.description }}</p>
+          <p class="mt-4 text-sm font-semibold text-slate-500">Covered modules: {{ selectedModule.owner.modules.join(', ') }}</p>
         </div>
         <div class="rounded-3xl bg-slate-950 p-6 text-white">
-          <p class="text-sm font-black uppercase tracking-wide text-teal-300">Module Health</p>
+          <p class="text-sm font-black uppercase tracking-wide text-teal-300">Demo Access</p>
           <p class="mt-4 text-5xl font-black">{{ selectedModule.endpoints.length }}</p>
           <p class="mt-2 text-sm font-semibold text-slate-300">Configured endpoints</p>
-          <p class="mt-6 break-all text-sm font-semibold text-slate-400">{{ selectedModule.owner.email }}</p>
+          <p class="mt-6 text-sm font-semibold text-slate-300">Username: {{ selectedModule.owner.username }}</p>
+          <p class="mt-2 text-sm font-semibold text-slate-400">Password: password</p>
         </div>
       </div>
 

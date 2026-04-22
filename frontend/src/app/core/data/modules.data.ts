@@ -3,61 +3,63 @@ import { Teammate } from '../models/team.model';
 
 export const TEAMMATES: readonly Teammate[] = [
   {
-    id: 'user-module',
-    name: 'User Team',
-    role: 'User and Role API Owner',
-    moduleId: 'users',
-    moduleName: 'User Module',
-    email: 'users.team@bookinventory.dev'
+    id: 'aparna',
+    name: 'Aparna',
+    role: 'User and Author API Owner',
+    moduleId: 'users-authors',
+    moduleName: 'User and Author Management',
+    modules: ['Users', 'Roles', 'Authors', 'Book-Author Mapping'],
+    username: 'Aparna',
+    email: 'aparna@bookinventory.dev'
   },
   {
-    id: 'author-module',
-    name: 'Author Team',
-    role: 'Author Mapping API Owner',
-    moduleId: 'authors',
-    moduleName: 'Author Module',
-    email: 'authors.team@bookinventory.dev'
-  },
-  {
-    id: 'book-module',
-    name: 'Book Team',
-    role: 'Catalog API Owner',
+    id: 'moses',
+    name: 'Moses',
+    role: 'Book Catalog API Owner',
     moduleId: 'books',
-    moduleName: 'Book Module',
-    email: 'books.team@bookinventory.dev'
+    moduleName: 'Book Catalog and References',
+    modules: ['Books', 'Categories', 'Publishers', 'States'],
+    username: 'Moses',
+    email: 'moses@bookinventory.dev'
   },
   {
-    id: 'inventory-module',
-    name: 'Inventory Team',
+    id: 'sobika',
+    name: 'Sobika',
     role: 'Inventory API Owner',
     moduleId: 'inventory',
-    moduleName: 'Inventory Module',
-    email: 'inventory.team@bookinventory.dev'
+    moduleName: 'Inventory Management',
+    modules: ['Inventory', 'Book Conditions'],
+    username: 'Sobika',
+    email: 'sobika@bookinventory.dev'
   },
   {
-    id: 'order-module',
-    name: 'Order Team',
-    role: 'Order and Cart API Owner',
+    id: 'janapriya',
+    name: 'Janapriya',
+    role: 'Order API Owner',
     moduleId: 'orders',
-    moduleName: 'Order Module',
-    email: 'orders.team@bookinventory.dev'
+    moduleName: 'Cart and Order Processing',
+    modules: ['Shopping Cart', 'Orders'],
+    username: 'Janapriya',
+    email: 'janapriya@bookinventory.dev'
   },
   {
-    id: 'review-module',
-    name: 'Review Team',
+    id: 'swarnalatha',
+    name: 'Swarnalatha',
     role: 'Review API Owner',
     moduleId: 'reviews',
-    moduleName: 'Review Module',
-    email: 'reviews.team@bookinventory.dev'
+    moduleName: 'Review Management',
+    modules: ['Book Reviews', 'Reviewers'],
+    username: 'SwarnaLatha',
+    email: 'swarnalatha@bookinventory.dev'
   }
 ];
 
 export const MODULES: readonly ModuleConfig[] = [
   {
-    id: 'users',
-    name: 'User Module',
-    tagline: 'Test user profile APIs and admin role assignment APIs.',
-    description: 'Covers the user and permrole tables through user CRUD, role lookup, and role assignment endpoints.',
+    id: 'users-authors',
+    name: 'User and Author Management',
+    tagline: 'User onboarding, role administration, author CRUD, and book-author mapping APIs.',
+    description: 'This module demonstrates protected admin-facing user and role APIs together with author management and ISBN-author mapping operations.',
     owner: TEAMMATES[0],
     endpoints: [
       {
@@ -72,9 +74,9 @@ export const MODULES: readonly ModuleConfig[] = [
             { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Mary' },
             { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Burblemonger' },
             { key: 'phoneNumber', label: 'Phone Number', type: 'text', placeholder: '(983) 555-8865' },
-            { key: 'userName', label: 'User Name', type: 'email', required: true, placeholder: 'mary@example.com' },
+            { key: 'userName', label: 'User Name', type: 'text', required: true, placeholder: 'mary@example.com' },
             { key: 'password', label: 'Password', type: 'text', required: true, placeholder: 'password' },
-            { key: 'roleNumber', label: 'Role Number', type: 'number', required: true, placeholder: '1' }
+            { key: 'roleNumber', label: 'Role Number', type: 'number', required: true, placeholder: '2' }
           ]
         }
       },
@@ -83,23 +85,23 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Get User',
         method: 'GET',
         path: '/api/v1/users/{userId}',
-        description: 'Fetch a user profile by user ID.',
-        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' }]
+        description: 'Fetch one user by user ID.',
+        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
       },
       {
         id: 'update-user',
         name: 'Update User',
         method: 'PUT',
         path: '/api/v1/users/{userId}',
-        description: 'Update profile and login details for an existing user.',
-        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' }],
+        description: 'Update an existing user profile and role.',
+        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }],
         body: {
           title: 'Updated User Payload',
           fields: [
             { key: 'firstName', label: 'First Name', type: 'text', required: true },
             { key: 'lastName', label: 'Last Name', type: 'text', required: true },
             { key: 'phoneNumber', label: 'Phone Number', type: 'text' },
-            { key: 'userName', label: 'User Name', type: 'email', required: true },
+            { key: 'userName', label: 'User Name', type: 'text', required: true },
             { key: 'password', label: 'Password', type: 'text', required: true },
             { key: 'roleNumber', label: 'Role Number', type: 'number', required: true }
           ]
@@ -110,28 +112,19 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'List Roles',
         method: 'GET',
         path: '/api/v1/roles',
-        description: 'Fetch all available permission roles.'
+        description: 'Fetch all available roles.'
       },
       {
         id: 'assign-role',
-        name: 'Assign User Role',
+        name: 'Assign Role',
         method: 'PUT',
         path: '/api/v1/users/{userId}/roles/{roleId}',
-        description: 'Assign an admin role to a user.',
+        description: 'Assign a new role to a specific user.',
         pathParams: [
-          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' },
+          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' },
           { key: 'roleId', label: 'Role ID', type: 'number', required: true, placeholder: '4' }
         ]
-      }
-    ]
-  },
-  {
-    id: 'authors',
-    name: 'Author Module',
-    tagline: 'Test author CRUD APIs and book-author relationship mapping.',
-    description: 'Covers author and bookauthor tables through author management and ISBN-author mapping endpoints.',
-    owner: TEAMMATES[1],
-    endpoints: [
+      },
       {
         id: 'list-authors',
         name: 'List Authors',
@@ -158,7 +151,7 @@ export const MODULES: readonly ModuleConfig[] = [
           fields: [
             { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Steve' },
             { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Jacobs' },
-            { key: 'photo', label: 'Photo', type: 'text', placeholder: 'Y' }
+            { key: 'photo', label: 'Photo', type: 'text', placeholder: 'profile.jpg' }
           ]
         }
       },
@@ -183,7 +176,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Delete Author',
         method: 'DELETE',
         path: '/api/v1/authors/{authorId}',
-        description: 'Delete an author by author ID.',
+        description: 'Delete an author by ID.',
         pathParams: [{ key: 'authorId', label: 'Author ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
@@ -191,18 +184,24 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Map Book To Author',
         method: 'POST',
         path: '/api/v1/books/{isbn}/authors/{authorId}',
-        description: 'Create a mapping between a book ISBN and an author.',
+        description: 'Attach an author to a book ISBN.',
         pathParams: [
           { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
           { key: 'authorId', label: 'Author ID', type: 'number', required: true, placeholder: '9' }
         ],
         body: {
-          title: 'Book Author Payload',
+          title: 'Mapping Payload',
           fields: [
-            { key: 'primaryAuthor', label: 'Primary Author', type: 'select', options: [
-              { label: 'Yes', value: 'Y' },
-              { label: 'No', value: 'N' }
-            ] }
+            {
+              key: 'primaryAuthor',
+              label: 'Primary Author',
+              type: 'select',
+              options: [
+                { label: 'Yes', value: 'Y' },
+                { label: 'No', value: 'N' }
+              ],
+              defaultValue: 'Y'
+            }
           ]
         }
       },
@@ -211,7 +210,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Remove Book Author',
         method: 'DELETE',
         path: '/api/v1/books/{isbn}/authors/{authorId}',
-        description: 'Delete a book-author mapping.',
+        description: 'Remove a mapped author from a book.',
         pathParams: [
           { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
           { key: 'authorId', label: 'Author ID', type: 'number', required: true, placeholder: '9' }
@@ -221,17 +220,17 @@ export const MODULES: readonly ModuleConfig[] = [
   },
   {
     id: 'books',
-    name: 'Book Module',
-    tagline: 'Test book, category, publisher, and reference state APIs.',
-    description: 'Covers book, category, publisher, and state tables with catalog CRUD and read-only reference endpoints.',
-    owner: TEAMMATES[2],
+    name: 'Book Catalog and References',
+    tagline: 'Book CRUD, search filters, publishers, categories, and state reference APIs.',
+    description: 'This module covers the full catalog experience from book CRUD through reference data reads and publisher maintenance.',
+    owner: TEAMMATES[1],
     endpoints: [
       {
         id: 'list-books',
         name: 'List Books',
         method: 'GET',
         path: '/api/v1/books',
-        description: 'Fetch all books, optionally filtered by category and publisher.',
+        description: 'Fetch all books or filter by category and publisher.',
         queryParams: [
           { key: 'categoryId', label: 'Category ID', type: 'number', placeholder: '3' },
           { key: 'publisherId', label: 'Publisher ID', type: 'number', placeholder: '7' }
@@ -250,13 +249,13 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Create Book',
         method: 'POST',
         path: '/api/v1/books',
-        description: 'Create a new book catalog record.',
+        description: 'Create a new book.',
         body: {
           title: 'Book Payload',
           fields: [
             { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
             { key: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Master Java' },
-            { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Short book description' },
+            { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Book description' },
             { key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3' },
             { key: 'edition', label: 'Edition', type: 'text', placeholder: '1' },
             { key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '7' }
@@ -268,7 +267,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Update Book',
         method: 'PUT',
         path: '/api/v1/books/{isbn}',
-        description: 'Update an existing book by ISBN.',
+        description: 'Update an existing book.',
         pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }],
         body: {
           title: 'Updated Book Payload',
@@ -294,14 +293,14 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'List Categories',
         method: 'GET',
         path: '/api/v1/categories',
-        description: 'Fetch all read-only book categories.'
+        description: 'Fetch all categories.'
       },
       {
         id: 'get-category',
         name: 'Get Category',
         method: 'GET',
         path: '/api/v1/categories/{categoryId}',
-        description: 'Fetch a category by category ID.',
+        description: 'Fetch a category by ID.',
         pathParams: [{ key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3' }]
       },
       {
@@ -316,7 +315,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Get Publisher',
         method: 'GET',
         path: '/api/v1/publishers/{publisherId}',
-        description: 'Fetch a publisher by publisher ID.',
+        description: 'Fetch one publisher by ID.',
         pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
@@ -324,7 +323,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Create Publisher',
         method: 'POST',
         path: '/api/v1/publishers',
-        description: 'Create a new publisher.',
+        description: 'Create a publisher.',
         body: {
           title: 'Publisher Payload',
           fields: [
@@ -339,7 +338,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Update Publisher',
         method: 'PUT',
         path: '/api/v1/publishers/{publisherId}',
-        description: 'Update a publisher by publisher ID.',
+        description: 'Update a publisher.',
         pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }],
         body: {
           title: 'Updated Publisher Payload',
@@ -355,7 +354,7 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Delete Publisher',
         method: 'DELETE',
         path: '/api/v1/publishers/{publisherId}',
-        description: 'Delete a publisher by publisher ID.',
+        description: 'Delete a publisher.',
         pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
@@ -363,43 +362,43 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'List States',
         method: 'GET',
         path: '/api/v1/states',
-        description: 'Fetch read-only state reference data.'
+        description: 'Fetch all state reference values.'
       },
       {
         id: 'get-state',
         name: 'Get State',
         method: 'GET',
         path: '/api/v1/states/{code}',
-        description: 'Fetch one state by state code.',
+        description: 'Fetch a state by code.',
         pathParams: [{ key: 'code', label: 'State Code', type: 'text', required: true, placeholder: 'NY' }]
       }
     ]
   },
   {
     id: 'inventory',
-    name: 'Inventory Module',
-    tagline: 'Test inventory records, purchase marking, and book condition lookup.',
-    description: 'Covers inventory and bookcondition tables through inventory management and read-only condition endpoints.',
-    owner: TEAMMATES[3],
+    name: 'Inventory Management',
+    tagline: 'Inventory copy lookup, creation, purchase marking, and condition reference APIs.',
+    description: 'This module manages book inventory copies and the read-only condition reference data used to price them.',
+    owner: TEAMMATES[2],
     endpoints: [
       {
         id: 'list-inventory',
         name: 'List Inventory',
         method: 'GET',
         path: '/api/v1/inventory',
-        description: 'Fetch all inventory copies.'
+        description: 'Fetch all inventory records.'
       },
       {
         id: 'get-inventory',
         name: 'Get Inventory',
         method: 'GET',
         path: '/api/v1/inventory/{inventoryId}',
-        description: 'Fetch one inventory copy by inventory ID.',
-        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }]
+        description: 'Fetch one inventory record by ID.',
+        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
-        id: 'get-book-inventory',
-        name: 'Get Book Inventory',
+        id: 'get-inventory-by-book',
+        name: 'Get Inventory By ISBN',
         method: 'GET',
         path: '/api/v1/inventory/books/{isbn}',
         description: 'Fetch all inventory copies for a book ISBN.',
@@ -410,13 +409,12 @@ export const MODULES: readonly ModuleConfig[] = [
         name: 'Create Inventory',
         method: 'POST',
         path: '/api/v1/inventory',
-        description: 'Create a new inventory copy for a book.',
+        description: 'Create a new inventory copy.',
         body: {
           title: 'Inventory Payload',
           fields: [
             { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
-            { key: 'ranks', label: 'Condition Rank', type: 'number', required: true, placeholder: '6' },
-            { key: 'purchased', label: 'Purchased', type: 'boolean', defaultValue: false }
+            { key: 'ranks', label: 'Condition Rank', type: 'number', required: true, placeholder: '6' }
           ]
         }
       },
@@ -426,38 +424,14 @@ export const MODULES: readonly ModuleConfig[] = [
         method: 'PUT',
         path: '/api/v1/inventory/{inventoryId}/purchase',
         description: 'Mark an inventory copy as purchased.',
-        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }]
-      },
-      {
-        id: 'update-inventory',
-        name: 'Update Inventory',
-        method: 'PUT',
-        path: '/api/v1/inventory/{inventoryId}',
-        description: 'Update an inventory copy.',
-        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }],
-        body: {
-          title: 'Updated Inventory Payload',
-          fields: [
-            { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
-            { key: 'ranks', label: 'Condition Rank', type: 'number', required: true, placeholder: '6' },
-            { key: 'purchased', label: 'Purchased', type: 'boolean', defaultValue: false }
-          ]
-        }
-      },
-      {
-        id: 'delete-inventory',
-        name: 'Delete Inventory',
-        method: 'DELETE',
-        path: '/api/v1/inventory/{inventoryId}',
-        description: 'Delete one inventory copy by inventory ID.',
-        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }]
+        pathParams: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
         id: 'list-book-conditions',
         name: 'List Book Conditions',
         method: 'GET',
         path: '/api/v1/book-conditions',
-        description: 'Fetch all book condition ranks.'
+        description: 'Fetch all book condition references.'
       },
       {
         id: 'get-book-condition',
@@ -466,198 +440,120 @@ export const MODULES: readonly ModuleConfig[] = [
         path: '/api/v1/book-conditions/{rank}',
         description: 'Fetch one book condition by rank.',
         pathParams: [{ key: 'rank', label: 'Rank', type: 'number', required: true, placeholder: '6' }]
-      },
-      {
-        id: 'create-book-condition',
-        name: 'Create Book Condition',
-        method: 'POST',
-        path: '/api/v1/book-conditions',
-        description: 'Create a new book condition rank.',
-        body: {
-          title: 'Book Condition Payload',
-          fields: [
-            { key: 'ranks', label: 'Rank', type: 'number', required: true, placeholder: '7' },
-            { key: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Mint' },
-            { key: 'fullDescription', label: 'Full Description', type: 'textarea', placeholder: 'Collector quality copy.' },
-            { key: 'price', label: 'Price', type: 'number', required: true, placeholder: '35' }
-          ]
-        }
-      },
-      {
-        id: 'update-book-condition',
-        name: 'Update Book Condition',
-        method: 'PUT',
-        path: '/api/v1/book-conditions/{rank}',
-        description: 'Update a book condition rank.',
-        pathParams: [{ key: 'rank', label: 'Rank', type: 'number', required: true, placeholder: '6' }],
-        body: {
-          title: 'Updated Book Condition Payload',
-          fields: [
-            { key: 'ranks', label: 'Rank', type: 'number', required: true, placeholder: '6' },
-            { key: 'description', label: 'Description', type: 'text', required: true },
-            { key: 'fullDescription', label: 'Full Description', type: 'textarea' },
-            { key: 'price', label: 'Price', type: 'number', required: true }
-          ]
-        }
-      },
-      {
-        id: 'delete-book-condition',
-        name: 'Delete Book Condition',
-        method: 'DELETE',
-        path: '/api/v1/book-conditions/{rank}',
-        description: 'Delete a book condition rank.',
-        pathParams: [{ key: 'rank', label: 'Rank', type: 'number', required: true, placeholder: '6' }]
       }
     ]
   },
   {
     id: 'orders',
-    name: 'Order Module',
-    tagline: 'Test purchase log and shopping cart APIs.',
-    description: 'Covers purchaselog and shoppingcart tables through add, list, and delete endpoints.',
-    owner: TEAMMATES[4],
+    name: 'Cart and Order Processing',
+    tagline: 'User cart browsing, item management, and checkout endpoints.',
+    description: 'This module demonstrates user cart operations and order checkout flows, each protected for the owner responsible for order processing.',
+    owner: TEAMMATES[3],
     endpoints: [
       {
-        id: 'add-purchase',
-        name: 'Add Purchase',
-        method: 'POST',
-        path: '/purchase/add',
-        description: 'Create a purchase log entry.',
-        body: {
-          title: 'Purchase Payload',
-          fields: [
-            { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' },
-            { key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }
-          ]
-        }
-      },
-      {
-        id: 'list-purchases',
-        name: 'List Purchases',
+        id: 'get-cart',
+        name: 'Get Cart',
         method: 'GET',
-        path: '/purchase/get',
-        description: 'Fetch all purchase log records.'
-      },
-      {
-        id: 'delete-purchase',
-        name: 'Delete Purchase',
-        method: 'DELETE',
-        path: '/purchase/delete/{userId}/{inventoryId}',
-        description: 'Delete one purchase log entry by composite key.',
-        pathParams: [
-          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' },
-          { key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000' }
-        ]
-      },
-      {
-        id: 'list-cart',
-        name: 'List Shopping Cart',
-        method: 'GET',
-        path: '/cart/get',
-        description: 'Fetch all shopping cart records.'
+        path: '/api/v1/cart/{userId}',
+        description: 'Fetch the shopping cart for a user.',
+        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
       },
       {
         id: 'add-cart-item',
         name: 'Add Cart Item',
         method: 'POST',
-        path: '/cart/add',
-        description: 'Add one book ISBN to a user shopping cart.',
-        body: {
-          title: 'Cart Payload',
-          fields: [
-            { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' },
-            { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }
-          ]
-        }
+        path: '/api/v1/cart/{userId}/items/{isbn}',
+        description: 'Add one book to a user cart.',
+        pathParams: [
+          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' },
+          { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }
+        ]
       },
       {
         id: 'delete-cart-item',
         name: 'Delete Cart Item',
         method: 'DELETE',
-        path: '/cart/delete/{userId}/{isbn}',
-        description: 'Delete one shopping cart item by composite key.',
+        path: '/api/v1/cart/{userId}/items/{isbn}',
+        description: 'Delete one book from a user cart.',
         pathParams: [
-          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1000000' },
+          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' },
           { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }
         ]
+      },
+      {
+        id: 'checkout-order',
+        name: 'Checkout Order',
+        method: 'POST',
+        path: '/api/v1/orders/checkout/{userId}',
+        description: 'Checkout a selected inventory copy for a user.',
+        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }],
+        body: {
+          title: 'Checkout Payload',
+          fields: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1' }]
+        }
+      },
+      {
+        id: 'get-orders',
+        name: 'Get Orders By User',
+        method: 'GET',
+        path: '/api/v1/orders/user/{userId}',
+        description: 'Fetch all purchases for a user.',
+        pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
       }
     ]
   },
   {
     id: 'reviews',
-    name: 'Review Module',
-    tagline: 'Test book review and reviewer APIs.',
-    description: 'Covers bookreview and reviewer tables through review filtering and reviewer CRUD endpoints.',
-    owner: TEAMMATES[5],
+    name: 'Review Management',
+    tagline: 'Book-scoped review APIs plus reviewer administration endpoints.',
+    description: 'This module demonstrates book review creation and lookup alongside reviewer CRUD APIs for review owners.',
+    owner: TEAMMATES[4],
     endpoints: [
       {
-        id: 'list-reviews',
-        name: 'List Reviews',
+        id: 'get-book-reviews',
+        name: 'Get Book Reviews',
         method: 'GET',
-        path: '/api/reviews',
-        description: 'Fetch all book reviews.'
+        path: '/api/v1/books/{isbn}/reviews',
+        description: 'Fetch all reviews for a given ISBN.',
+        pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
       },
       {
         id: 'create-book-review',
         name: 'Create Book Review',
         method: 'POST',
-        path: '/api/reviews/add',
-        description: 'Create a new book review.',
+        path: '/api/v1/books/{isbn}/reviews',
+        description: 'Create a book review for an ISBN.',
+        pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }],
         body: {
           title: 'Review Payload',
           fields: [
-            { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
             { key: 'reviewerID', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' },
-            { key: 'rating', label: 'Rating', type: 'number', required: true, placeholder: '10' },
-            { key: 'comments', label: 'Comments', type: 'textarea', placeholder: 'Excellent book.' }
+            { key: 'rating', label: 'Rating', type: 'number', required: true, placeholder: '8' },
+            { key: 'comments', label: 'Comments', type: 'textarea', placeholder: 'Strong review.' }
           ]
         }
-      },
-      {
-        id: 'get-reviews-by-isbn',
-        name: 'Get Reviews By ISBN',
-        method: 'GET',
-        path: '/api/reviews/isbn/{isbn}',
-        description: 'Fetch reviews for one book ISBN.',
-        pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
-      },
-      {
-        id: 'get-reviews-by-reviewer',
-        name: 'Get Reviews By Reviewer',
-        method: 'GET',
-        path: '/api/reviews/reviewer/{reviewerId}',
-        description: 'Fetch reviews written by one reviewer.',
-        pathParams: [{ key: 'reviewerId', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }]
-      },
-      {
-        id: 'delete-review',
-        name: 'Delete Review',
-        method: 'DELETE',
-        path: '/api/reviews/{id}',
-        description: 'Delete a review by review ID.',
-        pathParams: [{ key: 'id', label: 'Review ID', type: 'number', required: true, placeholder: '1' }]
       },
       {
         id: 'list-reviewers',
         name: 'List Reviewers',
         method: 'GET',
-        path: '/api/reviewers',
+        path: '/api/v1/reviewers',
         description: 'Fetch all reviewers.'
       },
       {
         id: 'get-reviewer',
         name: 'Get Reviewer',
         method: 'GET',
-        path: '/api/reviewers/{id}',
-        description: 'Fetch one reviewer by reviewer ID.',
+        path: '/api/v1/reviewers/{id}',
+        description: 'Fetch one reviewer by ID.',
         pathParams: [{ key: 'id', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }]
       },
       {
         id: 'create-reviewer',
         name: 'Create Reviewer',
         method: 'POST',
-        path: '/api/reviewers/add',
-        description: 'Create a new reviewer.',
+        path: '/api/v1/reviewers',
+        description: 'Create a reviewer.',
         body: {
           title: 'Reviewer Payload',
           fields: [
@@ -670,7 +566,7 @@ export const MODULES: readonly ModuleConfig[] = [
         id: 'update-reviewer',
         name: 'Update Reviewer',
         method: 'PUT',
-        path: '/api/reviewers/{id}',
+        path: '/api/v1/reviewers/{id}',
         description: 'Update an existing reviewer.',
         pathParams: [{ key: 'id', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }],
         body: {
@@ -685,8 +581,8 @@ export const MODULES: readonly ModuleConfig[] = [
         id: 'delete-reviewer',
         name: 'Delete Reviewer',
         method: 'DELETE',
-        path: '/api/reviewers/{id}',
-        description: 'Delete a reviewer by reviewer ID.',
+        path: '/api/v1/reviewers/{id}',
+        description: 'Delete one reviewer by ID.',
         pathParams: [{ key: 'id', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }]
       }
     ]

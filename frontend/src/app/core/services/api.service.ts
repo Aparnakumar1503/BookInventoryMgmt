@@ -54,13 +54,19 @@ export class ApiService {
 
   private toErrorResult(error: unknown, fallbackUrl: string): ApiCallResult {
     if (error instanceof HttpErrorResponse) {
+      const message = error.status === 401
+        ? 'Unauthorized. Sign in again in this browser before retrying the endpoint.'
+        : error.status === 403
+          ? 'Forbidden. This account does not have access to the selected module endpoint.'
+          : error.status === 0
+            ? 'Network error. Check that Spring Boot is running on port 8182 and CORS is enabled after backend restart.'
+            : error.error || error.message;
+
       return {
         status: error.status,
         ok: false,
         url: error.url ?? fallbackUrl,
-        body: error.status === 0
-          ? 'Network error. Check that Spring Boot is running on port 8182 and CORS is enabled after backend restart.'
-          : error.error || error.message,
+        body: message,
         receivedAt: new Date().toISOString()
       };
     }
