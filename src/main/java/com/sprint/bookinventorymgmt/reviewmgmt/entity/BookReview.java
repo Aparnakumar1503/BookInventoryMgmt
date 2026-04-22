@@ -7,26 +7,29 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "BookReview")
+@Table(name = "book_review")
 public class BookReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @NotBlank(message = "ISBN cannot be empty")
-    @Column(name = "ISBN", nullable = false)
+    @Column(name = "isbn", nullable = false)
     private String isbn;
 
     @NotNull(message = "Reviewer ID is required")
-    @Column(name = "ReviewerID", nullable = false)
+    @Column(name = "reviewer_id", nullable = false)
     private Integer reviewerID;
 
     @NotNull(message = "Rating is required")
     @Min(value = 1, message = "Rating must be >= 1")
     @Max(value = 10, message = "Rating must be <= 10")
+    @Column(name = "rating")
     private Integer rating;
 
+    @Column(name = "comments")
     private String comments;
 
     public BookReview() {

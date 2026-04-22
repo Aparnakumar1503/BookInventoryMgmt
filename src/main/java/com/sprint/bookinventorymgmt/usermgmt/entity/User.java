@@ -9,31 +9,31 @@ public class User {
 
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    @Column(name = "UserID")
+	    @Column(name = "user_id")
 	    private Integer userId;
 
 	    @NotBlank(message = "First name is required")
-	    @Column(name = "FirstName", nullable = false, length = 20)
+	    @Column(name = "first_name", nullable = false, length = 20)
 	    private String firstName;
 
 	    @NotBlank(message = "Last name is required")
-	    @Column(name = "LastName", nullable = false, length = 30)
+	    @Column(name = "last_name", nullable = false, length = 30)
 	    private String lastName;
 
-	    @Column(name = "PhoneNumber", length = 14)
+	    @Column(name = "phone_number", length = 20)
 	    private String phoneNumber;
 
 	    @NotBlank(message = "Username is required")
-	    @Column(name = "UserName", nullable = false, length = 30)
+	    @Column(name = "user_name", nullable = false, length = 50)
 	    private String userName;
 
 	    @NotBlank(message = "Password is required")
 	    @Size(min = 4, message = "Password must be at least 4 characters")
-	    @Column(name = "Password", nullable = false, length = 100)
+	    @Column(name = "password", nullable = false, length = 100)
 	    private String password;
 
 	    @ManyToOne(fetch = FetchType.EAGER)
-	    @JoinColumn(name = "RoleNumber")
+	    @JoinColumn(name = "role_number")
 	    private PermRole role;
 	// Constructors
 	public User() {}

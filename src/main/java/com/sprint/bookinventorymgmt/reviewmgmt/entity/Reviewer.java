@@ -9,13 +9,14 @@ public class Reviewer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reviewer_id")
     private Integer reviewerID;
 
     @NotBlank(message = "Name cannot be empty")
-    @Column(name = "Name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "EmployedBy")
+    @Column(name = "employed_by")
     private String employedBy;
 
     public Reviewer() {

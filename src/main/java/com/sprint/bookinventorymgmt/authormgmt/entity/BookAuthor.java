@@ -11,24 +11,24 @@ import lombok.*;
 public class BookAuthor {
 
 	@Id
-	@Column(name = "ISBN")
+	@Column(name = "isbn")
 	private String isbn;
 
 	@Id
-	@Column(name = "AuthorID")
+	@Column(name = "author_id")
 	private Integer authorId;
 
 	// 🔥 RELATIONSHIP TO BOOK
 	@ManyToOne
-	@JoinColumn(name = "ISBN", insertable = false, updatable = false)
+	@JoinColumn(name = "isbn", insertable = false, updatable = false)
 	private Book book;
 
 	// 🔥 RELATIONSHIP TO AUTHOR
 	@ManyToOne
-	@JoinColumn(name = "AuthorID", insertable = false, updatable = false)
+	@JoinColumn(name = "author_id", insertable = false, updatable = false)
 	private Author author;
 
-	@Column(name = "PrimaryAuthor")
+	@Column(name = "primary_author")
 	private String primaryAuthor;
 
 	public BookAuthor() {}

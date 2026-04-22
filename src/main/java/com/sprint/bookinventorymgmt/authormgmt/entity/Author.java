@@ -10,18 +10,18 @@ public class Author {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "AuthorID")
+	@Column(name = "author_id")
 	private Integer authorId;
 
 	@NotBlank(message = "First name is required")
-	@Column(name = "FirstName")
+	@Column(name = "first_name")
 	private String firstName;
 
 	@NotBlank(message = "Last name is required")
-	@Column(name = "LastName")
+	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name = "Photo")
+	@Column(name = "photo")
 	private String photo;
 
 	public Integer getAuthorId() {
