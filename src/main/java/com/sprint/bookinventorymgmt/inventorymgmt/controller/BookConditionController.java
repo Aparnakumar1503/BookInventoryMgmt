@@ -1,5 +1,7 @@
 package com.sprint.bookinventorymgmt.inventorymgmt.controller;
 
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
@@ -41,7 +43,9 @@ public class BookConditionController {
 
     // ✅ GET ALL
     @GetMapping
-    public ResponseEntity<ResponseStructure<List<BookConditionResponseDTO>>> getAll() {
+    public ResponseEntity<ResponseStructure<PaginatedResponse<BookConditionResponseDTO>>> getAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         List<BookCondition> conditions = service.getAllBookConditions();
         List<BookConditionResponseDTO> list = new java.util.ArrayList<>();
@@ -49,10 +53,10 @@ public class BookConditionController {
             list.add(InventoryMapper.toBookConditionResponse(condition));
         }
 
-        ResponseStructure<List<BookConditionResponseDTO>> response = new ResponseStructure<>();
+        ResponseStructure<PaginatedResponse<BookConditionResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("BookConditions fetched successfully");
-        response.setData(list);
+        response.setData(PaginationUtils.paginate(list, page, size));
 
         return ResponseEntity.ok(response);
     }

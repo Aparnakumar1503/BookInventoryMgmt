@@ -3,6 +3,8 @@ package com.sprint.bookinventorymgmt.bookmgmt.controller;
 import com.sprint.bookinventorymgmt.bookmgmt.dto.request.BookRequestDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.dto.response.BookResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.service.IBookService;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,9 +55,11 @@ public class BookController {
 
     @Operation(summary = "Get all books or filter by category and publisher")
     @GetMapping
-    public ResponseStructure<List<BookResponseDTO>> getAll(
+    public ResponseStructure<PaginatedResponse<BookResponseDTO>> getAll(
             @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) Integer publisherId) {
+            @RequestParam(required = false) Integer publisherId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         List<BookResponseDTO> response;
 
@@ -75,7 +79,7 @@ public class BookController {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Books fetched successfully",
-                response
+                PaginationUtils.paginate(response, page, size)
         );
     }
 

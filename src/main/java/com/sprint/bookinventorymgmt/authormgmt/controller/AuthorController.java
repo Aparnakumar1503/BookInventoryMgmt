@@ -2,6 +2,8 @@ package com.sprint.bookinventorymgmt.authormgmt.controller;
 
 import com.sprint.bookinventorymgmt.authormgmt.dto.requestdto.AuthorRequestDTO;
 import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.authormgmt.service.IAuthorService;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
@@ -22,11 +24,13 @@ public class AuthorController {
     }
 
     @GetMapping
-    public ResponseStructure<List<AuthorResponseDTO>> getAllAuthors() {
+    public ResponseStructure<PaginatedResponse<AuthorResponseDTO>> getAllAuthors(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Authors fetched successfully",
-                service.getAllAuthors()
+                PaginationUtils.paginate(service.getAllAuthors(), page, size)
         );
     }
 

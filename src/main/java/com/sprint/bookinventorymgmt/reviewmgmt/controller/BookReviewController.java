@@ -1,6 +1,8 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -41,11 +44,14 @@ public class BookReviewController {
     }
 
     @GetMapping
-    public ResponseStructure<List<BookReviewResponseDTO>> getByISBN(@PathVariable String isbn) {
+    public ResponseStructure<PaginatedResponse<BookReviewResponseDTO>> getByISBN(
+            @PathVariable String isbn,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviews fetched successfully",
-                service.getReviewsByISBN(isbn)
+                PaginationUtils.paginate(service.getReviewsByISBN(isbn), page, size)
         );
     }
 

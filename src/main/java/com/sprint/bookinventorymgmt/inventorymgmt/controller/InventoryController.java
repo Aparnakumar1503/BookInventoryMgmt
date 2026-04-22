@@ -1,5 +1,7 @@
 package com.sprint.bookinventorymgmt.inventorymgmt.controller;
 
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryRequestDTO;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.InventoryResponseDTO;
@@ -41,7 +43,9 @@ public class InventoryController {
 
     // ✅ GET ALL
     @GetMapping
-    public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getAll() {
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         List<Inventory> inventories = service.getAllInventory();
         List<InventoryResponseDTO> list = new java.util.ArrayList<>();
@@ -49,10 +53,10 @@ public class InventoryController {
             list.add(InventoryMapper.toInventoryResponse(inventory));
         }
 
-        ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
+        ResponseStructure<PaginatedResponse<InventoryResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Inventory fetched successfully");
-        response.setData(list);
+        response.setData(PaginationUtils.paginate(list, page, size));
 
         return ResponseEntity.ok(response);
     }
@@ -74,7 +78,10 @@ public class InventoryController {
 
     // ✅ GET BY ISBN
     @GetMapping("/books/{isbn}")
-    public ResponseEntity<ResponseStructure<List<InventoryResponseDTO>>> getByIsbn(@PathVariable String isbn) {
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getByIsbn(
+            @PathVariable String isbn,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         List<Inventory> inventories = service.getByIsbn(isbn);
         List<InventoryResponseDTO> list = new java.util.ArrayList<>();
@@ -82,10 +89,10 @@ public class InventoryController {
             list.add(InventoryMapper.toInventoryResponse(inventory));
         }
 
-        ResponseStructure<List<InventoryResponseDTO>> response = new ResponseStructure<>();
+        ResponseStructure<PaginatedResponse<InventoryResponseDTO>> response = new ResponseStructure<>();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Inventory fetched by ISBN successfully");
-        response.setData(list);
+        response.setData(PaginationUtils.paginate(list, page, size));
 
         return ResponseEntity.ok(response);
     }

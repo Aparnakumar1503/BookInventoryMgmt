@@ -3,6 +3,8 @@ package com.sprint.bookinventorymgmt.bookmgmt.controller;
 import com.sprint.bookinventorymgmt.bookmgmt.dto.request.PublisherRequestDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.dto.response.PublisherResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.service.IPublisherService;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,12 +26,14 @@ public class PublisherController {
 
     @Operation(summary = "Get all publishers")
     @GetMapping
-    public ResponseStructure<List<PublisherResponseDTO>> getAll() {
+    public ResponseStructure<PaginatedResponse<PublisherResponseDTO>> getAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         return ResponseBuilder.success(
                 200,
                 "Publishers fetched successfully",
-                IPublisherService.getAllPublishers()
+                PaginationUtils.paginate(IPublisherService.getAllPublishers(), page, size)
         );
     }
 

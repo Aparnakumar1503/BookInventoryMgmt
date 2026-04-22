@@ -1,6 +1,8 @@
 package com.sprint.bookinventorymgmt.ordermgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,12 +30,15 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ResponseStructure<List<ShoppingCartResponseDTO>>> getByUser(@PathVariable Integer userId) {
+    public ResponseEntity<ResponseStructure<PaginatedResponse<ShoppingCartResponseDTO>>> getByUser(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Cart items fetched successfully",
-                        service.getByUserId(userId)
+                        PaginationUtils.paginate(service.getByUserId(userId), page, size)
                 )
         );
     }

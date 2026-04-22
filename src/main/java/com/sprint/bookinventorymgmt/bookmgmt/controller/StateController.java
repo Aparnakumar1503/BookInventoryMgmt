@@ -2,6 +2,8 @@ package com.sprint.bookinventorymgmt.bookmgmt.controller;
 
 import com.sprint.bookinventorymgmt.bookmgmt.dto.response.StateResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.service.IStateService;
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,12 +25,14 @@ public class StateController {
 
     @Operation(summary = "Get all states")
     @GetMapping
-    public ResponseStructure<List<StateResponseDTO>> getAll() {
+    public ResponseStructure<PaginatedResponse<StateResponseDTO>> getAll(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         return ResponseBuilder.success(
                 200,
                 "States fetched successfully",
-                IStateService.getAllStates()
+                PaginationUtils.paginate(IStateService.getAllStates(), page, size)
         );
     }
 

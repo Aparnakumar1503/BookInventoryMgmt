@@ -1,5 +1,7 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.controller;
 
+import com.sprint.bookinventorymgmt.common.PaginatedResponse;
+import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
@@ -41,12 +43,14 @@ public class ReviewerController {
     }
 
     @GetMapping
-    public ResponseStructure<List<ReviewerResponseDTO>> getAllReviewers() {
+    public ResponseStructure<PaginatedResponse<ReviewerResponseDTO>> getAllReviewers(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
 
         return new ResponseStructure<>(
                 HttpStatus.OK.value(),
                 "All reviewers fetched successfully",
-                service.getAllReviewers()
+                PaginationUtils.paginate(service.getAllReviewers(), page, size)
         );
     }
 
