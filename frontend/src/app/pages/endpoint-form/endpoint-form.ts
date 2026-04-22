@@ -85,7 +85,7 @@ export class EndpointFormComponent {
         if (result.ok) {
           this.storageService.setLastResponse(result, this.moduleId);
           this.notificationService.success('API request completed successfully.');
-          window.setTimeout(() => void this.router.navigate(['/result']), 900);
+          void this.router.navigate(['/result']);
           return;
         }
 

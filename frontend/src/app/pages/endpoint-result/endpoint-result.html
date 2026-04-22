@@ -3,10 +3,15 @@
     <div class="rounded-3xl border border-white/70 bg-white/90 p-8 text-center shadow-2xl shadow-blue-950/10">
       <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-teal-100 text-xl font-black text-teal-700">OK</div>
       <h1 class="mt-6 text-4xl font-black text-slate-950">Request completed successfully</h1>
-      <p class="mt-3 text-base font-semibold text-slate-600">Redirecting back to the module page.</p>
-      <a [routerLink]="['/member', moduleId ?? 'books']" class="mt-6 inline-flex rounded-2xl bg-blue-700 px-6 py-3 text-sm font-black text-white transition hover:bg-blue-800">
-        Return now
-      </a>
+      <p class="mt-3 text-base font-semibold text-slate-600">This page will stay open until you navigate away.</p>
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        <a [routerLink]="['/member', moduleId ?? 'books']" class="inline-flex rounded-2xl bg-blue-700 px-6 py-3 text-sm font-black text-white transition hover:bg-blue-800">
+          Back to Module
+        </a>
+        <a routerLink="/" class="inline-flex rounded-2xl border border-slate-200 px-6 py-3 text-sm font-black text-slate-700 transition hover:bg-slate-50">
+          Home
+        </a>
+      </div>
     </div>
 
     <div class="mt-6">
