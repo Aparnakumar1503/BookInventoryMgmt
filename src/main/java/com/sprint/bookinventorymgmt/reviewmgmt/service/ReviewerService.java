@@ -1,4 +1,5 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.service;
+
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
 
@@ -12,7 +13,9 @@ public interface ReviewerService {
 
     List<ReviewerResponseDTO> getAllReviewers();
 
+    List<ReviewerResponseDTO> getReviewersByCompany(String company);
+
     ReviewerResponseDTO updateReviewer(int reviewerId, ReviewerRequestDTO reviewerDTO);
 
-    ReviewerResponseDTO deleteReviewer(int reviewerId); // ✅ changed
+    ReviewerResponseDTO deleteReviewer(int reviewerId);
 }

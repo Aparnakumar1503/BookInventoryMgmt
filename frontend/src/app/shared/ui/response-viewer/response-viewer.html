@@ -1,0 +1,20 @@
+@if (response(); as apiResponse) {
+  <section class="overflow-hidden rounded-[2rem] border border-[color:var(--bv-border)] bg-[linear-gradient(180deg,#142033_0%,#0e1624_100%)] shadow-2xl shadow-slate-950/10">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-white/5 px-5 py-4">
+      <div>
+        <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Response</p>
+        <p class="mt-1 break-all text-sm font-semibold text-slate-100">{{ apiResponse.url }}</p>
+      </div>
+      <span
+        class="rounded-full px-3 py-1 text-xs font-black"
+        [class.bg-emerald-300]="apiResponse.ok"
+        [class.text-emerald-950]="apiResponse.ok"
+        [class.bg-rose-300]="!apiResponse.ok"
+        [class.text-rose-950]="!apiResponse.ok"
+      >
+        {{ apiResponse.status || 'ERR' }}
+      </span>
+    </div>
+    <pre class="bv-scroll max-h-96 overflow-auto p-5 text-sm leading-6 text-[#dce9ff]">{{ formattedBody() }}</pre>
+  </section>
+}

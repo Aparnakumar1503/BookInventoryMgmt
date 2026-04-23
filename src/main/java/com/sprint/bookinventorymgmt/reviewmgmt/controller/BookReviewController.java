@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/books/{isbn}/reviews")
 public class BookReviewController {
@@ -55,14 +53,4 @@ public class BookReviewController {
         );
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseStructure<String> deleteReview(@PathVariable int id) {
-        service.deleteReview(id);
-
-        return ResponseBuilder.success(
-                HttpStatus.OK.value(),
-                "Review deleted successfully",
-                "Deleted ID: " + id
-        );
-    }
 }

@@ -4,7 +4,7 @@ import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.*;
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,11 @@ import java.util.List;
 @Service
 public class InventoryServiceImpl implements IInventoryService {
 
-    @Autowired
-    private IInventoryRepository repository;
+    private final IInventoryRepository repository;
+
+    public InventoryServiceImpl(IInventoryRepository repository) {
+        this.repository = repository;
+    }
 
     // CREATE
     @Override
@@ -80,6 +83,21 @@ public class InventoryServiceImpl implements IInventoryService {
         return list;
     }
 
+    @Override
+    public List<Inventory> getAvailableByIsbn(String isbn) {
+        if (isbn == null || isbn.isBlank()) {
+            throw new InvalidInventoryDataException("ISBN cannot be empty");
+        }
+
+        List<Inventory> list = repository.findByIsbnAndPurchasedFalse(isbn);
+
+        if (list.isEmpty()) {
+            throw new InventoryNotFoundException("No available inventory found for ISBN: " + isbn);
+        }
+
+        return list;
+    }
+
     // PURCHASE
     @Override
     public Inventory markAsPurchased(Integer id) {
@@ -115,7 +133,7 @@ public class InventoryServiceImpl implements IInventoryService {
             throw new DatabaseOperationException("Failed to delete inventory");
         }
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Inventory deleted successfully",
                 "Deleted inventory id: " + id
@@ -154,7 +172,7 @@ public class InventoryServiceImpl implements IInventoryService {
             throw new DatabaseOperationException("Failed to update inventory");
         }
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Inventory updated successfully",
                 saved

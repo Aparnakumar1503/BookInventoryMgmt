@@ -8,7 +8,6 @@ import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,11 +16,13 @@ import java.util.List;
 @Service
 public class BookReviewServiceImpl implements BookReviewService {
 
-    @Autowired
-    private BookReviewRepository reviewRepository;
+    private final BookReviewRepository reviewRepository;
+    private final ReviewerRepository reviewerRepository;
 
-    @Autowired
-    private ReviewerRepository reviewerRepository;
+    public BookReviewServiceImpl(BookReviewRepository reviewRepository, ReviewerRepository reviewerRepository) {
+        this.reviewRepository = reviewRepository;
+        this.reviewerRepository = reviewerRepository;
+    }
 
     @Override
     public BookReviewResponseDTO addReview(BookReviewRequestDTO dto) {
@@ -95,6 +96,24 @@ public class BookReviewServiceImpl implements BookReviewService {
     @Override
     public List<BookReviewResponseDTO> getReviewsByReviewer(int reviewerId) {
         List<BookReview> reviews = reviewRepository.findByReviewerID(reviewerId);
+        List<BookReviewResponseDTO> response = new ArrayList<>();
+
+        for (BookReview r : reviews) {
+            BookReviewResponseDTO dto = new BookReviewResponseDTO();
+            dto.setId(r.getId());
+            dto.setIsbn(r.getIsbn());
+            dto.setReviewerID(r.getReviewerID());
+            dto.setRating(r.getRating());
+            dto.setComments(r.getComments());
+            response.add(dto);
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<BookReviewResponseDTO> getReviewsWithMaxRating() {
+        List<BookReview> reviews = reviewRepository.findByMaxRating();
         List<BookReviewResponseDTO> response = new ArrayList<>();
 
         for (BookReview r : reviews) {

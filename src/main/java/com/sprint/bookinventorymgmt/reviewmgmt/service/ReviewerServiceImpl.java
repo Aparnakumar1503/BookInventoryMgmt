@@ -6,7 +6,6 @@ import com.sprint.bookinventorymgmt.reviewmgmt.entity.Reviewer;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,8 +14,11 @@ import java.util.List;
 @Service
 public class ReviewerServiceImpl implements ReviewerService {
 
-    @Autowired
-    private ReviewerRepository repository;
+    private final ReviewerRepository repository;
+
+    public ReviewerServiceImpl(ReviewerRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public ReviewerResponseDTO addReviewer(ReviewerRequestDTO dto) {
@@ -47,6 +49,18 @@ public class ReviewerServiceImpl implements ReviewerService {
     @Override
     public List<ReviewerResponseDTO> getAllReviewers() {
         List<Reviewer> reviewers = repository.findAll();
+        List<ReviewerResponseDTO> response = new ArrayList<>();
+
+        for (Reviewer reviewer : reviewers) {
+            response.add(mapToDTO(reviewer));
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<ReviewerResponseDTO> getReviewersByCompany(String company) {
+        List<Reviewer> reviewers = repository.findByEmployedByIgnoreCaseContaining(company);
         List<ReviewerResponseDTO> response = new ArrayList<>();
 
         for (Reviewer reviewer : reviewers) {

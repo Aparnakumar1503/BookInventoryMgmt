@@ -10,7 +10,6 @@ import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +20,11 @@ import java.util.List;
 @Tag(name = "Publisher APIs", description = "CRUD operations for Publishers")
 public class PublisherController {
 
-    @Autowired
-    private IPublisherService IPublisherService;
+    private final IPublisherService publisherService;
+
+    public PublisherController(IPublisherService publisherService) {
+        this.publisherService = publisherService;
+    }
 
     @Operation(summary = "Get all publishers")
     @GetMapping
@@ -33,18 +35,18 @@ public class PublisherController {
         return ResponseBuilder.success(
                 200,
                 "Publishers fetched successfully",
-                PaginationUtils.paginate(IPublisherService.getAllPublishers(), page, size)
+                PaginationUtils.paginate(publisherService.getAllPublishers(), page, size)
         );
     }
 
     @Operation(summary = "Get publisher by ID")
-    @GetMapping("/{id}")
-    public ResponseStructure<PublisherResponseDTO> getById(@PathVariable Integer id) {
+    @GetMapping("/{publisherId}")
+    public ResponseStructure<PublisherResponseDTO> getById(@PathVariable Integer publisherId) {
 
         return ResponseBuilder.success(
                 200,
                 "Publisher fetched successfully",
-                IPublisherService.getPublisherById(id)
+                publisherService.getPublisherById(publisherId)
         );
     }
 
@@ -56,28 +58,28 @@ public class PublisherController {
         return ResponseBuilder.success(
                 201,
                 "Publisher created successfully",
-                IPublisherService.createPublisher(dto)
+                publisherService.createPublisher(dto)
         );
     }
 
     @Operation(summary = "Update publisher")
-    @PutMapping("/{id}")
+    @PutMapping("/{publisherId}")
     public ResponseStructure<PublisherResponseDTO> update(
-            @PathVariable Integer id,
+            @PathVariable Integer publisherId,
             @Valid @RequestBody PublisherRequestDTO dto) {
 
         return ResponseBuilder.success(
                 200,
                 "Publisher updated successfully",
-                IPublisherService.updatePublisher(id, dto)
+                publisherService.updatePublisher(publisherId, dto)
         );
     }
 
     @Operation(summary = "Delete publisher")
-    @DeleteMapping("/{id}")
-    public ResponseStructure<String> delete(@PathVariable Integer id) {
+    @DeleteMapping("/{publisherId}")
+    public ResponseStructure<String> delete(@PathVariable Integer publisherId) {
 
-        String response = IPublisherService.deletePublisher(id);
+        String response = publisherService.deletePublisher(publisherId);
 
         return ResponseBuilder.success(
                 200,

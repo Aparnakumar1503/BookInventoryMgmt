@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -45,7 +44,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/v1/authors/**", "/api/v1/books/*/authors/**").hasAuthority(SecurityAuthorities.OWNER_USER_AUTHOR)
                         .requestMatchers("/api/v1/users/**", "/api/v1/roles/**").hasAuthority(SecurityAuthorities.OWNER_USER_AUTHOR)
-                        .requestMatchers("/api/v1/books/*/reviews/**", "/api/v1/reviewers/**").hasAuthority(SecurityAuthorities.OWNER_REVIEW)
+                        .requestMatchers("/api/v1/books/*/reviews/**", "/api/v1/reviews/**", "/api/v1/reviewers/**").hasAuthority(SecurityAuthorities.OWNER_REVIEW)
                         .requestMatchers("/api/v1/books/**", "/api/v1/categories/**", "/api/v1/publishers/**", "/api/v1/states/**").hasAuthority(SecurityAuthorities.OWNER_BOOK)
                         .requestMatchers("/api/v1/inventory/**", "/api/v1/book-conditions/**").hasAuthority(SecurityAuthorities.OWNER_INVENTORY)
                         .requestMatchers("/api/v1/orders/**", "/api/v1/cart/**").hasAuthority(SecurityAuthorities.OWNER_ORDER)

@@ -2,7 +2,6 @@ package com.sprint.bookinventorymgmt.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,9 +24,7 @@ public class JwtService {
     public JwtService(
             @Value("${app.security.jwt.secret}") String secret,
             @Value("${app.security.jwt.expiration-ms}") long expirationMs) {
-        byte[] keyBytes = secret.length() >= 32
-                ? secret.getBytes(StandardCharsets.UTF_8)
-                : Decoders.BASE64.decode(secret);
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
         this.expirationMs = expirationMs;
     }

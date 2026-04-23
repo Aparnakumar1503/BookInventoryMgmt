@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { EndpointFormComponent } from './pages/endpoint-form/endpoint-form';
-import { EndpointResultComponent } from './pages/endpoint-result/endpoint-result';
-import { LandingComponent } from './pages/landing/landing';
-import { ModuleHomeComponent } from './pages/module-home/module-home';
-import { NotFoundComponent } from './pages/not-found/not-found';
+import { EndpointFormComponent } from './features/endpoint-executor/pages/endpoint-form/endpoint-form';
+import { EndpointResultComponent } from './features/result-viewer/pages/endpoint-result/endpoint-result';
+import { LandingComponent } from './features/team-directory/pages/landing/landing';
+import { ModuleHomeComponent } from './features/member-workspace/pages/module-home/module-home';
+import { NotFoundComponent } from './features/not-found/pages/not-found/not-found';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [

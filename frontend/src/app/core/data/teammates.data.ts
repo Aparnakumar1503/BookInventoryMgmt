@@ -1,1 +1,1 @@
-export { TEAMMATES } from './modules.data';
+﻿export { TEAMMATES } from './team-members.data';

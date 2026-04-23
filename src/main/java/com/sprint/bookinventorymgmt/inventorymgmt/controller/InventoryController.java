@@ -2,138 +2,156 @@ package com.sprint.bookinventorymgmt.inventorymgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryRequestDTO;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.InventoryResponseDTO;
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
 import com.sprint.bookinventorymgmt.inventorymgmt.service.IInventoryService;
-import com.sprint.bookinventorymgmt.common.ResponseStructure;
-
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/inventory")
 public class InventoryController {
 
-    @Autowired
-    private IInventoryService service;
+    private final IInventoryService service;
 
-    // ✅ CREATE
+    public InventoryController(IInventoryService service) {
+        this.service = service;
+    }
+
     @PostMapping
     public ResponseEntity<ResponseStructure<InventoryResponseDTO>> save(
             @Valid @RequestBody InventoryRequestDTO dto) {
+        Inventory saved = service.saveInventory(InventoryMapper.toInventoryEntity(dto));
 
-        Inventory saved = service.saveInventory(
-                InventoryMapper.toInventoryEntity(dto)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ResponseBuilder.success(
+                        HttpStatus.CREATED.value(),
+                        "Inventory created successfully",
+                        InventoryMapper.toInventoryResponse(saved)
+                )
         );
-
-        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.CREATED.value());
-        response.setMessage("Inventory created successfully");
-        response.setData(InventoryMapper.toInventoryResponse(saved));
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAll(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         List<Inventory> inventories = service.getAllInventory();
-        List<InventoryResponseDTO> list = new java.util.ArrayList<>();
+        List<InventoryResponseDTO> list = new ArrayList<>();
         for (Inventory inventory : inventories) {
             list.add(InventoryMapper.toInventoryResponse(inventory));
         }
 
-        ResponseStructure<PaginatedResponse<InventoryResponseDTO>> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("Inventory fetched successfully");
-        response.setData(PaginationUtils.paginate(list, page, size));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Inventory fetched successfully",
+                        PaginationUtils.paginate(list, page, size)
+                )
+        );
     }
 
-    // ✅ GET BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getById(@PathVariable Integer id) {
+    @GetMapping("/{inventoryId}")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getById(@PathVariable Integer inventoryId) {
+        InventoryResponseDTO dto = InventoryMapper.toInventoryResponse(service.getById(inventoryId));
 
-        InventoryResponseDTO dto =
-                InventoryMapper.toInventoryResponse(service.getById(id));
-
-        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("Inventory fetched successfully");
-        response.setData(dto);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Inventory fetched successfully",
+                        dto
+                )
+        );
     }
 
-    // ✅ GET BY ISBN
     @GetMapping("/books/{isbn}")
     public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getByIsbn(
             @PathVariable String isbn,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         List<Inventory> inventories = service.getByIsbn(isbn);
-        List<InventoryResponseDTO> list = new java.util.ArrayList<>();
+        List<InventoryResponseDTO> list = new ArrayList<>();
         for (Inventory inventory : inventories) {
             list.add(InventoryMapper.toInventoryResponse(inventory));
         }
 
-        ResponseStructure<PaginatedResponse<InventoryResponseDTO>> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("Inventory fetched by ISBN successfully");
-        response.setData(PaginationUtils.paginate(list, page, size));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Inventory fetched by ISBN successfully",
+                        PaginationUtils.paginate(list, page, size)
+                )
+        );
     }
 
-    // ✅ UPDATE
-    @PutMapping("/{id}")
+    @GetMapping("/books/{isbn}/available")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAvailableByIsbn(
+            @PathVariable String isbn,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        List<Inventory> inventories = service.getAvailableByIsbn(isbn);
+        List<InventoryResponseDTO> list = new ArrayList<>();
+        for (Inventory inventory : inventories) {
+            list.add(InventoryMapper.toInventoryResponse(inventory));
+        }
+
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Available inventory fetched successfully by ISBN",
+                        PaginationUtils.paginate(list, page, size)
+                )
+        );
+    }
+
+    @PutMapping("/{inventoryId}")
     public ResponseEntity<ResponseStructure<InventoryResponseDTO>> update(
-            @PathVariable Integer id,
+            @PathVariable Integer inventoryId,
             @Valid @RequestBody InventoryRequestDTO dto) {
-
         Inventory updated = InventoryMapper.toInventoryEntity(dto);
+        ResponseStructure<Inventory> result = service.updateInventory(inventoryId, updated);
 
-        ResponseStructure<Inventory> result =
-                service.updateInventory(id, updated);
-
-        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(result.getStatusCode());
-        response.setMessage(result.getMessage());
-        response.setData(InventoryMapper.toInventoryResponse(result.getData()));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        result.getStatusCode(),
+                        result.getMessage(),
+                        InventoryMapper.toInventoryResponse(result.getData())
+                )
+        );
     }
 
-    // ✅ PURCHASE
-    @PutMapping("/{id}/purchase")
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchase(@PathVariable Integer id) {
+    @PutMapping("/{inventoryId}/purchase")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchase(@PathVariable Integer inventoryId) {
+        InventoryResponseDTO dto = InventoryMapper.toInventoryResponse(service.markAsPurchased(inventoryId));
 
-        InventoryResponseDTO dto =
-                InventoryMapper.toInventoryResponse(service.markAsPurchased(id));
-
-        ResponseStructure<InventoryResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("Inventory marked as purchased");
-        response.setData(dto);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Inventory marked as purchased",
+                        dto
+                )
+        );
     }
 
-    // ✅ DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseStructure<String>> deleteInventory(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.deleteInventory(id));
+    @DeleteMapping("/{inventoryId}")
+    public ResponseEntity<ResponseStructure<String>> deleteInventory(@PathVariable Integer inventoryId) {
+        return ResponseEntity.ok(service.deleteInventory(inventoryId));
     }
 }

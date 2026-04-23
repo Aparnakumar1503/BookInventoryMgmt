@@ -2,102 +2,103 @@ package com.sprint.bookinventorymgmt.inventorymgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
-import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
-import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
-import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
-import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
-import com.sprint.bookinventorymgmt.inventorymgmt.service.IBookConditionService;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
-
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.BookConditionRequestDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
+import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionResponseDTO;
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
+import com.sprint.bookinventorymgmt.inventorymgmt.service.IBookConditionService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/book-conditions")
 public class BookConditionController {
 
-    @Autowired
-    private IBookConditionService service;
+    private final IBookConditionService service;
 
-    // ✅ CREATE
+    public BookConditionController(IBookConditionService service) {
+        this.service = service;
+    }
+
     @PostMapping
     public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> create(
             @Valid @RequestBody BookConditionRequestDTO dto) {
+        BookCondition saved = service.saveBookCondition(InventoryMapper.toBookConditionEntity(dto));
 
-        BookCondition saved = service.saveBookCondition(
-                InventoryMapper.toBookConditionEntity(dto)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ResponseBuilder.success(
+                        HttpStatus.CREATED.value(),
+                        "Book condition created successfully",
+                        InventoryMapper.toBookConditionResponse(saved)
+                )
         );
-
-        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.CREATED.value());
-        response.setMessage("BookCondition created successfully");
-        response.setData(InventoryMapper.toBookConditionResponse(saved));
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // ✅ GET ALL
     @GetMapping
     public ResponseEntity<ResponseStructure<PaginatedResponse<BookConditionResponseDTO>>> getAll(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         List<BookCondition> conditions = service.getAllBookConditions();
-        List<BookConditionResponseDTO> list = new java.util.ArrayList<>();
+        List<BookConditionResponseDTO> list = new ArrayList<>();
         for (BookCondition condition : conditions) {
             list.add(InventoryMapper.toBookConditionResponse(condition));
         }
 
-        ResponseStructure<PaginatedResponse<BookConditionResponseDTO>> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("BookConditions fetched successfully");
-        response.setData(PaginationUtils.paginate(list, page, size));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Book conditions fetched successfully",
+                        PaginationUtils.paginate(list, page, size)
+                )
+        );
     }
 
-    // ✅ GET BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getById(@PathVariable Integer id) {
+    @GetMapping("/{rank}")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getByRank(@PathVariable Integer rank) {
+        BookConditionResponseDTO dto = InventoryMapper.toBookConditionResponse(service.getById(rank));
 
-        BookConditionResponseDTO dto =
-                InventoryMapper.toBookConditionResponse(service.getById(id));
-
-        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(HttpStatus.OK.value());
-        response.setMessage("BookCondition fetched successfully");
-        response.setData(dto);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "Book condition fetched successfully",
+                        dto
+                )
+        );
     }
 
-    // ✅ UPDATE
-    @PutMapping("/{id}")
+    @PutMapping("/{rank}")
     public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> update(
-            @PathVariable Integer id,
+            @PathVariable Integer rank,
             @Valid @RequestBody BookConditionRequestDTO dto) {
-
         BookCondition updated = InventoryMapper.toBookConditionEntity(dto);
+        ResponseStructure<BookCondition> result = service.updateBookCondition(rank, updated);
 
-        ResponseStructure<BookCondition> result =
-                service.updateBookCondition(id, updated);
-
-        ResponseStructure<BookConditionResponseDTO> response = new ResponseStructure<>();
-        response.setStatusCode(result.getStatusCode());
-        response.setMessage(result.getMessage());
-        response.setData(InventoryMapper.toBookConditionResponse(result.getData()));
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        result.getStatusCode(),
+                        result.getMessage(),
+                        InventoryMapper.toBookConditionResponse(result.getData())
+                )
+        );
     }
 
-    // ✅ DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseStructure<String>> delete(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.deleteBookCondition(id));
+    @DeleteMapping("/{rank}")
+    public ResponseEntity<ResponseStructure<String>> delete(@PathVariable Integer rank) {
+        return ResponseEntity.ok(service.deleteBookCondition(rank));
     }
 }

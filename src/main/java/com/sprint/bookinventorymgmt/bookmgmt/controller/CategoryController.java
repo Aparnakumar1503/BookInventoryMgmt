@@ -8,18 +8,18 @@ import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
 @Tag(name = "Category APIs", description = "CRUD operations for Categories")
 public class CategoryController {
 
-    @Autowired
-    private ICategoryService ICategoryService;
+    private final ICategoryService categoryService;
+
+    public CategoryController(ICategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @Operation(summary = "Get all categories")
     @GetMapping
@@ -30,18 +30,18 @@ public class CategoryController {
         return ResponseBuilder.success(
                 200,
                 "Categories fetched successfully",
-                PaginationUtils.paginate(ICategoryService.getAllCategories(), page, size)
+                PaginationUtils.paginate(categoryService.getAllCategories(), page, size)
         );
     }
 
     @Operation(summary = "Get category by ID")
-    @GetMapping("/{id}")
-    public ResponseStructure<CategoryResponseDTO> getById(@PathVariable Integer id) {
+    @GetMapping("/{categoryId}")
+    public ResponseStructure<CategoryResponseDTO> getById(@PathVariable Integer categoryId) {
 
         return ResponseBuilder.success(
                 200,
                 "Category fetched successfully",
-                ICategoryService.getCategoryById(id)
+                categoryService.getCategoryById(categoryId)
         );
     }
 }

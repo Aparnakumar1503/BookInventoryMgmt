@@ -15,4 +15,7 @@ public interface BookReviewService {
 
     List<BookReviewResponseDTO> getReviewsByReviewer(int reviewerId);
 
-    BookReviewResponseDTO deleteReview(int id);}
+    List<BookReviewResponseDTO> getReviewsWithMaxRating();
+
+    BookReviewResponseDTO deleteReview(int id);
+}

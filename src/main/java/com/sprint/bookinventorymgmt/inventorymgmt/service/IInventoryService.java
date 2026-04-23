@@ -15,6 +15,8 @@ public interface IInventoryService {
 
     List<Inventory> getByIsbn(String isbn);
 
+    List<Inventory> getAvailableByIsbn(String isbn);
+
     Inventory markAsPurchased(Integer id);
 
     ResponseStructure<String> deleteInventory(Integer id);

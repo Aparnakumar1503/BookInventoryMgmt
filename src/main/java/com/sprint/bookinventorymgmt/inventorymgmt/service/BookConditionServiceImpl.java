@@ -7,9 +7,9 @@ import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidConditionRan
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
 
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IBookConditionRepository;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,11 @@ import java.util.List;
 @Service
 public class BookConditionServiceImpl implements IBookConditionService {
 
-    @Autowired
-    private IBookConditionRepository repository;
+    private final IBookConditionRepository repository;
+
+    public BookConditionServiceImpl(IBookConditionRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public BookCondition saveBookCondition(BookCondition bookCondition) {
@@ -62,7 +65,7 @@ public class BookConditionServiceImpl implements IBookConditionService {
             throw new DatabaseOperationException("Failed to delete BookCondition");
         }
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "BookCondition deleted successfully",
                 "Deleted ID: " + id
@@ -95,7 +98,7 @@ public class BookConditionServiceImpl implements IBookConditionService {
             throw new DatabaseOperationException("Failed to update BookCondition");
         }
 
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "BookCondition updated successfully",
                 saved

@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,17 +28,14 @@ import java.util.List;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
     private final IUserMgmtRepository userRepository;
 
     public AuthController(
             AuthenticationManager authenticationManager,
-            UserDetailsService userDetailsService,
             JwtService jwtService,
             IUserMgmtRepository userRepository) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
     }

@@ -5,12 +5,10 @@ import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
-import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +17,8 @@ import java.util.List;
 
 @Service
 public class UserMgmtServiceImpl implements IUserMgmtService {
-    @Autowired
-    private IUserMgmtRepository userRepo;
-    @Autowired
-    private IPermRoleRepository permRoleRepo;
+    private final IUserMgmtRepository userRepo;
+    private final IPermRoleRepository permRoleRepo;
     private final PasswordEncoder passwordEncoder;
 
     public UserMgmtServiceImpl(
@@ -149,18 +145,6 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         return "Password update failed for userId: " + userId;
     }
 
-    //  new login method
-    @Override
-    public UserResponseDTO login(String userName, String password) {
-        User user = userRepo.findByUserNameIgnoreCase(userName)
-                .orElseThrow(() ->
-                        new InvalidCredentialsException("Invalid username or password"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new InvalidCredentialsException("Invalid username or password");
-        }
-        return mapToDTO(user);
-    }
-
     private UserResponseDTO mapToDTO(User entity) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setUserId(entity.getUserId());
@@ -172,5 +156,4 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         dto.setPermRole(entity.getRole() != null ? entity.getRole().getPermRole() : null);
         return dto;
     }
-
 }

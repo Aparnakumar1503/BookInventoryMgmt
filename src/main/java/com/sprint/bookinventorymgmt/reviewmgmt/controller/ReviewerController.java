@@ -2,29 +2,37 @@ package com.sprint.bookinventorymgmt.reviewmgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.service.ReviewerService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/reviewers")
 public class ReviewerController {
 
-    @Autowired
-    private ReviewerService service;
+    private final ReviewerService service;
+
+    public ReviewerController(ReviewerService service) {
+        this.service = service;
+    }
 
     @PostMapping
     public ResponseStructure<ReviewerResponseDTO> addReviewer(
             @Valid @RequestBody ReviewerRequestDTO dto) {
-
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.CREATED.value(),
                 "Reviewer added successfully",
                 service.addReviewer(dto)
@@ -34,8 +42,7 @@ public class ReviewerController {
     @GetMapping("/{id}")
     public ResponseStructure<ReviewerResponseDTO> getReviewerById(
             @PathVariable int id) {
-
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer fetched successfully",
                 service.getReviewerById(id)
@@ -46,11 +53,22 @@ public class ReviewerController {
     public ResponseStructure<PaginatedResponse<ReviewerResponseDTO>> getAllReviewers(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "All reviewers fetched successfully",
                 PaginationUtils.paginate(service.getAllReviewers(), page, size)
+        );
+    }
+
+    @GetMapping("/company/{company}")
+    public ResponseStructure<PaginatedResponse<ReviewerResponseDTO>> getReviewersByCompany(
+            @PathVariable String company,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Reviewers fetched successfully by company",
+                PaginationUtils.paginate(service.getReviewersByCompany(company), page, size)
         );
     }
 
@@ -58,8 +76,7 @@ public class ReviewerController {
     public ResponseStructure<ReviewerResponseDTO> updateReviewer(
             @PathVariable int id,
             @Valid @RequestBody ReviewerRequestDTO dto) {
-
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer updated successfully",
                 service.updateReviewer(id, dto)
@@ -68,10 +85,8 @@ public class ReviewerController {
 
     @DeleteMapping("/{id}")
     public ResponseStructure<String> deleteReviewer(@PathVariable int id) {
-
         service.deleteReviewer(id);
-
-        return new ResponseStructure<>(
+        return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer deleted successfully",
                 "Deleted ID: " + id

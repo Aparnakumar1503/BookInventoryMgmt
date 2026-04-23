@@ -1,20 +1,23 @@
-<div class="min-h-screen text-slate-900">
+<div class="bv-page text-[var(--bv-text)]">
   <app-navbar />
-  <main>
+
+  <main class="bv-main">
     <router-outlet />
   </main>
 
-  <div class="fixed right-4 top-24 z-50 w-[min(22rem,calc(100vw-2rem))] space-y-3">
+  <app-footer />
+
+  <div class="fixed right-4 top-24 z-50 w-[min(24rem,calc(100vw-1.5rem))] space-y-3">
     @for (toast of notificationService.messages(); track toast.id) {
       <button
         type="button"
         class="bv-card w-full rounded-[1.4rem] px-4 py-3 text-left text-sm font-bold shadow-2xl shadow-slate-950/10 transition hover:-translate-y-0.5"
-        [class.border-teal-200]="toast.type === 'success'"
-        [class.text-teal-800]="toast.type === 'success'"
+        [class.border-emerald-200]="toast.type === 'success'"
+        [class.text-emerald-900]="toast.type === 'success'"
         [class.border-rose-200]="toast.type === 'error'"
-        [class.text-rose-800]="toast.type === 'error'"
+        [class.text-rose-900]="toast.type === 'error'"
         [class.border-blue-200]="toast.type === 'info'"
-        [class.text-blue-800]="toast.type === 'info'"
+        [class.text-blue-900]="toast.type === 'info'"
         (click)="notificationService.dismiss(toast.id)"
       >
         {{ toast.message }}

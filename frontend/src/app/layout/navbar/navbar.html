@@ -1,0 +1,70 @@
+﻿<header class="sticky top-0 z-40 border-b border-[color:var(--bv-border)] bg-[rgba(249,246,240,0.9)] backdrop-blur-xl">
+  <nav class="bv-container px-4 py-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between gap-4">
+      <a routerLink="/" class="group flex items-center gap-4" (click)="closeMenu()">
+        <span class="grid h-12 w-12 place-items-center rounded-[1.1rem] border border-white/60 bg-[linear-gradient(135deg,#2f5d62_0%,#3c757b_55%,#8a6a43_100%)] text-sm font-black tracking-[0.18em] text-white shadow-lg shadow-slate-900/10 transition group-hover:scale-105">BIMS</span>
+        <span>
+          <span class="bv-display block text-[1.75rem] leading-none text-[var(--bv-text)] sm:text-[2rem]">Book Inventory</span>
+          <span class="block text-[0.68rem] font-black uppercase tracking-[0.28em] text-[var(--bv-text-muted)]">Management System</span>
+        </span>
+      </a>
+
+      @if (currentUser(); as user) {
+        <div class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-semibold text-[var(--bv-text-soft)] lg:block">
+          Signed in as <span class="font-black text-[var(--bv-text)]">{{ user.firstName }}</span>
+        </div>
+      }
+
+      <div class="flex items-center gap-3">
+        @if (currentUser()) {
+          <button
+            type="button"
+            (click)="logout()"
+            class="hidden rounded-full px-4 py-2 text-sm font-black text-white transition hover:brightness-105 lg:inline-flex bv-button-primary"
+          >
+            Logout
+          </button>
+        }
+
+        <button
+          type="button"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--bv-border)] bg-white/80 text-[var(--bv-text)] lg:hidden"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen()"
+          aria-label="Toggle navigation"
+        >
+          <span class="text-lg font-black">{{ menuOpen() ? '×' : '≡' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-hidden transition-all duration-200 lg:hidden" [class.max-h-0]="!menuOpen()" [class.max-h-[20rem]]="menuOpen()">
+      <div class="mt-4 space-y-3 rounded-[1.4rem] border border-[color:var(--bv-border)] bg-white/88 p-4 shadow-xl shadow-slate-900/8">
+        @if (currentUser(); as user) {
+          <div class="rounded-[1rem] bg-[var(--bv-surface-muted)] px-4 py-3">
+            <p class="text-sm font-black text-[var(--bv-text)]">{{ user.firstName }} {{ user.lastName }}</p>
+            <p class="mt-1 text-[0.7rem] font-black uppercase tracking-[0.24em] text-[var(--bv-text-muted)]">Authorized Session</p>
+          </div>
+        }
+
+        <a
+          routerLink="/"
+          (click)="closeMenu()"
+          class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+        >
+          Team Directory
+        </a>
+
+        @if (currentUser()) {
+          <button
+            type="button"
+            (click)="logout()"
+            class="w-full rounded-[1rem] px-4 py-3 text-sm font-black text-white bv-button-primary"
+          >
+            Logout
+          </button>
+        }
+      </div>
+    </div>
+  </nav>
+</header>
