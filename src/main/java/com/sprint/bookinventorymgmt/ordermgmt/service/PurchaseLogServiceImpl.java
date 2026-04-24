@@ -2,13 +2,11 @@ package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.CheckoutFailedException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.*;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,7 @@ import java.util.List;
 public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Autowired
-    private  IPurchaseLogRepository repo;
+    private IPurchaseLogRepository repo;
 
     public PurchaseLogServiceImpl(IPurchaseLogRepository repo) {
         this.repo = repo;
@@ -27,14 +25,15 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Override
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
+
         if (dto == null || dto.getUserId() == null || dto.getInventoryId() == null) {
-            throw new OrderProcessingException("UserId and inventoryId are required to create a purchase");
+            throw new OrderProcessingException("UserId and inventoryId are required");
         }
 
-        PurchaseLog existingPurchase = repo.findByUserIdAndInventoryId(dto.getUserId(), dto.getInventoryId());
-        if (existingPurchase != null) {
+        PurchaseLog existing = repo.findByUserIdAndInventoryId(dto.getUserId(), dto.getInventoryId());
+        if (existing != null) {
             throw new BookAlreadyPurchasedException(
-                    "Purchase already exists for userId: " + dto.getUserId() + " inventoryId: " + dto.getInventoryId());
+                    "Already purchased for userId: " + dto.getUserId());
         }
 
         PurchaseLog entity = new PurchaseLog(dto.getUserId(), dto.getInventoryId());
@@ -43,7 +42,7 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
         try {
             saved = repo.save(entity);
         } catch (Exception e) {
-            throw new CheckoutFailedException("Failed to create purchase for inventoryId: " + dto.getInventoryId());
+            throw new CheckoutFailedException("Failed to create purchase");
         }
 
         return mapToDTO(saved);
@@ -51,11 +50,12 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Override
     public List<PurchaseLogResponseDTO> getAll() {
-        List<PurchaseLog> purchaseLogs = repo.findAll();
+
+        List<PurchaseLog> list = repo.findAll();
         List<PurchaseLogResponseDTO> response = new ArrayList<>();
 
-        for (PurchaseLog purchaseLog : purchaseLogs) {
-            response.add(mapToDTO(purchaseLog));
+        for (PurchaseLog p : list) {
+            response.add(mapToDTO(p));
         }
 
         return response;
@@ -63,30 +63,37 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
     @Override
     public List<PurchaseLogResponseDTO> getByUserId(Integer userId) {
-        return repo.findByIdUserId(userId)
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+
+        List<PurchaseLog> list = repo.findByIdUserId(userId);
+        List<PurchaseLogResponseDTO> response = new ArrayList<>();
+
+        for (PurchaseLog p : list) {
+            response.add(mapToDTO(p));
+        }
+
+        return response;
     }
 
     @Override
     public String delete(Integer userId, Integer inventoryId) {
-        // composite key — need both userId and inventoryId to identify a purchase
+
         PurchaseLogId id = new PurchaseLogId(userId, inventoryId);
 
         PurchaseLog purchase = repo.findById(id)
                 .orElseThrow(() ->
-                        new PurchaseNotFoundException("Purchase not found for userId: " + userId + " inventoryId: " + inventoryId)
-                );
+                        new PurchaseNotFoundException("Purchase not found"));
 
         repo.delete(purchase);
+
         return "Deleted Successfully for userId: " + userId + " inventoryId: " + inventoryId;
     }
 
     private PurchaseLogResponseDTO mapToDTO(PurchaseLog entity) {
+
         PurchaseLogResponseDTO dto = new PurchaseLogResponseDTO();
         dto.setUserId(entity.getUserId());
         dto.setInventoryId(entity.getInventoryId());
+
         return dto;
     }
 }

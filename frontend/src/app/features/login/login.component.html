@@ -1,0 +1,28 @@
+@if (module) {
+  <section class="login-page">
+    <div class="login-card">
+      <div class="module-chip">{{ module.icon }} {{ module.title }}</div>
+      <h1>Welcome back</h1>
+      <p>Sign in to access the module</p>
+
+      <div class="demo-box">
+        Demo - Username: <strong>{{ module.loginHint.username }}</strong> · Password:
+        <strong>{{ module.loginHint.password }}</strong>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="signIn()">
+        <label>
+          <span>Username</span>
+          <input formControlName="username" />
+        </label>
+        <label>
+          <span>Password</span>
+          <input formControlName="password" type="password" />
+        </label>
+        <button type="submit">Sign In</button>
+      </form>
+
+      <a routerLink="/modules">← All modules</a>
+    </div>
+  </section>
+}

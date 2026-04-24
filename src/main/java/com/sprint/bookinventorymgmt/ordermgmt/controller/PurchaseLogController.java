@@ -1,22 +1,17 @@
 package com.sprint.bookinventorymgmt.ordermgmt.controller;
 
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
-import com.sprint.bookinventorymgmt.common.PaginatedResponse;
-import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.service.IPurchaseLogService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,46 +26,41 @@ public class PurchaseLogController {
         this.service = service;
     }
 
-    @PostMapping("/checkout/{userId}")
-    public ResponseEntity<ResponseStructure<PurchaseLogResponseDTO>> checkout(
-            @PathVariable Integer userId,
-            @Valid @RequestBody PurchaseLogRequestDTO requestDTO) {
-        requestDTO.setUserId(userId);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        ResponseBuilder.success(
-                                HttpStatus.CREATED.value(),
-                                "Purchase created successfully",
-                                service.addPurchase(requestDTO)
-                        )
-                );
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ResponseStructure<PaginatedResponse<PurchaseLogResponseDTO>>> getByUser(
-            @PathVariable Integer userId,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Purchases fetched successfully",
-                        PaginationUtils.paginate(service.getByUserId(userId), page, size)
-                )
+    @PostMapping
+    public ResponseStructure<PurchaseLogResponseDTO> addPurchase(
+            @RequestBody PurchaseLogRequestDTO requestDTO) {
+        return ResponseBuilder.success(
+                HttpStatus.CREATED.value(),
+                "Purchase added successfully",
+                service.addPurchase(requestDTO)
         );
     }
 
-    @DeleteMapping("/user/{userId}/inventory/{inventoryId}")
-    public ResponseEntity<ResponseStructure<String>> delete(
-            @PathVariable Integer userId,
-            @PathVariable Integer inventoryId) {
-        return ResponseEntity.ok(
-                ResponseBuilder.success(
-                        HttpStatus.OK.value(),
-                        "Purchase deleted successfully",
-                        service.delete(userId, inventoryId)
-                )
+    @GetMapping
+    public ResponseStructure<List<PurchaseLogResponseDTO>> getAll() {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Purchases fetched successfully",
+                service.getAll()
+        );
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseStructure<List<PurchaseLogResponseDTO>> getByUserId(@PathVariable Integer userId) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Purchases fetched successfully for user",
+                service.getByUserId(userId)
+        );
+    }
+
+    @DeleteMapping("/{userId}/{inventoryId}")
+    public ResponseStructure<String> delete(@PathVariable Integer userId,
+                                            @PathVariable Integer inventoryId) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Purchase deleted successfully",
+                service.delete(userId, inventoryId)
         );
     }
 }

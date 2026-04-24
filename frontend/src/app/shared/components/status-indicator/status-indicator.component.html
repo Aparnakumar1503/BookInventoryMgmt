@@ -1,0 +1,4 @@
+<span class="indicator" [class.is-ok]="ok" [class.is-error]="!ok && status > 0">
+  <span class="dot"></span>
+  {{ status || 'Ready' }} {{ ok ? 'OK' : '' }}
+</span>

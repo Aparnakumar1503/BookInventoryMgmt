@@ -28,5 +28,10 @@ public interface BookAuthorRepository extends JpaRepository<BookAuthor, BookAuth
     @Transactional
     @Query("DELETE FROM BookAuthor ba WHERE ba.isbn = :isbn")
     void deleteByIsbn(@Param("isbn") String isbn);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM BookAuthor ba WHERE ba.isbn = :isbn AND ba.authorId = :authorId")
+    int deleteByIsbnAndAuthorId(@Param("isbn") String isbn, @Param("authorId") Integer authorId);
 }
 

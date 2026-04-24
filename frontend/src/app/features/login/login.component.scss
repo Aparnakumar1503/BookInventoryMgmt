@@ -1,0 +1,93 @@
+.login-page {
+  min-height: calc(100vh - 5.5rem);
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.login-card {
+  width: min(100%, 32rem);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  padding: 2rem;
+}
+
+.module-chip {
+  display: inline-flex;
+  gap: 0.65rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: 999px;
+  background: #eef1ff;
+  color: var(--brand-blue);
+  font-weight: 700;
+}
+
+.login-card h1 {
+  margin: 1.8rem 0 0.75rem;
+  font-size: 3.4rem;
+  font-family: var(--font-display);
+}
+
+.login-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+}
+
+.demo-box {
+  margin: 2rem 0;
+  border: 1px solid rgba(58, 93, 232, 0.15);
+  background: #eef1ff;
+  border-radius: 18px;
+  padding: 1.35rem;
+  color: var(--text-secondary);
+}
+
+.demo-box strong {
+  color: var(--brand-blue);
+}
+
+form {
+  display: grid;
+  gap: 1.35rem;
+}
+
+label {
+  display: grid;
+  gap: 0.55rem;
+}
+
+label span {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+input {
+  padding: 1.1rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+  background: rgba(247, 244, 238, 0.75);
+  font-size: 1.25rem;
+}
+
+button {
+  margin-top: 0.4rem;
+  border: 0;
+  border-radius: 18px;
+  padding: 1.1rem 1.2rem;
+  background: var(--brand-blue);
+  color: white;
+  font-size: 1.45rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+a {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}

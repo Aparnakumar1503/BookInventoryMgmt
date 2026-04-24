@@ -1,0 +1,12 @@
+<section class="modules-page">
+  <div class="hero">
+    <h1>Choose a Module</h1>
+    <p>Select a module to log in and start managing data with a live UI</p>
+  </div>
+
+  <div class="grid">
+    @for (module of modules; track module.id) {
+      <app-data-card [module]="module" />
+    }
+  </div>
+</section>

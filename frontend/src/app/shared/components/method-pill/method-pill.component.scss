@@ -1,0 +1,28 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: #edf2ef;
+  color: var(--brand-mint);
+}
+
+.pill[data-method='POST'] {
+  background: #fff2df;
+  color: #cf8b21;
+}
+
+.pill[data-method='PUT'] {
+  background: #e9f2ff;
+  color: #4a86d9;
+}
+
+.pill[data-method='DELETE'] {
+  background: #ffe9e8;
+  color: var(--danger);
+}

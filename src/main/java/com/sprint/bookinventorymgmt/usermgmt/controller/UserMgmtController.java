@@ -56,4 +56,15 @@ public class UserMgmtController {
                 )
         );
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ResponseStructure<String>> deleteUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(
+                ResponseBuilder.success(
+                        HttpStatus.OK.value(),
+                        "User deleted successfully",
+                        service.deleteUser(userId)
+                )
+        );
+    }
 }

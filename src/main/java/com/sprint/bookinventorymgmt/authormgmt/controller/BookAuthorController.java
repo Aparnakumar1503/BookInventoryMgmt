@@ -39,7 +39,7 @@ public class BookAuthorController {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book author mapping deleted successfully",
-                service.deleteByIsbn(isbn)
+                service.deleteByIsbnAndAuthorId(isbn, authorId)
         );
     }
 }

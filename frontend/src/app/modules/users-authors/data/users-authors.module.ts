@@ -54,6 +54,14 @@ export const USERS_AUTHORS_MODULE: ModuleConfig = {
       }
     },
     {
+      id: 'delete-user',
+      name: 'Delete User',
+      method: 'DELETE',
+      path: '/api/v1/users/{userId}',
+      description: 'Delete a user by user ID.',
+      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
+    },
+    {
       id: 'list-roles',
       name: 'List Roles',
       method: 'GET',

@@ -109,6 +109,16 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
     }
 
     @Override
+    public String deleteByIsbnAndAuthorId(String isbn, Integer authorId) {
+        int deleted = repo.deleteByIsbnAndAuthorId(isbn, authorId);
+        if (deleted == 0) {
+            throw new BookAuthorNotFoundException(
+                    "No mapping found for isbn: " + isbn + " and authorId: " + authorId);
+        }
+        return "BookAuthor entry deleted successfully for isbn: " + isbn + " and authorId: " + authorId;
+    }
+
+    @Override
     public List<BookAuthorResponseDTO> findBooksByAuthorId(Integer authorId) {
         List<BookAuthor> list = repo.findBooksByAuthorId(authorId);
         if (list.isEmpty()) {

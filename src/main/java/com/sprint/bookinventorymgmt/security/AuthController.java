@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -80,12 +83,13 @@ public class AuthController {
 
     private AuthenticatedUserResponse buildUserResponse(
             String username,
-            java.util.Collection<? extends GrantedAuthority> authorities) {
+            Collection<? extends GrantedAuthority> authorities) {
         User user = userRepository.findByUserNameIgnoreCase(username).orElse(null);
-        List<String> authorityValues = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .sorted()
-                .toList();
+        List<String> authorityValues = new ArrayList<>();
+        for (GrantedAuthority authority : authorities) {
+            authorityValues.add(authority.getAuthority());
+        }
+        Collections.sort(authorityValues);
 
         return new AuthenticatedUserResponse(
                 username,
