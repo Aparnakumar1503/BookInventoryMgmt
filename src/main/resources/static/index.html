@@ -3,71 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookInventoryMgmt Login</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>Book Inventory Backend</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #f4f4ef;
+            color: #1f2937;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        main {
+            max-width: 720px;
+            padding: 32px;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2rem;
+        }
+
+        p, li {
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        code {
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: #eef2f7;
+        }
+    </style>
 </head>
-<body class="login-page">
-<main class="shell shell-login">
-    <section class="hero-panel">
-        <p class="eyebrow">Book Inventory Management</p>
-        <h1>Protected operations with owner-level access control.</h1>
-        <p class="hero-copy">
-            Sign in with the account assigned to your module. Each session is isolated, so opening the app in another
-            browser without authentication will not expose protected endpoints.
-        </p>
-        <div class="owner-grid">
-            <article class="owner-card">
-                <h2>User and Author Owner</h2>
-                <p><strong>Username:</strong> Aparna</p>
-                <p><strong>Password:</strong> password</p>
-            </article>
-            <article class="owner-card">
-                <h2>Book Owner</h2>
-                <p><strong>Username:</strong> Moses</p>
-                <p><strong>Password:</strong> password</p>
-            </article>
-            <article class="owner-card">
-                <h2>Inventory Owner</h2>
-                <p><strong>Username:</strong> Sobika</p>
-                <p><strong>Password:</strong> password</p>
-            </article>
-            <article class="owner-card">
-                <h2>Order Owner</h2>
-                <p><strong>Username:</strong> Janapriya</p>
-                <p><strong>Password:</strong> password</p>
-            </article>
-            <article class="owner-card">
-                <h2>Review Owner</h2>
-                <p><strong>Username:</strong> SwarnaLatha</p>
-                <p><strong>Password:</strong> password</p>
-            </article>
-        </div>
-    </section>
-
-    <section class="login-panel">
-        <div class="panel-header">
-            <p class="eyebrow">Secure Sign-In</p>
-            <h2>Access your owned module</h2>
-        </div>
-
-        <div id="status-banner" class="status-banner" hidden></div>
-
-        <form method="post" action="/login" class="login-form">
-            <label class="field">
-                <span>Username</span>
-                <input type="text" name="username" autocomplete="username" required>
-            </label>
-
-            <label class="field">
-                <span>Password</span>
-                <input type="password" name="password" autocomplete="current-password" required>
-            </label>
-
-            <button type="submit" class="primary-button">Sign In</button>
-        </form>
-    </section>
+<body>
+<main>
+    <h1>Book Inventory Backend API</h1>
+    <p>This server only hosts the secured Spring Boot backend on <code>localhost:8182</code>.</p>
+    <p>Use the Angular frontend on <code>localhost:4200</code> to log in and access the application screens.</p>
+    <p>Useful backend endpoints:</p>
+    <ul>
+        <li><code>POST /api/v1/auth/login</code></li>
+        <li><code>GET /api/v1/auth/me</code></li>
+        <li><code>POST /api/v1/auth/logout</code></li>
+        <li><code>/swagger-ui.html</code></li>
+    </ul>
+    <p>Opening API URLs directly in the browser is not the intended flow for this setup.</p>
 </main>
-
-<script src="/app.js"></script>
 </body>
 </html>

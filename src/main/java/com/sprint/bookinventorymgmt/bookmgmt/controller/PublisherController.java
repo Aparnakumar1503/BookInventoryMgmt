@@ -7,17 +7,22 @@ import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+/**
+ * Manages publisher CRUD endpoints separately so book catalog logic stays focused on books.
+ */
 @RestController
-@RequestMapping("/api/v1/publishers")
-@Tag(name = "Publisher APIs", description = "CRUD operations for Publishers")
 public class PublisherController {
 
     private final IPublisherService publisherService;
@@ -26,65 +31,68 @@ public class PublisherController {
         this.publisherService = publisherService;
     }
 
-    @Operation(summary = "Get all publishers")
-    @GetMapping
-    public ResponseStructure<PaginatedResponse<PublisherResponseDTO>> getAll(
+    /**
+     * Returns all publishers.
+     */
+    @GetMapping("/api/v1/publishers")
+    public ResponseStructure<PaginatedResponse<PublisherResponseDTO>> getAllPublishers(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Publishers fetched successfully",
                 PaginationUtils.paginate(publisherService.getAllPublishers(), page, size)
         );
     }
 
-    @Operation(summary = "Get publisher by ID")
-    @GetMapping("/{publisherId}")
-    public ResponseStructure<PublisherResponseDTO> getById(@PathVariable Integer publisherId) {
-
+    /**
+     * Returns one publisher by identifier.
+     */
+    @GetMapping("/api/v1/publishers/{publisherId}")
+    public ResponseStructure<PublisherResponseDTO> getPublisherById(@PathVariable Integer publisherId) {
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Publisher fetched successfully",
                 publisherService.getPublisherById(publisherId)
         );
     }
 
-    @Operation(summary = "Create publisher")
-    @PostMapping
+    /**
+     * Creates a publisher after request validation completes.
+     */
+    @PostMapping("/api/v1/publishers")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseStructure<PublisherResponseDTO> create(@Valid @RequestBody PublisherRequestDTO dto) {
-
+    public ResponseStructure<PublisherResponseDTO> createPublisher(@Valid @RequestBody PublisherRequestDTO dto) {
         return ResponseBuilder.success(
-                201,
+                HttpStatus.CREATED.value(),
                 "Publisher created successfully",
                 publisherService.createPublisher(dto)
         );
     }
 
-    @Operation(summary = "Update publisher")
-    @PutMapping("/{publisherId}")
-    public ResponseStructure<PublisherResponseDTO> update(
+    /**
+     * Updates a publisher by identifier.
+     */
+    @PutMapping("/api/v1/publishers/{publisherId}")
+    public ResponseStructure<PublisherResponseDTO> updatePublisher(
             @PathVariable Integer publisherId,
             @Valid @RequestBody PublisherRequestDTO dto) {
-
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Publisher updated successfully",
                 publisherService.updatePublisher(publisherId, dto)
         );
     }
 
-    @Operation(summary = "Delete publisher")
-    @DeleteMapping("/{publisherId}")
-    public ResponseStructure<String> delete(@PathVariable Integer publisherId) {
-
-        String response = publisherService.deletePublisher(publisherId);
-
+    /**
+     * Deletes a publisher by identifier.
+     */
+    @DeleteMapping("/api/v1/publishers/{publisherId}")
+    public ResponseStructure<String> deletePublisher(@PathVariable Integer publisherId) {
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Publisher deleted successfully",
-                response
+                publisherService.deletePublisher(publisherId)
         );
     }
 }

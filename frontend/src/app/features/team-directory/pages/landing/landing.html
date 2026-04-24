@@ -1,87 +1,80 @@
-﻿<section class="bv-paper-shell relative overflow-hidden">
-  <div class="bv-container px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-    <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+<section class="bv-paper-shell relative overflow-hidden">
+  <div class="bv-container px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <div class="bv-landing-hero relative overflow-hidden rounded-[2rem] p-6 sm:p-7 lg:p-8">
       <div class="space-y-6">
-        <div class="bv-page-header">
-          <span class="bv-kicker">Team Directory</span>
-          <h1 class="bv-display text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">Frontend workspace for team-owned modules</h1>
+        <div class="bv-page-header relative z-10">
+          <span class="bv-kicker">Book Inventory Team</span>
+          <h1 class="bv-display max-w-4xl text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">
+            Book Inventory Management System
+          </h1>
           <p class="bv-page-note max-w-3xl text-base sm:text-lg">
-            Select a team member to open that member's module page, review their assigned endpoints, submit requests, and view secured results.
+            Select a team member, sign in with the matching account, and open the protected module workspace.
           </p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Members</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.teams }}</p>
-          </article>
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Modules</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.modules }}</p>
-          </article>
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Endpoints</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.endpoints }}</p>
-          </article>
-        </div>
-      </div>
+        <section class="bv-panel rounded-[1.75rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p class="bv-stat-label">Secure Access</p>
+              <h2 class="bv-display mt-2 text-3xl leading-none text-[var(--bv-text)] sm:text-4xl">Sign in</h2>
+              <p class="bv-page-note mt-3 max-w-2xl">
+                Use the matching owner account to access the protected module workspace.
+              </p>
+            </div>
 
-      <aside class="bv-panel rounded-[1.8rem] p-6 sm:p-7 lg:sticky lg:top-24">
-        <p class="bv-stat-label">Secure Access</p>
-        <h2 class="bv-display mt-3 text-4xl leading-none text-[var(--bv-text)]">Sign in</h2>
-        <p class="bv-page-note mt-4">
-          Protected member pages and endpoint forms require login in this browser. Opening the same URL in another browser will still require that browser to authenticate separately.
-        </p>
+            <div class="flex flex-wrap gap-2 lg:max-w-[22rem] lg:justify-end">
+              @for (teammate of teammates; track teammate.id) {
+                <button
+                  type="button"
+                  (click)="fillDemo(teammate.username)"
+                  class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+                >
+                  {{ teammate.username }}
+                </button>
+              }
+            </div>
+          </div>
 
-        <form class="mt-6 space-y-4" [formGroup]="loginForm" (ngSubmit)="login()">
-          <label class="block">
-            <span class="text-sm font-black text-[var(--bv-text)]">Username</span>
-            <input formControlName="username" type="text" class="bv-field mt-2" placeholder="Aparna" />
-          </label>
+          <form class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_12rem]" [formGroup]="loginForm" (ngSubmit)="login()">
+            <label class="block">
+              <span class="text-sm font-black text-[var(--bv-text)]">Username</span>
+              <input formControlName="username" type="text" class="bv-field mt-2" placeholder="Aparna" />
+            </label>
 
-          <label class="block">
-            <span class="text-sm font-black text-[var(--bv-text)]">Password</span>
-            <input formControlName="password" type="password" class="bv-field mt-2" placeholder="password" />
-          </label>
+            <label class="block">
+              <span class="text-sm font-black text-[var(--bv-text)]">Password</span>
+              <input formControlName="password" type="password" class="bv-field mt-2" placeholder="password" />
+            </label>
 
-          <button
-            type="submit"
-            [disabled]="isSubmitting()"
-            class="bv-button-primary w-full rounded-[1rem] px-5 py-3 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
-          </button>
-        </form>
-
-        <div class="bv-muted-block mt-6 p-4">
-          <p class="text-xs font-black uppercase tracking-[0.22em] text-[var(--bv-text-muted)]">Quick Fill</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            @for (teammate of teammates; track teammate.id) {
+            <div class="flex items-end">
               <button
-                type="button"
-                (click)="fillDemo(teammate.username)"
-                class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+                type="submit"
+                [disabled]="isSubmitting()"
+                class="bv-button-primary w-full rounded-[1.1rem] px-5 py-3.5 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {{ teammate.username }}
+                {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
               </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="bv-shelf-panel rounded-[1.7rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="bv-stat-label">Team Directory</p>
+              <h2 class="bv-slim-heading mt-2">Members and Module Ownership</h2>
+            </div>
+            <p class="max-w-lg text-sm font-semibold leading-6 text-[var(--bv-text-soft)]">
+              Each member card shows the assigned module and module coverage.
+            </p>
+          </div>
+
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+            @for (teammate of teammates; track teammate.id) {
+              <app-teammate-card [teammate]="teammate" />
             }
           </div>
-        </div>
-      </aside>
-    </div>
-
-    <div class="mt-10">
-      <div class="flex items-end justify-between gap-4">
-        <div>
-          <p class="bv-stat-label">Members and Modules</p>
-          <h2 class="bv-section-title mt-3">Select a team member</h2>
-        </div>
-      </div>
-
-      <div class="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-        @for (teammate of teammates; track teammate.id) {
-          <app-teammate-card [teammate]="teammate" />
-        }
+        </section>
       </div>
     </div>
   </div>

@@ -6,13 +6,16 @@ import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles read-only category endpoints so reference data stays separate from book CRUD operations.
+ */
 @RestController
-@RequestMapping("/api/v1/categories")
-@Tag(name = "Category APIs", description = "CRUD operations for Categories")
 public class CategoryController {
 
     private final ICategoryService categoryService;
@@ -21,25 +24,27 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @Operation(summary = "Get all categories")
-    @GetMapping
-    public ResponseStructure<PaginatedResponse<CategoryResponseDTO>> getAll(
+    /**
+     * Returns all categories used by the catalog.
+     */
+    @GetMapping("/api/v1/categories")
+    public ResponseStructure<PaginatedResponse<CategoryResponseDTO>> getAllCategories(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Categories fetched successfully",
                 PaginationUtils.paginate(categoryService.getAllCategories(), page, size)
         );
     }
 
-    @Operation(summary = "Get category by ID")
-    @GetMapping("/{categoryId}")
-    public ResponseStructure<CategoryResponseDTO> getById(@PathVariable Integer categoryId) {
-
+    /**
+     * Returns one category by identifier.
+     */
+    @GetMapping("/api/v1/categories/{categoryId}")
+    public ResponseStructure<CategoryResponseDTO> getCategoryById(@PathVariable Integer categoryId) {
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "Category fetched successfully",
                 categoryService.getCategoryById(categoryId)
         );

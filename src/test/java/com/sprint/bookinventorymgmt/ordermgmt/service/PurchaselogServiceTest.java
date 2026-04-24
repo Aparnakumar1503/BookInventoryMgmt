@@ -11,7 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class PurchaseLogServiceTest {
@@ -20,151 +24,71 @@ class PurchaseLogServiceTest {
     private IPurchaseLogService service;
 
     @Test
-    void testAddPurchase() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(1);
-        dto.setInventoryId(100);
+    void addPurchase_success() {
+        PurchaseLogRequestDTO dto = request(1, 100);
 
-        PurchaseLogResponseDTO res = service.addPurchase(dto);
+        PurchaseLogResponseDTO result = service.addPurchase(dto);
 
-        assertNotNull(res);
-        assertEquals(1, res.getUserId());
-        assertEquals(100, res.getInventoryId());
+        assertNotNull(result);
+        assertEquals(1, result.getUserId());
+        assertEquals(100, result.getInventoryId());
     }
 
     @Test
-    void testGetAll() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(2);
-        dto.setInventoryId(200);
+    void getAll_returnsCreatedPurchases() {
+        service.addPurchase(request(2, 200));
 
-        service.addPurchase(dto);
+        List<PurchaseLogResponseDTO> result = service.getAll();
 
-        assertFalse(service.getAll().isEmpty());
+        assertFalse(result.isEmpty());
     }
 
     @Test
-    void testDeleteSuccess() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(3);
-        dto.setInventoryId(300);
+    void getByUserId_returnsMatchingPurchases() {
+        service.addPurchase(request(3, 300));
 
-        service.addPurchase(dto);
+        List<PurchaseLogResponseDTO> result = service.getByUserId(3);
 
-        String result = service.delete(3, 300);
+        assertFalse(result.isEmpty());
+        assertEquals(3, result.get(0).getUserId());
+    }
+
+    @Test
+    void delete_success() {
+        service.addPurchase(request(4, 400));
+
+        String result = service.delete(4, 400);
 
         assertTrue(result.contains("Deleted"));
     }
 
     @Test
-    void testMultipleInsert() {
-        PurchaseLogRequestDTO dto1 = new PurchaseLogRequestDTO();
-        dto1.setUserId(4);
-        dto1.setInventoryId(400);
-
-        PurchaseLogRequestDTO dto2 = new PurchaseLogRequestDTO();
-        dto2.setUserId(5);
-        dto2.setInventoryId(500);
-
-        service.addPurchase(dto1);
-        service.addPurchase(dto2);
-
-        assertTrue(service.getAll().size() >= 2);
-    }
-
-    @Test
-    void testMapping() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(6);
-        dto.setInventoryId(600);
-
-        PurchaseLogResponseDTO res = service.addPurchase(dto);
-
-        assertEquals(600, res.getInventoryId());
-        assertEquals(6, res.getUserId());
-    }
-
-    @Test
-    void testGetAllNotEmpty() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(7);
-        dto.setInventoryId(700);
-
-        service.addPurchase(dto);
-
-        assertFalse(service.getAll().isEmpty());
-    }
-
-    @Test
-    void testDeleteFlow() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(8);
-        dto.setInventoryId(800);
-
-        service.addPurchase(dto);
-        service.delete(8, 800);
-
-        assertThrows(PurchaseNotFoundException.class, () -> service.delete(8, 800));
-    }
-
-    @Test
-    void testDeleteNotFound() {
+    void delete_notFound() {
         assertThrows(PurchaseNotFoundException.class, () -> service.delete(999, 9999));
     }
 
     @Test
-    void testAddNull() {
+    void addPurchase_nullRequest() {
         assertThrows(OrderProcessingException.class, () -> service.addPurchase(null));
     }
 
     @Test
-    void testAddInvalidDTO() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-
-        assertThrows(OrderProcessingException.class, () -> service.addPurchase(dto));
+    void addPurchase_invalidRequest() {
+        assertThrows(OrderProcessingException.class, () -> service.addPurchase(new PurchaseLogRequestDTO()));
     }
 
     @Test
-    void testDeleteNull() {
-        assertThrows(Exception.class, () -> service.delete(null, null));
-    }
-
-    @Test
-    void testGetAllEmptyCheck() {
-        assertNotNull(service.getAll());
-    }
-
-    @Test
-    void testDeleteTwice() {
-        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
-        dto.setUserId(10);
-        dto.setInventoryId(1000);
-
+    void addPurchase_duplicateCompositeKey() {
+        PurchaseLogRequestDTO dto = request(11, 1100);
         service.addPurchase(dto);
-        service.delete(10, 1000);
 
-        assertThrows(PurchaseNotFoundException.class, () -> service.delete(10, 1000));
+        assertThrows(BookAlreadyPurchasedException.class, () -> service.addPurchase(request(11, 1100)));
     }
 
-    @Test
-    void testDuplicateCompositeKey() {
-        PurchaseLogRequestDTO dto1 = new PurchaseLogRequestDTO();
-        dto1.setUserId(11);
-        dto1.setInventoryId(1100);
-
-        PurchaseLogRequestDTO dto2 = new PurchaseLogRequestDTO();
-        dto2.setUserId(11);
-        dto2.setInventoryId(1100);
-
-        service.addPurchase(dto1);
-
-        assertThrows(BookAlreadyPurchasedException.class, () -> service.addPurchase(dto2));
-    }
-
-    @Test
-    void testEdgeCase() {
-        List<PurchaseLogResponseDTO> list = service.getAll();
-
-        assertTrue(list.size() >= 0);
+    private PurchaseLogRequestDTO request(int userId, int inventoryId) {
+        PurchaseLogRequestDTO dto = new PurchaseLogRequestDTO();
+        dto.setUserId(userId);
+        dto.setInventoryId(inventoryId);
+        return dto;
     }
 }

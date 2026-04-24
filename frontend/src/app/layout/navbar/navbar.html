@@ -1,4 +1,4 @@
-﻿<header class="sticky top-0 z-40 border-b border-[color:var(--bv-border)] bg-[rgba(249,246,240,0.9)] backdrop-blur-xl">
+<header class="sticky top-0 z-40 border-b border-[color:var(--bv-border)] bg-[rgba(249,246,240,0.9)] backdrop-blur-xl">
   <nav class="bv-container px-4 py-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between gap-4">
       <a routerLink="/" class="group flex items-center gap-4" (click)="closeMenu()">
@@ -16,6 +16,10 @@
       }
 
       <div class="flex items-center gap-3">
+        <div class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-black text-[var(--bv-text-soft)] xl:inline-flex">
+          {{ currentLabel() }}
+        </div>
+
         @if (currentUser()) {
           <button
             type="button"
@@ -38,7 +42,36 @@
       </div>
     </div>
 
-    <div class="overflow-hidden transition-all duration-200 lg:hidden" [class.max-h-0]="!menuOpen()" [class.max-h-[20rem]]="menuOpen()">
+    @if (currentUser()) {
+      <div class="mt-4 hidden flex-wrap items-center justify-between gap-3 lg:flex">
+        <div class="flex flex-wrap gap-2">
+          @for (module of accessibleModules(); track module.id) {
+            <a
+              [routerLink]="['/member', module.id]"
+              routerLinkActive="bg-[var(--bv-primary)] text-white border-[var(--bv-primary)]"
+              class="rounded-full border border-[color:var(--bv-border)] bg-white/82 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+            >
+              {{ module.name }}
+            </a>
+          }
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @if (recentResultAvailable()) {
+            <a routerLink="/result" class="rounded-full border border-[color:var(--bv-border)] bg-white/82 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]">
+              Last Result
+            </a>
+          }
+          @if (currentModuleId(); as moduleId) {
+            <a [routerLink]="['/member', moduleId]" class="rounded-full border border-[color:var(--bv-border)] bg-white/82 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]">
+              Current Workspace
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="overflow-hidden transition-all duration-200 lg:hidden" [class.max-h-0]="!menuOpen()" [class.max-h-[28rem]]="menuOpen()">
       <div class="mt-4 space-y-3 rounded-[1.4rem] border border-[color:var(--bv-border)] bg-white/88 p-4 shadow-xl shadow-slate-900/8">
         @if (currentUser(); as user) {
           <div class="rounded-[1rem] bg-[var(--bv-surface-muted)] px-4 py-3">
@@ -47,13 +80,43 @@
           </div>
         }
 
+        <div class="rounded-[1rem] bg-[var(--bv-surface-muted)] px-4 py-3">
+          <p class="text-[0.7rem] font-black uppercase tracking-[0.24em] text-[var(--bv-text-muted)]">Current View</p>
+          <p class="mt-1 text-sm font-black text-[var(--bv-text)]">{{ currentLabel() }}</p>
+        </div>
+
         <a
           routerLink="/"
           (click)="closeMenu()"
           class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
         >
-          Team Directory
+          Application Home
         </a>
+
+        @if (recentResultAvailable()) {
+          <a
+            routerLink="/result"
+            (click)="closeMenu()"
+            class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+          >
+            Last Result
+          </a>
+        }
+
+        @if (currentUser()) {
+          <div class="space-y-2">
+            <p class="px-4 text-[0.7rem] font-black uppercase tracking-[0.24em] text-[var(--bv-text-muted)]">Modules</p>
+            @for (module of accessibleModules(); track module.id) {
+              <a
+                [routerLink]="['/member', module.id]"
+                (click)="closeMenu()"
+                class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+              >
+                {{ module.name }}
+              </a>
+            }
+          </div>
+        }
 
         @if (currentUser()) {
           <button

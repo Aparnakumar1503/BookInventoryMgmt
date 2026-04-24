@@ -4,8 +4,8 @@ import { TEAMMATES } from '../../../core/data/team-members.data';
 export const INVENTORY_MODULE: ModuleConfig = {
   id: 'inventory',
   name: 'Inventory Management',
-  tagline: 'Inventory copy lookup, creation, purchase marking, and condition reference APIs.',
-  description: 'This module manages book inventory copies, custom availability queries, and the condition reference data used across the inventory workflow.',
+  tagline: 'Inventory copy lookup, availability queries, CRUD operations, purchase marking, and condition management APIs.',
+  description: 'This module manages inventory copies and book-condition operations, including the available-copy query used during checkout flow demonstrations.',
   owner: TEAMMATES[2],
   endpoints: [
     {
@@ -36,7 +36,7 @@ export const INVENTORY_MODULE: ModuleConfig = {
       name: 'Get Available Inventory',
       method: 'GET',
       path: '/api/v1/inventory/books/{isbn}/available',
-      description: 'Fetch only the available inventory copies for a book ISBN.',
+      description: 'Fetch only available inventory copies for a book ISBN using the custom query endpoint.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
     },
     {
@@ -64,7 +64,8 @@ export const INVENTORY_MODULE: ModuleConfig = {
         title: 'Updated Inventory Payload',
         fields: [
           { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
-          { key: 'ranks', label: 'Condition Rank', type: 'number', required: true, placeholder: '6' }
+          { key: 'ranks', label: 'Condition Rank', type: 'number', required: true, placeholder: '6' },
+          { key: 'purchased', label: 'Purchased', type: 'boolean' }
         ]
       }
     },
@@ -108,8 +109,10 @@ export const INVENTORY_MODULE: ModuleConfig = {
       body: {
         title: 'Book Condition Payload',
         fields: [
+          { key: 'ranks', label: 'Rank', type: 'number', required: true, placeholder: '6' },
           { key: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Like New' },
-          { key: 'priceFactor', label: 'Price Factor', type: 'number', required: true, placeholder: '0.9' }
+          { key: 'fullDescription', label: 'Full Description', type: 'textarea', placeholder: 'Nearly unused copy with clean pages.' },
+          { key: 'price', label: 'Price', type: 'number', required: true, placeholder: '399.99' }
         ]
       }
     },
@@ -123,8 +126,10 @@ export const INVENTORY_MODULE: ModuleConfig = {
       body: {
         title: 'Updated Book Condition Payload',
         fields: [
+          { key: 'ranks', label: 'Rank', type: 'number', required: true, placeholder: '6' },
           { key: 'description', label: 'Description', type: 'text', required: true, placeholder: 'Like New' },
-          { key: 'priceFactor', label: 'Price Factor', type: 'number', required: true, placeholder: '0.9' }
+          { key: 'fullDescription', label: 'Full Description', type: 'textarea', placeholder: 'Updated details for this condition.' },
+          { key: 'price', label: 'Price', type: 'number', required: true, placeholder: '399.99' }
         ]
       }
     },

@@ -15,52 +15,63 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Manages reviewer endpoints because reviewers are a separate domain entity from reviews.
+ */
 @RestController
-@RequestMapping("/api/v1/reviewers")
 public class ReviewerController {
 
-    private final ReviewerService service;
+    private final ReviewerService reviewerService;
 
-    public ReviewerController(ReviewerService service) {
-        this.service = service;
+    public ReviewerController(ReviewerService reviewerService) {
+        this.reviewerService = reviewerService;
     }
 
-    @PostMapping
-    public ResponseStructure<ReviewerResponseDTO> addReviewer(
-            @Valid @RequestBody ReviewerRequestDTO dto) {
+    /**
+     * Creates a reviewer.
+     */
+    @PostMapping("/api/v1/reviewers")
+    public ResponseStructure<ReviewerResponseDTO> addReviewer(@Valid @RequestBody ReviewerRequestDTO dto) {
         return ResponseBuilder.success(
                 HttpStatus.CREATED.value(),
                 "Reviewer added successfully",
-                service.addReviewer(dto)
+                reviewerService.addReviewer(dto)
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseStructure<ReviewerResponseDTO> getReviewerById(
-            @PathVariable int id) {
+    /**
+     * Returns one reviewer by identifier.
+     */
+    @GetMapping("/api/v1/reviewers/{id}")
+    public ResponseStructure<ReviewerResponseDTO> getReviewerById(@PathVariable int id) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer fetched successfully",
-                service.getReviewerById(id)
+                reviewerService.getReviewerById(id)
         );
     }
 
-    @GetMapping
+    /**
+     * Returns all reviewers.
+     */
+    @GetMapping("/api/v1/reviewers")
     public ResponseStructure<PaginatedResponse<ReviewerResponseDTO>> getAllReviewers(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "All reviewers fetched successfully",
-                PaginationUtils.paginate(service.getAllReviewers(), page, size)
+                PaginationUtils.paginate(reviewerService.getAllReviewers(), page, size)
         );
     }
 
-    @GetMapping("/company/{company}")
+    /**
+     * Returns reviewers filtered by company.
+     */
+    @GetMapping("/api/v1/reviewers/company/{company}")
     public ResponseStructure<PaginatedResponse<ReviewerResponseDTO>> getReviewersByCompany(
             @PathVariable String company,
             @RequestParam(defaultValue = "0") Integer page,
@@ -68,28 +79,33 @@ public class ReviewerController {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewers fetched successfully by company",
-                PaginationUtils.paginate(service.getReviewersByCompany(company), page, size)
+                PaginationUtils.paginate(reviewerService.getReviewersByCompany(company), page, size)
         );
     }
 
-    @PutMapping("/{id}")
+    /**
+     * Updates one reviewer.
+     */
+    @PutMapping("/api/v1/reviewers/{id}")
     public ResponseStructure<ReviewerResponseDTO> updateReviewer(
             @PathVariable int id,
             @Valid @RequestBody ReviewerRequestDTO dto) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer updated successfully",
-                service.updateReviewer(id, dto)
+                reviewerService.updateReviewer(id, dto)
         );
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseStructure<String> deleteReviewer(@PathVariable int id) {
-        service.deleteReviewer(id);
+    /**
+     * Deletes one reviewer by identifier.
+     */
+    @DeleteMapping("/api/v1/reviewers/{id}")
+    public ResponseStructure<ReviewerResponseDTO> deleteReviewer(@PathVariable int id) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Reviewer deleted successfully",
-                "Deleted ID: " + id
+                reviewerService.deleteReviewer(id)
         );
     }
 }

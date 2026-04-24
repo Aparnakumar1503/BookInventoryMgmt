@@ -19,7 +19,6 @@ export class LandingComponent {
   private readonly router = inject(Router);
 
   readonly teammates = this.moduleService.getTeammates();
-  readonly stats = this.moduleService.getStats();
   readonly isSubmitting = signal(false);
 
   readonly loginForm = new FormGroup({
@@ -39,9 +38,9 @@ export class LandingComponent {
     this.authService.login(username, password)
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
-        next: (payload) => {
+        next: (user) => {
           this.notificationService.success('Login successful.');
-          const destination = payload.user.modules[0] ?? 'books';
+          const destination = user.modules[0] ?? 'books';
           void this.router.navigate(['/member', destination]);
         },
         error: () => this.notificationService.error('Login failed. Check the username and password.')

@@ -1,8 +1,8 @@
 package com.sprint.bookinventorymgmt.ordermgmt.controller;
 
-import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
@@ -13,24 +13,26 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+/**
+ * Handles shopping cart endpoints independently because cart state changes are separate from order creation.
+ */
 @RestController
-@RequestMapping("/api/v1/cart")
 public class ShoppingCartController {
 
-    private final IShoppingCartService service;
+    private final IShoppingCartService shoppingCartService;
 
-    public ShoppingCartController(IShoppingCartService service) {
-        this.service = service;
+    public ShoppingCartController(IShoppingCartService shoppingCartService) {
+        this.shoppingCartService = shoppingCartService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ResponseStructure<PaginatedResponse<ShoppingCartResponseDTO>>> getByUser(
+    /**
+     * Returns cart items for one user.
+     */
+    @GetMapping("/api/v1/cart/{userId}")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<ShoppingCartResponseDTO>>> getCartByUser(
             @PathVariable Integer userId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
@@ -38,13 +40,16 @@ public class ShoppingCartController {
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Cart items fetched successfully",
-                        PaginationUtils.paginate(service.getByUserId(userId), page, size)
+                        PaginationUtils.paginate(shoppingCartService.getByUserId(userId), page, size)
                 )
         );
     }
 
-    @PostMapping("/{userId}/items/{isbn}")
-    public ResponseEntity<ResponseStructure<ShoppingCartResponseDTO>> addCart(
+    /**
+     * Adds a book to a user's cart.
+     */
+    @PostMapping("/api/v1/cart/{userId}/items/{isbn}")
+    public ResponseEntity<ResponseStructure<ShoppingCartResponseDTO>> addCartItem(
             @PathVariable Integer userId,
             @PathVariable String isbn) {
         ShoppingCartRequestDTO requestDTO = new ShoppingCartRequestDTO();
@@ -52,24 +57,25 @@ public class ShoppingCartController {
         requestDTO.setIsbn(isbn);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        ResponseBuilder.success(
-                                HttpStatus.CREATED.value(),
-                                "Cart item created successfully",
-                                service.addCart(requestDTO)
-                        )
-                );
+                .body(ResponseBuilder.success(
+                        HttpStatus.CREATED.value(),
+                        "Cart item created successfully",
+                        shoppingCartService.addCart(requestDTO)
+                ));
     }
 
-    @DeleteMapping("/{userId}/items/{isbn}")
-    public ResponseEntity<ResponseStructure<String>> delete(
+    /**
+     * Removes a book from a user's cart.
+     */
+    @DeleteMapping("/api/v1/cart/{userId}/items/{isbn}")
+    public ResponseEntity<ResponseStructure<String>> deleteCartItem(
             @PathVariable Integer userId,
             @PathVariable String isbn) {
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Cart item deleted successfully",
-                        service.delete(userId, isbn)
+                        shoppingCartService.delete(userId, isbn)
                 )
         );
     }

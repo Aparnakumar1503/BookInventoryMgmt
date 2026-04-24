@@ -8,6 +8,7 @@ public interface IUserMgmtService {
     UserResponseDTO addUser(UserRequestDTO requestDTO);
     List<UserResponseDTO> getAllUsers();
     UserResponseDTO getUserById(Integer userId);
+    UserResponseDTO login(String userName, String password);
     UserResponseDTO updateUser(Integer userId, UserRequestDTO requestDTO);
     String deleteUser(Integer userId);
     UserResponseDTO getUserByUserName(String userName);

@@ -67,9 +67,16 @@ export class EndpointFormComponent {
       return;
     }
 
+    const baseQueryParams = this.collect(this.queryParamsGroup, this.queryFields(), true);
     const payload: EndpointRequestPayload = {
       pathParams: this.collect(this.pathParamsGroup, this.pathFields(), false),
-      queryParams: this.collect(this.queryParamsGroup, this.queryFields(), true),
+      queryParams: this.endpoint.method === 'GET'
+        ? {
+            page: baseQueryParams['page'] ?? 0,
+            size: baseQueryParams['size'] ?? 9,
+            ...baseQueryParams
+          }
+        : baseQueryParams,
       body: this.bodyFields().length ? this.collect(this.bodyGroup, this.bodyFields(), true) : null
     };
 
@@ -92,7 +99,7 @@ export class EndpointFormComponent {
           return;
         }
 
-        this.notificationService.error('API request returned an error.');
+        this.notificationService.error(this.describeFailure(result.body));
       });
   }
 
@@ -148,5 +155,20 @@ export class EndpointFormComponent {
       payload[field.key] = field.type === 'number' && value !== null && value !== '' ? Number(value) : value ?? '';
       return payload;
     }, {});
+  }
+
+  private describeFailure(body: unknown): string {
+    if (typeof body === 'string' && body.trim().length > 0) {
+      return body;
+    }
+
+    if (typeof body === 'object' && body !== null && 'message' in body) {
+      const message = body['message'];
+      if (typeof message === 'string' && message.trim().length > 0) {
+        return message;
+      }
+    }
+
+    return 'API request returned an error.';
   }
 }

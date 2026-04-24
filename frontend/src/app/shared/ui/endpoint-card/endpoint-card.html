@@ -1,14 +1,28 @@
-﻿<a
+<a
   [routerLink]="['/endpoint-form', moduleId(), endpoint().id]"
-  class="group block h-full rounded-[1.2rem] border border-[color:var(--bv-border)] bg-white p-5 transition duration-200 hover:border-[rgba(47,93,98,0.24)] hover:shadow-lg hover:shadow-slate-900/6"
+  class="group block h-full rounded-[1.35rem] border border-[color:var(--bv-border)] bg-white p-5 transition duration-200 hover:-translate-y-1 hover:border-[rgba(47,93,98,0.24)] hover:shadow-lg hover:shadow-slate-900/6"
 >
   <div class="flex flex-wrap items-center justify-between gap-3">
     <span class="rounded-full px-3 py-1 text-xs font-black" [class]="methodClass(endpoint().method)">
       {{ endpoint().method }}
     </span>
-    <span class="text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-muted)]">Use</span>
+    <span class="text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-muted)]">Ready</span>
   </div>
   <h3 class="mt-4 text-lg font-black leading-7 text-[var(--bv-text)]">{{ endpoint().name }}</h3>
   <code class="mt-3 block break-all rounded-[0.9rem] bg-[var(--bv-surface-muted)] px-3 py-3 text-sm font-semibold leading-6 text-[var(--bv-text-soft)]">{{ endpoint().path }}</code>
   <p class="mt-4 text-sm font-medium leading-6 text-[var(--bv-text-soft)]">{{ endpoint().description }}</p>
+
+  <div class="mt-5 flex flex-wrap items-center gap-2">
+    <span class="rounded-full bg-[var(--bv-primary-soft)] px-3 py-2 text-xs font-black text-[var(--bv-primary)]">
+      {{ parameterCount() }} inputs
+    </span>
+    @if (hasBody()) {
+      <span class="rounded-full bg-[var(--bv-secondary-soft)] px-3 py-2 text-xs font-black text-[var(--bv-secondary)]">Data Entry</span>
+    }
+  </div>
+
+  <div class="mt-5 flex items-center justify-between border-t border-[color:var(--bv-border)] pt-4">
+    <span class="text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Open request builder</span>
+    <span class="text-sm font-black text-[var(--bv-primary)] transition group-hover:translate-x-1">Launch -></span>
+  </div>
 </a>

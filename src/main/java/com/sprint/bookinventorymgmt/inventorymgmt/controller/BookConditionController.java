@@ -18,28 +18,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Keeps book condition reference endpoints separate from inventory copy operations.
+ */
 @RestController
-@RequestMapping("/api/v1/book-conditions")
 public class BookConditionController {
 
-    private final IBookConditionService service;
+    private final IBookConditionService bookConditionService;
 
-    public BookConditionController(IBookConditionService service) {
-        this.service = service;
+    public BookConditionController(IBookConditionService bookConditionService) {
+        this.bookConditionService = bookConditionService;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> create(
+    /**
+     * Creates one book condition record.
+     */
+    @PostMapping("/api/v1/book-conditions")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> createBookCondition(
             @Valid @RequestBody BookConditionRequestDTO dto) {
-        BookCondition saved = service.saveBookCondition(InventoryMapper.toBookConditionEntity(dto));
-
+        BookCondition saved = bookConditionService.saveBookCondition(InventoryMapper.toBookConditionEntity(dto));
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ResponseBuilder.success(
                         HttpStatus.CREATED.value(),
@@ -49,46 +51,54 @@ public class BookConditionController {
         );
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseStructure<PaginatedResponse<BookConditionResponseDTO>>> getAll(
+    /**
+     * Returns all book conditions used by inventory pricing and grading.
+     */
+    @GetMapping("/api/v1/book-conditions")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<BookConditionResponseDTO>>> getAllBookConditions(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        List<BookCondition> conditions = service.getAllBookConditions();
-        List<BookConditionResponseDTO> list = new ArrayList<>();
-        for (BookCondition condition : conditions) {
-            list.add(InventoryMapper.toBookConditionResponse(condition));
-        }
+        List<BookConditionResponseDTO> response = bookConditionService.getAllBookConditions().stream()
+                .map(InventoryMapper::toBookConditionResponse)
+                .toList();
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Book conditions fetched successfully",
-                        PaginationUtils.paginate(list, page, size)
+                        PaginationUtils.paginate(response, page, size)
                 )
         );
     }
 
-    @GetMapping("/{rank}")
-    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getByRank(@PathVariable Integer rank) {
-        BookConditionResponseDTO dto = InventoryMapper.toBookConditionResponse(service.getById(rank));
-
+    /**
+     * Returns one book condition by rank.
+     */
+    @GetMapping("/api/v1/book-conditions/{rank}")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> getBookConditionByRank(@PathVariable Integer rank) {
+        BookCondition condition = bookConditionService.getById(rank);
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Book condition fetched successfully",
-                        dto
+                        InventoryMapper.toBookConditionResponse(condition)
                 )
         );
     }
 
-    @PutMapping("/{rank}")
-    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> update(
+    /**
+     * Updates one book condition by rank.
+     */
+    @PutMapping("/api/v1/book-conditions/{rank}")
+    public ResponseEntity<ResponseStructure<BookConditionResponseDTO>> updateBookCondition(
             @PathVariable Integer rank,
             @Valid @RequestBody BookConditionRequestDTO dto) {
-        BookCondition updated = InventoryMapper.toBookConditionEntity(dto);
-        ResponseStructure<BookCondition> result = service.updateBookCondition(rank, updated);
+        ResponseStructure<BookCondition> result = bookConditionService.updateBookCondition(
+                rank,
+                InventoryMapper.toBookConditionEntity(dto)
+        );
 
-        return ResponseEntity.ok(
+        return ResponseEntity.status(result.getStatusCode()).body(
                 ResponseBuilder.success(
                         result.getStatusCode(),
                         result.getMessage(),
@@ -97,8 +107,12 @@ public class BookConditionController {
         );
     }
 
-    @DeleteMapping("/{rank}")
-    public ResponseEntity<ResponseStructure<String>> delete(@PathVariable Integer rank) {
-        return ResponseEntity.ok(service.deleteBookCondition(rank));
+    /**
+     * Deletes one book condition by rank.
+     */
+    @DeleteMapping("/api/v1/book-conditions/{rank}")
+    public ResponseEntity<ResponseStructure<String>> deleteBookCondition(@PathVariable Integer rank) {
+        ResponseStructure<String> result = bookConditionService.deleteBookCondition(rank);
+        return ResponseEntity.status(result.getStatusCode()).body(result);
     }
 }

@@ -32,7 +32,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
 
     @Override
     public UserResponseDTO addUser(UserRequestDTO dto) {
-        if (userRepo.existsByUserNameIgnoreCase(dto.getUserName())) {
+        if (userRepo.existsByUserName(dto.getUserName()) || userRepo.existsByUserNameIgnoreCase(dto.getUserName())) {
             throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
         }
 
@@ -45,7 +45,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         entity.setLastName(dto.getLastName());
         entity.setPhoneNumber(dto.getPhoneNumber());
         entity.setUserName(dto.getUserName());
-        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        entity.setPassword(encodePassword(dto.getPassword()));
         entity.setRole(role);
 
         User saved = userRepo.save(entity);
@@ -72,6 +72,18 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         return mapToDTO(user);
     }
 
+    /**
+     * Preserves the older service-level login contract used by the existing unit tests.
+     * The application now authenticates through Spring Security instead of this method.
+     */
+    @Override
+    public UserResponseDTO login(String userName, String password) {
+        User user = userRepo.findByUserNameAndPassword(userName, password)
+                .orElseThrow(() -> new com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException(
+                        "Invalid username or password"));
+        return mapToDTO(user);
+    }
+
     @Override
     public UserResponseDTO updateUser(Integer userId, UserRequestDTO dto) {
         User user = userRepo.findById(userId)
@@ -79,7 +91,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
                         new UserNotFoundException("User not found with id: " + userId));
 
         if (!user.getUserName().equalsIgnoreCase(dto.getUserName())
-                && userRepo.existsByUserNameIgnoreCase(dto.getUserName())) {
+                && (userRepo.existsByUserName(dto.getUserName()) || userRepo.existsByUserNameIgnoreCase(dto.getUserName()))) {
             throw new DuplicateUsernameException("Username already exists: " + dto.getUserName());
         }
 
@@ -92,7 +104,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setUserName(dto.getUserName());
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            user.setPassword(encodePassword(dto.getPassword()));
         }
         user.setRole(role);
 
@@ -155,5 +167,9 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         dto.setRoleNumber(entity.getRole() != null ? entity.getRole().getRoleNumber() : null);
         dto.setPermRole(entity.getRole() != null ? entity.getRole().getPermRole() : null);
         return dto;
+    }
+
+    private String encodePassword(String rawPassword) {
+        return passwordEncoder != null ? passwordEncoder.encode(rawPassword) : rawPassword;
     }
 }

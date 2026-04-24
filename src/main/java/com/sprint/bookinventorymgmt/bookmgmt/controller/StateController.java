@@ -6,44 +6,47 @@ import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+/**
+ * Exposes state reference endpoints independently because they support publisher validation and display.
+ */
 @RestController
-@RequestMapping("/api/v1/states")
-@Tag(name = "State APIs", description = "Read-only State APIs")
 public class StateController {
 
-    private final IStateService IStateService;
+    private final IStateService stateService;
 
-    public StateController(IStateService IStateService) {
-        this.IStateService = IStateService;
+    public StateController(IStateService stateService) {
+        this.stateService = stateService;
     }
 
-    @Operation(summary = "Get all states")
-    @GetMapping
-    public ResponseStructure<PaginatedResponse<StateResponseDTO>> getAll(
+    /**
+     * Returns all states.
+     */
+    @GetMapping("/api/v1/states")
+    public ResponseStructure<PaginatedResponse<StateResponseDTO>> getAllStates(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "States fetched successfully",
-                PaginationUtils.paginate(IStateService.getAllStates(), page, size)
+                PaginationUtils.paginate(stateService.getAllStates(), page, size)
         );
     }
 
-    @Operation(summary = "Get state by code")
-    @GetMapping("/{code}")
-    public ResponseStructure<StateResponseDTO> getByCode(@PathVariable String code) {
-
+    /**
+     * Returns one state by code.
+     */
+    @GetMapping("/api/v1/states/{code}")
+    public ResponseStructure<StateResponseDTO> getStateByCode(@PathVariable String code) {
         return ResponseBuilder.success(
-                200,
+                HttpStatus.OK.value(),
                 "State fetched successfully",
-                IStateService.getStateByCode(code)
+                stateService.getStateByCode(code)
         );
     }
 }

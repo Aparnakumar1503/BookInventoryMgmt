@@ -1,8 +1,8 @@
 package com.sprint.bookinventorymgmt.usermgmt.controller;
 
-import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO;
@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
+/**
+ * Keeps role reference and role assignment endpoints separate from user profile CRUD operations.
+ */
 @RestController
 public class RoleController {
+
     private final IPermRoleService permRoleService;
     private final IUserMgmtService userService;
 
@@ -29,6 +31,9 @@ public class RoleController {
         this.userService = userService;
     }
 
+    /**
+     * Returns all available roles.
+     */
     @GetMapping("/api/v1/roles")
     public ResponseEntity<ResponseStructure<PaginatedResponse<PermRoleResponseDTO>>> getAllRoles(
             @RequestParam(defaultValue = "0") Integer page,
@@ -42,6 +47,9 @@ public class RoleController {
         );
     }
 
+    /**
+     * Updates the role assigned to one user.
+     */
     @PutMapping("/api/v1/users/{userId}/roles/{roleId}")
     public ResponseEntity<ResponseStructure<UserResponseDTO>> updateUserRole(
             @PathVariable Integer userId,

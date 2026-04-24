@@ -1,22 +1,45 @@
-﻿<a
+<a
   [routerLink]="['/member', teammate().moduleId]"
-  class="bv-card group block h-full rounded-[1.5rem] p-5 transition duration-200 hover:-translate-y-1 hover:border-[rgba(47,93,98,0.22)] hover:shadow-xl hover:shadow-slate-900/8"
+  class="bv-card bv-member-card group block h-full rounded-[1.5rem] p-5 transition duration-200 hover:-translate-y-1 hover:border-[rgba(47,93,98,0.22)] hover:shadow-xl hover:shadow-slate-900/8"
 >
-  <div class="flex items-center justify-between gap-3">
-    <div class="grid h-11 w-11 place-items-center rounded-[0.9rem] bg-[var(--bv-primary-soft)] text-sm font-black text-[var(--bv-primary)]">
-      {{ teammate().name.charAt(0) }}
+  <div class="flex items-start justify-between gap-3">
+    <div class="flex items-start gap-3">
+      <div class="bv-member-badge grid h-11 w-11 shrink-0 place-items-center rounded-[0.95rem] text-sm font-black text-[var(--bv-primary)] shadow-inner">
+        {{ teammate().name.charAt(0) }}
+      </div>
+      <div class="min-w-0">
+        <h3 class="truncate text-lg font-black text-[var(--bv-text)]">{{ teammate().name }}</h3>
+        <p class="mt-1 text-sm font-semibold leading-5 text-[var(--bv-primary)]">{{ teammate().role }}</p>
+      </div>
     </div>
-    <span class="text-xs font-black uppercase tracking-[0.16em] text-[var(--bv-text-muted)]">Open</span>
+
+    <span class="rounded-full bg-[var(--bv-secondary-soft)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[var(--bv-secondary)]">
+      Open
+    </span>
   </div>
 
-  <div class="mt-5">
-    <h3 class="text-xl font-black text-[var(--bv-text)]">{{ teammate().name }}</h3>
-    <p class="mt-1 text-sm font-semibold text-[var(--bv-primary)]">{{ teammate().role }}</p>
-    <p class="mt-4 text-sm font-medium leading-6 text-[var(--bv-text-soft)]">{{ teammate().moduleName }}</p>
+  <div class="mt-4 rounded-[1rem] border border-[color:var(--bv-border)] bg-white/75 px-4 py-4">
+    <p class="text-[11px] font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Primary Module</p>
+    <p class="mt-2 text-sm font-black leading-6 text-[var(--bv-text)]">{{ teammate().moduleName }}</p>
   </div>
 
-  <div class="bv-muted-block mt-5 p-4">
-    <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Modules</p>
-    <p class="mt-3 text-sm font-semibold leading-6 text-[var(--bv-text)]">{{ teammate().modules.join(', ') }}</p>
+  <div class="mt-4">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-[11px] font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Assigned Coverage</p>
+      <span class="text-xs font-semibold text-[var(--bv-text-soft)]">{{ teammate().modules.length }} modules</span>
+    </div>
+    <div class="mt-3 flex flex-wrap gap-2">
+      @for (moduleName of teammate().modules; track moduleName) {
+        <span class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)]">{{ moduleName }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="mt-5 flex items-center justify-between gap-3 border-t border-[color:var(--bv-border)] pt-4">
+    <div>
+      <p class="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--bv-text-muted)]">Demo Login</p>
+      <p class="mt-1 text-sm font-semibold text-[var(--bv-text-soft)]">{{ teammate().username }}</p>
+    </div>
+    <span class="text-sm font-black text-[var(--bv-primary)] transition group-hover:translate-x-1">Enter -></span>
   </div>
 </a>

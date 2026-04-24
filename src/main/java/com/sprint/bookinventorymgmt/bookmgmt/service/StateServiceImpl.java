@@ -4,6 +4,7 @@ import com.sprint.bookinventorymgmt.bookmgmt.dto.response.StateResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.entity.State;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.DataNotFoundException;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.InvalidInputException;
+import com.sprint.bookinventorymgmt.bookmgmt.exceptions.StateNotFoundException;
 import com.sprint.bookinventorymgmt.bookmgmt.repository.StateRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,6 @@ public class StateServiceImpl implements IStateService {
 
     @Override
     public List<StateResponseDTO> getAllStates() {
-
         List<State> states = stateRepository.findAll();
 
         if (states.isEmpty()) {
@@ -34,14 +34,13 @@ public class StateServiceImpl implements IStateService {
 
     @Override
     public StateResponseDTO getStateByCode(String code) {
-
         if (code == null || code.trim().isEmpty()) {
             throw new InvalidInputException("State code cannot be null or empty");
         }
 
         State state = stateRepository.findById(code)
                 .orElseThrow(() ->
-                        new DataNotFoundException("State not found with code: " + code));
+                        new StateNotFoundException("State not found with code: " + code));
 
         return mapToDTO(state);
     }

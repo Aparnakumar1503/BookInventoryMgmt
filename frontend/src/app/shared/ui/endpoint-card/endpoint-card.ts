@@ -22,4 +22,12 @@ export class EndpointCardComponent {
 
     return classes[method] ?? 'bg-slate-100 text-slate-800';
   }
+
+  parameterCount(): number {
+    return (this.endpoint().pathParams?.length ?? 0) + (this.endpoint().queryParams?.length ?? 0);
+  }
+
+  hasBody(): boolean {
+    return Boolean(this.endpoint().body?.fields.length);
+  }
 }

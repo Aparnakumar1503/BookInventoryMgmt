@@ -5,6 +5,13 @@ import { environment } from '../../../environments/environment';
 import { EndpointConfig, EndpointRequestPayload } from '../models/endpoint.model';
 import { ApiCallResult } from '../models/response.model';
 
+interface ApiErrorEnvelope {
+  statusCode?: number;
+  message?: string;
+  data?: unknown;
+  timestamp?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);
@@ -13,7 +20,7 @@ export class ApiService {
   execute(endpoint: EndpointConfig, payload: EndpointRequestPayload): Observable<ApiCallResult> {
     const url = `${this.baseUrl}${this.resolvePath(endpoint.path, payload.pathParams)}`;
     const params = this.toHttpParams(payload.queryParams);
-    const options = { observe: 'response' as const, params };
+    const options = { observe: 'response' as const, params, withCredentials: true };
 
     const request$ = endpoint.method === 'GET' || endpoint.method === 'DELETE'
       ? this.http.request<unknown>(endpoint.method, url, options)
@@ -54,13 +61,14 @@ export class ApiService {
 
   private toErrorResult(error: unknown, fallbackUrl: string): ApiCallResult {
     if (error instanceof HttpErrorResponse) {
+      const apiMessage = this.extractErrorMessage(error.error);
       const message = error.status === 401
         ? 'Unauthorized. Sign in again in this browser before retrying the endpoint.'
         : error.status === 403
           ? 'Forbidden. This account does not have access to the selected module endpoint.'
           : error.status === 0
             ? 'Network error. Check that Spring Boot is running on port 8182 and CORS is enabled after backend restart.'
-            : error.error || error.message;
+            : apiMessage ?? error.message;
 
       return {
         status: error.status,
@@ -78,5 +86,32 @@ export class ApiService {
       body: 'Unexpected request failure',
       receivedAt: new Date().toISOString()
     };
+  }
+
+  private extractErrorMessage(errorBody: unknown): string | null {
+    if (typeof errorBody === 'string') {
+      return errorBody;
+    }
+
+    if (this.isRecord(errorBody)) {
+      const envelope = errorBody as ApiErrorEnvelope;
+      if (typeof envelope.message === 'string' && envelope.message.trim().length > 0) {
+        if (this.isRecord(envelope.data)) {
+          const detailEntries = Object.entries(envelope.data)
+            .map(([key, value]) => `${key}: ${String(value)}`);
+          return detailEntries.length > 0
+            ? `${envelope.message} (${detailEntries.join(', ')})`
+            : envelope.message;
+        }
+
+        return envelope.message;
+      }
+    }
+
+    return null;
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
   }
 }

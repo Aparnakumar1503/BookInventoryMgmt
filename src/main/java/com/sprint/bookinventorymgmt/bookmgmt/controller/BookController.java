@@ -5,75 +5,49 @@ import com.sprint.bookinventorymgmt.bookmgmt.dto.response.BookResponseDTO;
 import com.sprint.bookinventorymgmt.bookmgmt.service.IBookService;
 import com.sprint.bookinventorymgmt.common.PaginatedResponse;
 import com.sprint.bookinventorymgmt.common.PaginationUtils;
-import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/books")
-@Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
 
-    private final IBookService IBookService;
+    private final IBookService bookService;
 
-    public BookController(IBookService IBookService) {
-        this.IBookService = IBookService;
+    public BookController(IBookService bookService) {
+        this.bookService = bookService;
     }
 
-    @Operation(summary = "Create a new book")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseStructure<BookResponseDTO> create(@Valid @RequestBody BookRequestDTO dto) {
-
-        BookResponseDTO response = IBookService.createBook(dto);
-
-        return ResponseBuilder.success(
-                HttpStatus.CREATED.value(),
-                "Book created successfully",
-                response
-        );
-    }
-
-    @Operation(summary = "Get book by ISBN")
-    @GetMapping("/{isbn}")
-    public ResponseStructure<BookResponseDTO> get(@PathVariable String isbn) {
-
-        BookResponseDTO response = IBookService.getBookByIsbn(isbn);
-
-        return ResponseBuilder.success(
-                HttpStatus.OK.value(),
-                "Book fetched successfully",
-                response
-        );
-    }
-
-    @Operation(summary = "Get all books or filter by category and publisher")
-    @GetMapping
-    public ResponseStructure<PaginatedResponse<BookResponseDTO>> getAll(
+    /**
+     * Returns the company-required book list with optional category and publisher filters.
+     */
+    @GetMapping("/api/v1/books")
+    public ResponseStructure<PaginatedResponse<BookResponseDTO>> getAllBooks(
             @RequestParam(required = false) Integer categoryId,
             @RequestParam(required = false) Integer publisherId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-
         List<BookResponseDTO> response;
-
         if (categoryId != null && publisherId != null) {
-            response = IBookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
-
+            response = bookService.getBooksByCategoryAndPublisher(categoryId, publisherId);
         } else if (categoryId != null) {
-            response = IBookService.getBooksByCategory(categoryId);   // 🔥 ADD THIS
-
+            response = bookService.getBooksByCategory(categoryId);
         } else if (publisherId != null) {
-            response = IBookService.getBooksByPublisher(publisherId); // 🔥 ADD THIS
-
+            response = bookService.getBooksByPublisher(publisherId);
         } else {
-            response = IBookService.getAllBooks();
+            response = bookService.getAllBooks();
         }
 
         return ResponseBuilder.success(
@@ -83,31 +57,54 @@ public class BookController {
         );
     }
 
-    @Operation(summary = "Update book")
-    @PutMapping("/{isbn}")
-    public ResponseStructure<BookResponseDTO> update(
-            @PathVariable String isbn,
-            @Valid @RequestBody BookRequestDTO dto) {
-
-        BookResponseDTO response = IBookService.updateBook(isbn, dto);
-
+    /**
+     * Returns one book by ISBN.
+     */
+    @GetMapping("/api/v1/books/{isbn}")
+    public ResponseStructure<BookResponseDTO> getBookByIsbn(@PathVariable String isbn) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
-                "Book updated successfully",
-                response
+                "Book fetched successfully",
+                bookService.getBookByIsbn(isbn)
         );
     }
 
-    @Operation(summary = "Delete book")
-    @DeleteMapping("/{isbn}")
-    public ResponseStructure<String> delete(@PathVariable String isbn) {
+    /**
+     * Creates a book using DTO validation before service processing.
+     */
+    @PostMapping("/api/v1/books")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseStructure<BookResponseDTO> createBook(@Valid @RequestBody BookRequestDTO dto) {
+        return ResponseBuilder.success(
+                HttpStatus.CREATED.value(),
+                "Book created successfully",
+                bookService.createBook(dto)
+        );
+    }
 
-        String response = IBookService.deleteBook(isbn);
+    /**
+     * Updates an existing book identified by ISBN.
+     */
+    @PutMapping("/api/v1/books/{isbn}")
+    public ResponseStructure<BookResponseDTO> updateBook(
+            @PathVariable String isbn,
+            @Valid @RequestBody BookRequestDTO dto) {
+        return ResponseBuilder.success(
+                HttpStatus.OK.value(),
+                "Book updated successfully",
+                bookService.updateBook(isbn, dto)
+        );
+    }
 
+    /**
+     * Deletes a book identified by ISBN.
+     */
+    @DeleteMapping("/api/v1/books/{isbn}")
+    public ResponseStructure<String> deleteBook(@PathVariable String isbn) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book deleted successfully",
-                response
+                bookService.deleteBook(isbn)
         );
     }
 }

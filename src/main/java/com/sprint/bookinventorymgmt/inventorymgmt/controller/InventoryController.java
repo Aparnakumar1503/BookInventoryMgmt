@@ -7,7 +7,6 @@ import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryMapper;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.requestdto.InventoryRequestDTO;
 import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.InventoryResponseDTO;
-import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
 import com.sprint.bookinventorymgmt.inventorymgmt.service.IInventoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,60 +17,46 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/inventory")
 public class InventoryController {
 
-    private final IInventoryService service;
+    private final IInventoryService inventoryService;
 
-    public InventoryController(IInventoryService service) {
-        this.service = service;
+    public InventoryController(IInventoryService inventoryService) {
+        this.inventoryService = inventoryService;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> save(
-            @Valid @RequestBody InventoryRequestDTO dto) {
-        Inventory saved = service.saveInventory(InventoryMapper.toInventoryEntity(dto));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                ResponseBuilder.success(
-                        HttpStatus.CREATED.value(),
-                        "Inventory created successfully",
-                        InventoryMapper.toInventoryResponse(saved)
-                )
-        );
-    }
-
-    @GetMapping
-    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAll(
+    /**
+     * Returns all inventory records.
+     */
+    @GetMapping("/api/v1/inventory")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAllInventory(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        List<Inventory> inventories = service.getAllInventory();
-        List<InventoryResponseDTO> list = new ArrayList<>();
-        for (Inventory inventory : inventories) {
-            list.add(InventoryMapper.toInventoryResponse(inventory));
-        }
+        List<InventoryResponseDTO> response = inventoryService.getAllInventory().stream()
+                .map(InventoryMapper::toInventoryResponse)
+                .toList();
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Inventory fetched successfully",
-                        PaginationUtils.paginate(list, page, size)
+                        PaginationUtils.paginate(response, page, size)
                 )
         );
     }
 
-    @GetMapping("/{inventoryId}")
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getById(@PathVariable Integer inventoryId) {
-        InventoryResponseDTO dto = InventoryMapper.toInventoryResponse(service.getById(inventoryId));
-
+    /**
+     * Returns one inventory record by identifier.
+     */
+    @GetMapping("/api/v1/inventory/{inventoryId}")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> getInventoryById(@PathVariable Integer inventoryId) {
+        InventoryResponseDTO dto = InventoryMapper.toInventoryResponse(inventoryService.getById(inventoryId));
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
@@ -81,54 +66,76 @@ public class InventoryController {
         );
     }
 
-    @GetMapping("/books/{isbn}")
-    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getByIsbn(
+    /**
+     * Returns inventory records for one ISBN.
+     */
+    @GetMapping("/api/v1/inventory/books/{isbn}")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getInventoryByIsbn(
             @PathVariable String isbn,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        List<Inventory> inventories = service.getByIsbn(isbn);
-        List<InventoryResponseDTO> list = new ArrayList<>();
-        for (Inventory inventory : inventories) {
-            list.add(InventoryMapper.toInventoryResponse(inventory));
-        }
+        List<InventoryResponseDTO> response = inventoryService.getByIsbn(isbn).stream()
+                .map(InventoryMapper::toInventoryResponse)
+                .toList();
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Inventory fetched by ISBN successfully",
-                        PaginationUtils.paginate(list, page, size)
+                        PaginationUtils.paginate(response, page, size)
                 )
         );
     }
 
-    @GetMapping("/books/{isbn}/available")
-    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAvailableByIsbn(
+    /**
+     * Returns only the available inventory copies for one ISBN using the custom query endpoint.
+     */
+    @GetMapping("/api/v1/inventory/books/{isbn}/available")
+    public ResponseEntity<ResponseStructure<PaginatedResponse<InventoryResponseDTO>>> getAvailableInventoryByIsbn(
             @PathVariable String isbn,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
-        List<Inventory> inventories = service.getAvailableByIsbn(isbn);
-        List<InventoryResponseDTO> list = new ArrayList<>();
-        for (Inventory inventory : inventories) {
-            list.add(InventoryMapper.toInventoryResponse(inventory));
-        }
+        List<InventoryResponseDTO> response = inventoryService.getAvailableByIsbn(isbn).stream()
+                .map(InventoryMapper::toInventoryResponse)
+                .toList();
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
-                        "Available inventory fetched successfully by ISBN",
-                        PaginationUtils.paginate(list, page, size)
+                        "Available inventory fetched successfully",
+                        PaginationUtils.paginate(response, page, size)
                 )
         );
     }
 
-    @PutMapping("/{inventoryId}")
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> update(
+    /**
+     * Creates a new inventory record.
+     */
+    @PostMapping("/api/v1/inventory")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> saveInventory(
+            @Valid @RequestBody InventoryRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ResponseBuilder.success(
+                        HttpStatus.CREATED.value(),
+                        "Inventory created successfully",
+                        InventoryMapper.toInventoryResponse(
+                                inventoryService.saveInventory(InventoryMapper.toInventoryEntity(dto))
+                        )
+                )
+        );
+    }
+
+    /**
+     * Updates one inventory record by identifier.
+     */
+    @PutMapping("/api/v1/inventory/{inventoryId}")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> updateInventory(
             @PathVariable Integer inventoryId,
             @Valid @RequestBody InventoryRequestDTO dto) {
-        Inventory updated = InventoryMapper.toInventoryEntity(dto);
-        ResponseStructure<Inventory> result = service.updateInventory(inventoryId, updated);
+        ResponseStructure<com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory> result =
+                inventoryService.updateInventory(inventoryId, InventoryMapper.toInventoryEntity(dto));
 
-        return ResponseEntity.ok(
+        return ResponseEntity.status(result.getStatusCode()).body(
                 ResponseBuilder.success(
                         result.getStatusCode(),
                         result.getMessage(),
@@ -137,21 +144,26 @@ public class InventoryController {
         );
     }
 
-    @PutMapping("/{inventoryId}/purchase")
-    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchase(@PathVariable Integer inventoryId) {
-        InventoryResponseDTO dto = InventoryMapper.toInventoryResponse(service.markAsPurchased(inventoryId));
-
+    /**
+     * Marks an inventory item as purchased.
+     */
+    @PutMapping("/api/v1/inventory/{inventoryId}/purchase")
+    public ResponseEntity<ResponseStructure<InventoryResponseDTO>> purchaseInventory(@PathVariable Integer inventoryId) {
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         HttpStatus.OK.value(),
                         "Inventory marked as purchased",
-                        dto
+                        InventoryMapper.toInventoryResponse(inventoryService.markAsPurchased(inventoryId))
                 )
         );
     }
 
-    @DeleteMapping("/{inventoryId}")
+    /**
+     * Deletes one inventory record by identifier.
+     */
+    @DeleteMapping("/api/v1/inventory/{inventoryId}")
     public ResponseEntity<ResponseStructure<String>> deleteInventory(@PathVariable Integer inventoryId) {
-        return ResponseEntity.ok(service.deleteInventory(inventoryId));
+        ResponseStructure<String> result = inventoryService.deleteInventory(inventoryId);
+        return ResponseEntity.status(result.getStatusCode()).body(result);
     }
 }

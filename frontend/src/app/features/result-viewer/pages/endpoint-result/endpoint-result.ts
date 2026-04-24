@@ -69,6 +69,7 @@ export class EndpointResultComponent {
   readonly requestContext = signal<StoredRequestContext | null>(this.storageService.getLastRequestContext());
   readonly isLoadingPage = signal(false);
   readonly viewMode = signal<ViewMode>('table');
+  readonly pageSizeOptions = [6, 9, 12];
 
   readonly endpoint = computed(() => {
     const context = this.requestContext();
@@ -264,10 +265,10 @@ export class EndpointResultComponent {
       ? 'Raw JSON'
       : 'Table');
 
+  readonly activePageSize = computed(() => this.paginatedData()?.size ?? 9);
+
   constructor() {
-    if (!this.previewSupported()) {
-      this.viewMode.set('table');
-    }
+    this.viewMode.set(this.previewSupported() ? 'preview' : 'table');
   }
 
   setViewMode(mode: ViewMode): void {
@@ -283,6 +284,12 @@ export class EndpointResultComponent {
   goToNextPage(): void {
     const paginated = this.paginatedData();
     if (paginated?.hasNext) this.reloadPage(paginated.page + 1);
+  }
+
+  changePageSize(size: number): void {
+    const paginated = this.paginatedData();
+    if (!paginated || paginated.size === size) return;
+    this.reloadPage(0, size);
   }
 
   formatColumnLabel(column: string): string {
@@ -331,15 +338,17 @@ export class EndpointResultComponent {
     return purchased ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
   }
 
-  private reloadPage(page: number): void {
+  private reloadPage(page: number, sizeOverride?: number): void {
     const context = this.requestContext();
     const endpoint = this.endpoint();
     const paginated = this.paginatedData();
     if (!context || !endpoint || !paginated) return;
 
+    const size = (sizeOverride ?? paginated.size) || 9;
+
     const payload: EndpointRequestPayload = {
       ...context.payload,
-      queryParams: { ...context.payload.queryParams, page, size: paginated.size || 10 }
+      queryParams: { ...context.payload.queryParams, page, size }
     };
 
     this.isLoadingPage.set(true);

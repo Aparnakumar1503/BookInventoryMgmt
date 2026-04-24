@@ -4,8 +4,8 @@ import { TEAMMATES } from '../../../core/data/team-members.data';
 export const REVIEWS_MODULE: ModuleConfig = {
   id: 'reviews',
   name: 'Review Management',
-  tagline: 'Book-scoped review APIs plus reviewer administration endpoints.',
-  description: 'This module demonstrates book review creation, review query endpoints, and reviewer CRUD APIs for review owners.',
+  tagline: 'Book review, reviewer, and custom review query APIs for moderation and analysis.',
+  description: 'This module covers book-scoped review operations together with reviewer management and custom query endpoints such as max-rating and reviewer-specific searches.',
   owner: TEAMMATES[4],
   endpoints: [
     {
@@ -34,10 +34,10 @@ export const REVIEWS_MODULE: ModuleConfig = {
     },
     {
       id: 'get-reviews-by-isbn-query',
-      name: 'Get Reviews By ISBN',
+      name: 'Get Reviews By ISBN Query',
       method: 'GET',
       path: '/api/v1/reviews/isbn/{isbn}',
-      description: 'Fetch reviews using the review query API by ISBN.',
+      description: 'Fetch reviews by ISBN using the custom review query endpoint.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
     },
     {
@@ -45,7 +45,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       name: 'Get Reviews By Reviewer',
       method: 'GET',
       path: '/api/v1/reviews/reviewer/{reviewerId}',
-      description: 'Fetch all reviews created by one reviewer.',
+      description: 'Fetch reviews created by one reviewer.',
       pathParams: [{ key: 'reviewerId', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }]
     },
     {
@@ -53,7 +53,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       name: 'Get Max Rating Reviews',
       method: 'GET',
       path: '/api/v1/reviews/max-rating',
-      description: 'Fetch the highest rated reviews available.'
+      description: 'Fetch the highest-rated reviews available.'
     },
     {
       id: 'delete-review',
@@ -91,12 +91,12 @@ export const REVIEWS_MODULE: ModuleConfig = {
       name: 'Create Reviewer',
       method: 'POST',
       path: '/api/v1/reviewers',
-      description: 'Create a reviewer.',
+      description: 'Create a new reviewer.',
       body: {
         title: 'Reviewer Payload',
         fields: [
-          { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Jacobs' },
-          { key: 'employedBy', label: 'Employed By', type: 'text', required: true, placeholder: 'Gadget Boy' }
+          { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Aditi Rao' },
+          { key: 'employedBy', label: 'Employed By', type: 'text', required: true, placeholder: 'BookWorld' }
         ]
       }
     },
@@ -110,8 +110,8 @@ export const REVIEWS_MODULE: ModuleConfig = {
       body: {
         title: 'Updated Reviewer Payload',
         fields: [
-          { key: 'name', label: 'Name', type: 'text', required: true },
-          { key: 'employedBy', label: 'Employed By', type: 'text', required: true }
+          { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Aditi Rao' },
+          { key: 'employedBy', label: 'Employed By', type: 'text', required: true, placeholder: 'BookWorld' }
         ]
       }
     },
@@ -120,7 +120,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       name: 'Delete Reviewer',
       method: 'DELETE',
       path: '/api/v1/reviewers/{id}',
-      description: 'Delete one reviewer by ID.',
+      description: 'Delete a reviewer by ID.',
       pathParams: [{ key: 'id', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19' }]
     }
   ]

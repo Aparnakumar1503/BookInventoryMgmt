@@ -7,39 +7,54 @@ import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Handles book-author association endpoints separately from author CRUD because the mapping is its own entity.
+ */
 @RestController
-@RequestMapping("/api/v1/books")
 public class BookAuthorController {
 
-    private final IBookAuthorService service;
+    private final IBookAuthorService bookAuthorService;
 
-    public BookAuthorController(IBookAuthorService service) {
-        this.service = service;
+    public BookAuthorController(IBookAuthorService bookAuthorService) {
+        this.bookAuthorService = bookAuthorService;
     }
 
-    @PostMapping("/{isbn}/authors/{authorId}")
+    /**
+     * Creates a mapping between a book and an author.
+     */
+    @PostMapping("/api/v1/books/{isbn}/authors/{authorId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseStructure<BookAuthorResponseDTO> addBookAuthor(@PathVariable String isbn,
-                                                                  @PathVariable Integer authorId,
-                                                                  @Valid @RequestBody BookAuthorRequestDTO requestDTO) {
+    public ResponseStructure<BookAuthorResponseDTO> addBookAuthor(
+            @PathVariable String isbn,
+            @PathVariable Integer authorId,
+            @Valid @RequestBody BookAuthorRequestDTO requestDTO) {
         requestDTO.setIsbn(isbn);
         requestDTO.setAuthorId(authorId);
         return ResponseBuilder.success(
                 HttpStatus.CREATED.value(),
                 "Book author mapping created successfully",
-                service.addBookAuthor(requestDTO)
+                bookAuthorService.addBookAuthor(requestDTO)
         );
     }
 
-    @DeleteMapping("/{isbn}/authors/{authorId}")
-    public ResponseStructure<String> deleteBookAuthor(@PathVariable String isbn,
-                                                      @PathVariable Integer authorId) {
+    /**
+     * Deletes a mapping for the supplied book and author path.
+     */
+    @DeleteMapping("/api/v1/books/{isbn}/authors/{authorId}")
+    public ResponseStructure<String> deleteBookAuthor(
+            @PathVariable String isbn,
+            @PathVariable Integer authorId) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),
                 "Book author mapping deleted successfully",
-                service.deleteByIsbn(isbn)
+                bookAuthorService.deleteByIsbn(isbn)
         );
     }
 }

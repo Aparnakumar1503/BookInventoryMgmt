@@ -10,12 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Exposes additional review query endpoints that are useful for internal review management screens.
+ */
 @RestController
-@RequestMapping("/api/v1/reviews")
 public class ReviewQueryController {
 
     private final BookReviewService reviewService;
@@ -24,7 +25,10 @@ public class ReviewQueryController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/isbn/{isbn}")
+    /**
+     * Returns reviews filtered by ISBN.
+     */
+    @GetMapping("/api/v1/reviews/isbn/{isbn}")
     public ResponseStructure<PaginatedResponse<BookReviewResponseDTO>> getReviewsByIsbn(
             @PathVariable String isbn,
             @RequestParam(defaultValue = "0") Integer page,
@@ -36,7 +40,10 @@ public class ReviewQueryController {
         );
     }
 
-    @GetMapping("/reviewer/{reviewerId}")
+    /**
+     * Returns reviews created by one reviewer.
+     */
+    @GetMapping("/api/v1/reviews/reviewer/{reviewerId}")
     public ResponseStructure<PaginatedResponse<BookReviewResponseDTO>> getReviewsByReviewer(
             @PathVariable Integer reviewerId,
             @RequestParam(defaultValue = "0") Integer page,
@@ -48,7 +55,10 @@ public class ReviewQueryController {
         );
     }
 
-    @GetMapping("/max-rating")
+    /**
+     * Returns reviews with the maximum rating.
+     */
+    @GetMapping("/api/v1/reviews/max-rating")
     public ResponseStructure<PaginatedResponse<BookReviewResponseDTO>> getReviewsWithMaxRating(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size) {
@@ -59,7 +69,10 @@ public class ReviewQueryController {
         );
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Deletes one review by identifier.
+     */
+    @DeleteMapping("/api/v1/reviews/{id}")
     public ResponseStructure<BookReviewResponseDTO> deleteReview(@PathVariable Integer id) {
         return ResponseBuilder.success(
                 HttpStatus.OK.value(),

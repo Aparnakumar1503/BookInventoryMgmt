@@ -2,7 +2,7 @@
     const endpointCatalog = {
         OWNER_USER_AUTHOR: {
             title: "User and Author Management",
-            description: "Maintain users, roles, authors, and book-author relationships.",
+            description: "User, role, author, and book-author endpoints assigned by the company.",
             endpoints: [
                 { label: "Current user", url: "/api/v1/auth/me" },
                 { label: "Authors", url: "/api/v1/authors" },
@@ -11,16 +11,17 @@
         },
         OWNER_BOOK: {
             title: "Book Management",
-            description: "Manage books, publishers, categories, and states.",
+            description: "Book, category, publisher, and state reference endpoints.",
             endpoints: [
                 { label: "Books", url: "/api/v1/books" },
                 { label: "Categories", url: "/api/v1/categories" },
-                { label: "Publishers", url: "/api/v1/publishers" }
+                { label: "Publishers", url: "/api/v1/publishers" },
+                { label: "States", url: "/api/v1/states" }
             ]
         },
         OWNER_INVENTORY: {
             title: "Inventory Management",
-            description: "Control inventory stock and condition records.",
+            description: "Inventory and book-condition reference endpoints.",
             endpoints: [
                 { label: "Inventory", url: "/api/v1/inventory" },
                 { label: "Book Conditions", url: "/api/v1/book-conditions" }
@@ -28,18 +29,17 @@
         },
         OWNER_ORDER: {
             title: "Order Management",
-            description: "Manage shopping carts and purchase logs.",
+            description: "Purchase and shopping-cart endpoints assigned by the company.",
             endpoints: [
-                { label: "Shopping Cart", url: "/cart/get" },
-                { label: "Purchases", url: "/purchase/get" }
+                { label: "Orders", url: "/api/v1/orders/user/1001" },
+                { label: "Cart", url: "/api/v1/cart/1001" }
             ]
         },
         OWNER_REVIEW: {
             title: "Review Management",
-            description: "Reviewers and book review endpoints.",
+            description: "Book review endpoints assigned by the company.",
             endpoints: [
-                { label: "Reviewers", url: "/api/reviewers" },
-                { label: "Reviews", url: "/api/reviews" }
+                { label: "Book Reviews", url: "/api/v1/books/1-111-11111-4/reviews" }
             ]
         }
     };
@@ -149,13 +149,13 @@
                 }
 
                 output.textContent = JSON.stringify(
-                        {
-                            status: response.status,
-                            ok: response.ok,
-                            body: body
-                        },
-                        null,
-                        2
+                    {
+                        status: response.status,
+                        ok: response.ok,
+                        body: body
+                    },
+                    null,
+                    2
                 );
             })
             .catch((error) => {

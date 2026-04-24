@@ -3,6 +3,7 @@ package com.sprint.bookinventorymgmt.reviewmgmt.service;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.entity.Reviewer;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidReviewerDataException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 
@@ -115,7 +116,7 @@ class ReviewerServiceTest {
 
     @Test
     void addReviewer_nullInput() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidReviewerDataException.class,
                 () -> service.addReviewer(null));
     }
 }
