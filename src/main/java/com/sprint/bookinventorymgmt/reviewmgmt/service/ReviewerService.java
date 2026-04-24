@@ -18,4 +18,6 @@ public interface ReviewerService {
     ReviewerResponseDTO updateReviewer(int reviewerId, ReviewerRequestDTO reviewerDTO);
 
     ReviewerResponseDTO deleteReviewer(int reviewerId);
+
+
 }

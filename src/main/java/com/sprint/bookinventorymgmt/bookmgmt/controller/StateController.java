@@ -8,6 +8,7 @@ import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.List;
 @Tag(name = "State APIs", description = "Read-only State APIs")
 public class StateController {
 
-    private final IStateService IStateService;
+   @Autowired
+    private  IStateService IStateService;
 
     public StateController(IStateService IStateService) {
         this.IStateService = IStateService;

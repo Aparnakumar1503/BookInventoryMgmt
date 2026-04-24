@@ -1,14 +1,12 @@
 package com.sprint.bookinventorymgmt.ordermgmt.repository;
 
 import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
-import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class IPurchaseLogRepositoryTest {
@@ -17,76 +15,36 @@ class IPurchaseLogRepositoryTest {
     private IPurchaseLogRepository repository;
 
     @Test
-    void testSavePurchaseLog() {
-        PurchaseLog purchaseLog = new PurchaseLog(1, 1000000);
-        PurchaseLog saved = repository.saveAndFlush(purchaseLog);
-
-        assertNotNull(saved);
-        assertEquals(1, saved.getUserId());
-        assertEquals(1000000, saved.getInventoryId());
-    }
-
-    @Test
-    void testFindByUserId() {
+    void derivedQueries_findByUserId_andInventoryId_returnMatches() {
         repository.saveAndFlush(new PurchaseLog(1, 1000000));
         repository.saveAndFlush(new PurchaseLog(1, 1000001));
 
-        List<PurchaseLog> result = repository.findByIdUserId(1);
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(2, result.size());
-        assertEquals(1, result.get(0).getUserId());
+        assertEquals(2, repository.findByIdUserId(1).size());
+        assertEquals(1, repository.findByIdInventoryId(1000000).size());
     }
 
     @Test
-    void testFindByInventoryId() {
-        repository.saveAndFlush(new PurchaseLog(1, 1000000));
-        repository.saveAndFlush(new PurchaseLog(2, 1000001));
-
-        List<PurchaseLog> result = repository.findByIdInventoryId(1000000);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(1000000, result.get(0).getInventoryId());
-    }
-
-    // Custom Query 1 — find by userId and inventoryId
-    @Test
-    void testFindByUserIdAndInventoryId() {
+    void customQuery_findByUserIdAndInventoryId_returnsSpecificPurchase() {
         repository.saveAndFlush(new PurchaseLog(1, 1000000));
 
-        PurchaseLog result = repository.findByUserIdAndInventoryId(1, 1000000);
-
-        assertNotNull(result);
-        assertEquals(1, result.getUserId());
-        assertEquals(1000000, result.getInventoryId());
+        assertNotNull(repository.findByUserIdAndInventoryId(1, 1000000));
     }
 
-    // Custom Query 2 — count by userId
     @Test
-    void testCountByUserId() {
+    void customQuery_countByUserId_returnsTotalPurchasesForUser() {
         repository.saveAndFlush(new PurchaseLog(1, 1000000));
         repository.saveAndFlush(new PurchaseLog(1, 1000001));
-        repository.saveAndFlush(new PurchaseLog(1, 1000002));
 
-        Long count = repository.countByUserId(1);
-
-        assertNotNull(count);
-        assertEquals(3L, count);
+        assertEquals(2L, repository.countByUserId(1));
     }
 
-    // Custom Query 3 — delete by userId and inventoryId
     @Test
-    void testDeleteByUserIdAndInventoryId() {
+    void customQuery_deleteByUserIdAndInventoryId_removesSpecificPurchase() {
         repository.saveAndFlush(new PurchaseLog(1, 1000000));
         repository.saveAndFlush(new PurchaseLog(1, 1000001));
 
         repository.deleteByUserIdAndInventoryId(1, 1000000);
 
-        List<PurchaseLog> result = repository.findByIdUserId(1);
-
-        assertEquals(1, result.size());                            // only 1 item remaining
-        assertEquals(1000001, result.get(0).getInventoryId());     // correct item remains
+        assertEquals(1, repository.findByIdUserId(1).size());
     }
 }

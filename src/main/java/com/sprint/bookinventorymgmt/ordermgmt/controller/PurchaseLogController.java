@@ -5,6 +5,7 @@ import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.service.IPurchaseLogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,8 @@ import java.util.List;
 @RequestMapping("/api/v1/orders")
 public class PurchaseLogController {
 
-    private final IPurchaseLogService service;
+    @Autowired
+    private  IPurchaseLogService service;
 
     public PurchaseLogController(IPurchaseLogService service) {
         this.service = service;

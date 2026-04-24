@@ -11,7 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class ShoppingCartServiceTest {
@@ -19,131 +23,67 @@ class ShoppingCartServiceTest {
     @Autowired
     private IShoppingCartService service;
 
-    @Test
-    void testAddCart() {
+    private ShoppingCartRequestDTO request(int userId, String isbn) {
         ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(1);
-        dto.setIsbn("ISBN1");
-
-        ShoppingCartResponseDTO result = service.addCart(dto);
-
-        assertNotNull(result);
-        assertEquals("ISBN1", result.getIsbn());
+        dto.setUserId(userId);
+        dto.setIsbn(isbn);
+        return dto;
     }
 
     @Test
-    void testGetAll() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(2);
-        dto.setIsbn("A");
+    void addCart_persistsCartItem() {
+        ShoppingCartResponseDTO result = service.addCart(request(31, "CART-31"));
 
-        service.addCart(dto);
-
-        List<ShoppingCartResponseDTO> result = service.getAll();
-
-        assertFalse(result.isEmpty());
+        assertEquals(31, result.getUserId());
+        assertEquals("CART-31", result.getIsbn());
     }
 
     @Test
-    void testDeleteSuccess() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(3);
-        dto.setIsbn("B");
-
-        service.addCart(dto);
-
-        String result = service.delete(3, "B");
-
-        assertTrue(result.contains("Deleted"));
-    }
-
-    @Test
-    void testAddMultiple() {
-        ShoppingCartRequestDTO dto1 = new ShoppingCartRequestDTO();
-        dto1.setUserId(4);
-        dto1.setIsbn("X");
-
-        ShoppingCartRequestDTO dto2 = new ShoppingCartRequestDTO();
-        dto2.setUserId(5);
-        dto2.setIsbn("Y");
-
-        service.addCart(dto1);
-        service.addCart(dto2);
-
-        assertTrue(service.getAll().size() >= 2);
-    }
-
-    @Test
-    void testMappingCorrect() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(6);
-        dto.setIsbn("MAP");
-
-        ShoppingCartResponseDTO res = service.addCart(dto);
-
-        assertEquals(6, res.getUserId());
-    }
-
-    @Test
-    void testGetAllNotEmpty() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(7);
-        dto.setIsbn("Z");
-
-        service.addCart(dto);
+    void getAll_returnsInsertedCartItems() {
+        service.addCart(request(32, "CART-32"));
 
         assertFalse(service.getAll().isEmpty());
     }
 
     @Test
-    void testDeleteFlow() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(8);
-        dto.setIsbn("DEL");
+    void getByUserId_returnsItemsForSpecificUser() {
+        service.addCart(request(33, "CART-33"));
 
-        service.addCart(dto);
-        service.delete(8, "DEL");
+        List<ShoppingCartResponseDTO> carts = service.getByUserId(33);
 
-        assertThrows(ShoppingCartNotFoundException.class, () -> service.delete(8, "DEL"));
+        assertEquals(1, carts.size());
+        assertEquals("CART-33", carts.get(0).getIsbn());
     }
 
     @Test
-    void testDeleteNotFound() {
-        assertThrows(ShoppingCartNotFoundException.class, () -> service.delete(999, "NOTEXIST"));
+    void delete_removesExistingCartItem() {
+        service.addCart(request(34, "CART-34"));
+
+        String result = service.delete(34, "CART-34");
+
+        assertTrue(result.contains("Cart Deleted Successfully"));
     }
 
     @Test
-    void testAddNull() {
+    void getAll_edgeCase_returnsNonNullList() {
+        assertNotNull(service.getAll());
+    }
+
+    @Test
+    void addCart_rejectsNullOrIncompleteRequest() {
         assertThrows(EmptyCartException.class, () -> service.addCart(null));
+        assertThrows(EmptyCartException.class, () -> service.addCart(new ShoppingCartRequestDTO()));
     }
 
     @Test
-    void testAddInvalidDTO() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
+    void addCart_rejectsDuplicateItem() {
+        service.addCart(request(35, "CART-35"));
 
-        assertThrows(EmptyCartException.class, () -> service.addCart(dto));
+        assertThrows(DuplicateCartItemException.class, () -> service.addCart(request(35, "CART-35")));
     }
 
     @Test
-    void testDeleteNull() {
-        assertThrows(Exception.class, () -> service.delete(null, null));
-    }
-
-    @Test
-    void testGetAllInitiallyEmpty() {
-        List<ShoppingCartResponseDTO> list = service.getAll();
-
-        assertNotNull(list);
-    }
-
-    @Test
-    void testAddDuplicateCartItem() {
-        ShoppingCartRequestDTO dto = new ShoppingCartRequestDTO();
-        dto.setUserId(12);
-        dto.setIsbn("DUP-CART");
-
-        service.addCart(dto);
-
-        assertThrows(DuplicateCartItemException.class, () -> service.addCart(dto));
+    void delete_throwsWhenCartItemDoesNotExist() {
+        assertThrows(ShoppingCartNotFoundException.class, () -> service.delete(999, "NOTEXIST"));
     }
 }

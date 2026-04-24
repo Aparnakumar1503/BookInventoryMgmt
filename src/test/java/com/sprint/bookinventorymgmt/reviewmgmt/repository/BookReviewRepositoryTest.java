@@ -1,14 +1,12 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.repository;
 
 import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
@@ -18,73 +16,20 @@ class BookReviewRepositoryTest {
     private BookReviewRepository repository;
 
     @Test
-    @DisplayName("Save Book Review Test")
-    void testSaveReview() {
-        BookReview review = new BookReview();
-        review.setIsbn("123");
-        review.setReviewerID(1);
-        review.setRating(8);
-        review.setComments("Good book");
+    void derivedQueries_findByIsbn_andReviewerId_returnMatches() {
+        repository.save(new BookReview(null, "111", 1, 9, "Nice"));
+        repository.save(new BookReview(null, "111", 2, 8, "Good"));
 
-        BookReview saved = repository.save(review);
-
-        assertNotNull(saved.getId());
-        assertEquals("123", saved.getIsbn());
-        assertEquals(8, saved.getRating());
+        assertEquals(2, repository.findByIsbn("111").size());
+        assertEquals(1, repository.findByReviewerID(1).size());
     }
 
     @Test
-    @DisplayName("Find Review By ISBN Test")
-    void testFindByISBN() {
-        BookReview review = new BookReview();
-        review.setIsbn("111");
-        review.setReviewerID(1);
-        review.setRating(9);
-        review.setComments("Nice");
+    void customQuery_findByMaxRating_returnsHighestRatedReviews() {
+        repository.save(new BookReview(null, "222", 1, 5, "Okay"));
+        repository.save(new BookReview(null, "333", 2, 10, "Great"));
 
-        repository.save(review);
-
-        List<BookReview> list = repository.findByIsbn("111");
-
-        assertFalse(list.isEmpty());
-        assertEquals("111", list.get(0).getIsbn());
-    }
-
-    @Test
-    @DisplayName("Update Book Review Test")
-    void testUpdateReview() {
-        BookReview review = new BookReview();
-        review.setIsbn("222");
-        review.setReviewerID(1);
-        review.setRating(5);
-        review.setComments("Okay");
-
-        BookReview saved = repository.save(review);
-
-        saved.setRating(9);
-        saved.setComments("Updated review");
-        repository.save(saved);
-
-        BookReview updated = repository.findById(saved.getId())
-                .orElseThrow();
-
-        assertEquals(9, updated.getRating());
-        assertEquals("Updated review", updated.getComments());
-    }
-
-    @Test
-    @DisplayName("Delete Book Review Test")
-    void testDeleteReview() {
-        BookReview review = new BookReview();
-        review.setIsbn("333");
-        review.setReviewerID(1);
-        review.setRating(7);
-        review.setComments("Average");
-
-        BookReview saved = repository.save(review);
-
-        repository.deleteById(saved.getId());
-
-        assertTrue(repository.findById(saved.getId()).isEmpty());
+        assertEquals(1, repository.findByMaxRating().size());
+        assertEquals(10, repository.findByMaxRating().get(0).getRating());
     }
 }

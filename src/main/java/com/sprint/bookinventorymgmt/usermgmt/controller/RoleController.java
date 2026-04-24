@@ -9,6 +9,7 @@ import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.PermRoleResponseDTO
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.service.IPermRoleService;
 import com.sprint.bookinventorymgmt.usermgmt.service.IUserMgmtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,10 @@ import java.util.List;
 
 @RestController
 public class RoleController {
-    private final IPermRoleService permRoleService;
-    private final IUserMgmtService userService;
+    @Autowired
+    private  IPermRoleService permRoleService;
+    @Autowired
+    private  IUserMgmtService userService;
 
     public RoleController(IPermRoleService permRoleService, IUserMgmtService userService) {
         this.permRoleService = permRoleService;

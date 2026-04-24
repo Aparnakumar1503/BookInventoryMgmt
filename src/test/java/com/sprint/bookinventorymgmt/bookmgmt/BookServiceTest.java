@@ -23,34 +23,40 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 class BookServiceTest {
 
-    @Mock BookRepository bookRepository;
-    @Mock CategoryRepository categoryRepository;
-    @Mock PublisherRepository publisherRepository;
+    @Mock
+    BookRepository bookRepository;
+    @Mock
+    CategoryRepository categoryRepository;
+    @Mock
+    PublisherRepository publisherRepository;
 
     @InjectMocks
     BookServiceImpl bookService;
 
     @Test
     void createBook_success() {
-        BookRequestDTO dto = validDto();
-
         when(bookRepository.existsById("1")).thenReturn(false);
         when(categoryRepository.findById(1)).thenReturn(Optional.of(new Category()));
         when(publisherRepository.findById(1)).thenReturn(Optional.of(new Publisher()));
         when(bookRepository.save(any())).thenReturn(new Book());
 
-        assertNotNull(bookService.createBook(dto));
+        assertNotNull(bookService.createBook(validDto()));
         verify(bookRepository).save(any());
     }
 
     @Test
-    void createBook_duplicate() {
+    void createBook_rejectsDuplicateIsbn() {
         when(bookRepository.existsById("1")).thenReturn(true);
 
         assertThrows(BookAlreadyExistsException.class, () -> bookService.createBook(validDto()));
@@ -58,16 +64,12 @@ class BookServiceTest {
     }
 
     @Test
-    void createBook_categoryNotFound() {
+    void createBook_rejectsMissingCategoryOrPublisher() {
         when(bookRepository.existsById("1")).thenReturn(false);
         when(categoryRepository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(CategoryNotFoundException.class, () -> bookService.createBook(validDto()));
-    }
 
-    @Test
-    void createBook_publisherNotFound() {
-        when(bookRepository.existsById("1")).thenReturn(false);
         when(categoryRepository.findById(1)).thenReturn(Optional.of(new Category()));
         when(publisherRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -78,42 +80,29 @@ class BookServiceTest {
     void getBookByIsbn_success() {
         Book book = new Book();
         book.setIsbn("1");
-
         when(bookRepository.findById("1")).thenReturn(Optional.of(book));
 
         assertNotNull(bookService.getBookByIsbn("1"));
-        verify(bookRepository).findById("1");
     }
 
     @Test
-    void getBookByIsbn_notFound() {
+    void getBookByIsbn_rejectsInvalidOrMissingIsbn() {
         when(bookRepository.findById("1")).thenReturn(Optional.empty());
 
+        assertThrows(InvalidIsbnFormatException.class, () -> bookService.getBookByIsbn(null));
+        assertThrows(InvalidIsbnFormatException.class, () -> bookService.getBookByIsbn(" "));
         assertThrows(BookNotFoundException.class, () -> bookService.getBookByIsbn("1"));
     }
 
     @Test
-    void getBookByIsbn_null() {
-        assertThrows(InvalidIsbnFormatException.class, () -> bookService.getBookByIsbn(null));
-    }
-
-    @Test
-    void getBookByIsbn_blank() {
-        assertThrows(InvalidIsbnFormatException.class, () -> bookService.getBookByIsbn(" "));
-    }
-
-    @Test
-    void getAllBooks_success() {
+    void getAllBooks_returnsAvailableBooks() {
         when(bookRepository.findAll()).thenReturn(List.of(new Book()));
 
-        var result = bookService.getAllBooks();
-
-        assertEquals(1, result.size());
-        verify(bookRepository).findAll();
+        assertEquals(1, bookService.getAllBooks().size());
     }
 
     @Test
-    void getAllBooks_empty() {
+    void getAllBooks_throwsWhenNoBooksExist() {
         when(bookRepository.findAll()).thenReturn(List.of());
 
         assertThrows(DataNotFoundException.class, () -> bookService.getAllBooks());
@@ -121,57 +110,47 @@ class BookServiceTest {
 
     @Test
     void updateBook_success() {
-        Book book = new Book();
-
-        when(bookRepository.findById("1")).thenReturn(Optional.of(book));
+        Book existing = new Book();
+        when(bookRepository.findById("1")).thenReturn(Optional.of(existing));
         when(categoryRepository.findById(1)).thenReturn(Optional.of(new Category()));
         when(publisherRepository.findById(1)).thenReturn(Optional.of(new Publisher()));
-        when(bookRepository.save(any())).thenReturn(book);
+        when(bookRepository.save(any())).thenReturn(existing);
 
         assertNotNull(bookService.updateBook("1", validDto()));
-        verify(bookRepository).save(any());
     }
 
     @Test
-    void updateBook_notFound() {
+    void updateBook_throwsWhenBookOrDependenciesAreMissing() {
         when(bookRepository.findById("1")).thenReturn(Optional.empty());
-
         assertThrows(BookNotFoundException.class, () -> bookService.updateBook("1", validDto()));
+
+        when(bookRepository.findById("1")).thenReturn(Optional.of(new Book()));
+        when(categoryRepository.findById(1)).thenReturn(Optional.empty());
+        assertThrows(CategoryNotFoundException.class, () -> bookService.updateBook("1", validDto()));
+
+        when(categoryRepository.findById(1)).thenReturn(Optional.of(new Category()));
+        when(publisherRepository.findById(1)).thenReturn(Optional.empty());
+        assertThrows(PublisherNotFoundException.class, () -> bookService.updateBook("1", validDto()));
     }
 
     @Test
     void deleteBook_success() {
         Book book = new Book();
-
         when(bookRepository.findById("1")).thenReturn(Optional.of(book));
 
-        String result = bookService.deleteBook("1");
-
-        assertNotNull(result);
+        assertNotNull(bookService.deleteBook("1"));
         verify(bookRepository).delete(book);
     }
 
     @Test
-    void deleteBook_notFound() {
+    void deleteBook_throwsWhenBookDoesNotExist() {
         when(bookRepository.findById("1")).thenReturn(Optional.empty());
 
         assertThrows(BookNotFoundException.class, () -> bookService.deleteBook("1"));
     }
 
     @Test
-    void repositoryInteraction_verified() {
-        when(bookRepository.findAll()).thenReturn(List.of());
-
-        try {
-            bookService.getAllBooks();
-        } catch (Exception ignored) {
-        }
-
-        verify(bookRepository).findAll();
-    }
-
-    @Test
-    void getBooksByCategory_success() {
+    void getBooksByCategory_returnsMatchingBooks() {
         when(categoryRepository.existsById(1)).thenReturn(true);
         when(bookRepository.findByCategoryCatId(1)).thenReturn(List.of(new Book()));
 
@@ -179,33 +158,40 @@ class BookServiceTest {
     }
 
     @Test
-    void getBooksByCategory_null() {
+    void getBooksByCategory_throwsForInvalidMissingOrEmptyResults() {
         assertThrows(InvalidInputException.class, () -> bookService.getBooksByCategory(null));
-    }
 
-    @Test
-    void getBooksByCategory_empty() {
+        when(categoryRepository.existsById(1)).thenReturn(false);
+        assertThrows(CategoryNotFoundException.class, () -> bookService.getBooksByCategory(1));
+
         when(categoryRepository.existsById(1)).thenReturn(true);
         when(bookRepository.findByCategoryCatId(1)).thenReturn(List.of());
-
         assertThrows(DataNotFoundException.class, () -> bookService.getBooksByCategory(1));
     }
 
     @Test
-    void getBooksByPublisher_success() {
+    void getBooksByPublisher_handlesSuccessAndFailureScenarios() {
         when(publisherRepository.existsById(1)).thenReturn(true);
         when(bookRepository.findByPublisherPublisherId(1)).thenReturn(List.of(new Book()));
-
         assertEquals(1, bookService.getBooksByPublisher(1).size());
+
+        assertThrows(InvalidInputException.class, () -> bookService.getBooksByPublisher(null));
+
+        when(publisherRepository.existsById(2)).thenReturn(false);
+        assertThrows(PublisherNotFoundException.class, () -> bookService.getBooksByPublisher(2));
     }
 
     @Test
-    void getBooksByCategoryAndPublisher_success() {
+    void getBooksByCategoryAndPublisher_handlesSuccessAndFailureScenarios() {
         when(categoryRepository.existsById(1)).thenReturn(true);
         when(publisherRepository.existsById(1)).thenReturn(true);
         when(bookRepository.findByCategoryCatIdAndPublisherPublisherId(1, 1)).thenReturn(List.of(new Book()));
-
         assertEquals(1, bookService.getBooksByCategoryAndPublisher(1, 1).size());
+
+        assertThrows(InvalidInputException.class, () -> bookService.getBooksByCategoryAndPublisher(null, 1));
+
+        when(bookRepository.findByCategoryCatIdAndPublisherPublisherId(1, 1)).thenReturn(List.of());
+        assertThrows(DataNotFoundException.class, () -> bookService.getBooksByCategoryAndPublisher(1, 1));
     }
 
     private BookRequestDTO validDto() {

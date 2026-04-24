@@ -8,6 +8,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.ReviewerResponseDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.service.ReviewerService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/reviewers")
 public class ReviewerController {
-
-    private final ReviewerService service;
+    @Autowired
+    private ReviewerService service;
 
     public ReviewerController(ReviewerService service) {
         this.service = service;

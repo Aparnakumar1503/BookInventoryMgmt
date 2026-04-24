@@ -15,215 +15,93 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class BookAuthorRepositoryTest {
 
     @Autowired
     private BookAuthorRepository bookAuthorRepository;
-
     @Autowired
     private AuthorRepository authorRepository;
-
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private PublisherRepository publisherRepository;
-
     @Autowired
     private StateRepository stateRepository;
 
-    private Author savedAuthor1;
-    private Author savedAuthor2;
-    private Book savedBook1;
-    private Book savedBook2;
-
-    private State savedState;
+    private Author author1;
+    private Author author2;
+    private Book book1;
+    private Book book2;
 
     @BeforeEach
     void setUp() {
-
-        // =========================
-        // 1️⃣ STATE (FIXED - NO CONSTRUCTOR)
-        // =========================
         State state = new State();
         state.setStateCode("TN");
         state.setStateName("Tamil Nadu");
+        stateRepository.saveAndFlush(state);
 
-        savedState = stateRepository.saveAndFlush(state);
-
-        // =========================
-        // 2️⃣ CATEGORY
-        // =========================
         Category category = new Category();
         category.setCatId(1);
         category.setCatDescription("Programming");
-
         categoryRepository.saveAndFlush(category);
 
-        // =========================
-        // 3️⃣ PUBLISHER
-        // =========================
         Publisher publisher = new Publisher();
         publisher.setPublisherId(1);
         publisher.setName("Test Publisher");
         publisher.setCity("Chennai");
-        publisher.setState(savedState);
-
+        publisher.setState(state);
         publisherRepository.saveAndFlush(publisher);
 
-        // =========================
-        // 4️⃣ BOOKS
-        // =========================
-        savedBook1 = bookRepository.saveAndFlush(
-                new Book("1-111-11111-4", "Book One", "Desc One", "1st", category, publisher)
-        );
-
-        savedBook2 = bookRepository.saveAndFlush(
-                new Book("1-222-32443-7", "Book Two", "Desc Two", "2nd", category, publisher)
-        );
-
-        // =========================
-        // 5️⃣ AUTHORS
-        // =========================
-        savedAuthor1 = authorRepository.saveAndFlush(
-                new Author(null, "John", "Doe", null)
-        );
-
-        savedAuthor2 = authorRepository.saveAndFlush(
-                new Author(null, "Jane", "Smith", null)
-        );
+        book1 = bookRepository.saveAndFlush(new Book("1-111-11111-4", "Book One", "Desc", "1st", category, publisher));
+        book2 = bookRepository.saveAndFlush(new Book("1-222-32443-7", "Book Two", "Desc", "1st", category, publisher));
+        author1 = authorRepository.saveAndFlush(new Author(null, "John", "Doe", null));
+        author2 = authorRepository.saveAndFlush(new Author(null, "Jane", "Smith", null));
     }
 
-    // =========================
-    // SAVE
-    // =========================
     @Test
-    void testSaveBookAuthor() {
+    void derivedQueries_findByIsbn_andAuthorId_returnMappings() {
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book2.getIsbn(), author1.getAuthorId(), null, null, "N"));
 
-        BookAuthor bookAuthor = new BookAuthor(
-                savedBook1.getIsbn(),
-                savedAuthor1.getAuthorId(),
-                null,
-                null,
-                "Y"
-        );
-
-        BookAuthor saved = bookAuthorRepository.saveAndFlush(bookAuthor);
-
-        assertNotNull(saved);
-        assertEquals(savedBook1.getIsbn(), saved.getIsbn());
-        assertEquals(savedAuthor1.getAuthorId(), saved.getAuthorId());
+        assertEquals(2, bookAuthorRepository.findByIsbn(book1.getIsbn()).size());
+        assertEquals(2, bookAuthorRepository.findByAuthorId(author1.getAuthorId()).size());
     }
 
-    // =========================
-    // FIND BY ISBN
-    // =========================
     @Test
-    void testFindByIsbn() {
+    void customQueries_findBooksByAuthor_andPrimaryAuthor_returnExpectedRows() {
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book2.getIsbn(), author1.getAuthorId(), null, null, "N"));
 
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor1.getAuthorId(), null, null, "Y")
-        );
-
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor2.getAuthorId(), null, null, "N")
-        );
-
-        List<BookAuthor> result = bookAuthorRepository.findByIsbn(savedBook1.getIsbn());
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(2, bookAuthorRepository.findBooksByAuthorId(author1.getAuthorId()).size());
+        assertNotNull(bookAuthorRepository.findPrimaryAuthorByIsbn(book1.getIsbn()));
     }
 
-    // =========================
-    // FIND BY AUTHOR ID
-    // =========================
     @Test
-    void testFindByAuthorId() {
+    void deleteByIsbn_removesAllMappingsForBook() {
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
 
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor1.getAuthorId(), null, null, "Y")
-        );
+        bookAuthorRepository.deleteByIsbn(book1.getIsbn());
 
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook2.getIsbn(), savedAuthor1.getAuthorId(), null, null, "N")
-        );
-
-        List<BookAuthor> result = bookAuthorRepository.findByAuthorId(savedAuthor1.getAuthorId());
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertTrue(bookAuthorRepository.findByIsbn(book1.getIsbn()).isEmpty());
     }
 
-    // =========================
-    // CUSTOM QUERY - BOOKS BY AUTHOR
-    // =========================
     @Test
-    void testFindBooksByAuthorId() {
+    void deleteByIsbnAndAuthorId_removesSingleMapping() {
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
+        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
 
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor1.getAuthorId(), null, null, "Y")
-        );
+        int deleted = bookAuthorRepository.deleteByIsbnAndAuthorId(book1.getIsbn(), author1.getAuthorId());
 
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook2.getIsbn(), savedAuthor1.getAuthorId(), null, null, "N")
-        );
-
-        List<BookAuthor> result =
-                bookAuthorRepository.findBooksByAuthorId(savedAuthor1.getAuthorId());
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    // =========================
-    // PRIMARY AUTHOR
-    // =========================
-    @Test
-    void testFindPrimaryAuthorByIsbn() {
-
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor1.getAuthorId(), null, null, "Y")
-        );
-
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor2.getAuthorId(), null, null, "N")
-        );
-
-        BookAuthor result =
-                bookAuthorRepository.findPrimaryAuthorByIsbn(savedBook1.getIsbn());
-
-        assertNotNull(result);
-        assertEquals("Y", result.getPrimaryAuthor());
-    }
-
-    // =========================
-    // DELETE
-    // =========================
-    @Test
-    void testDeleteByIsbn() {
-
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor1.getAuthorId(), null, null, "Y")
-        );
-
-        bookAuthorRepository.saveAndFlush(
-                new BookAuthor(savedBook1.getIsbn(), savedAuthor2.getAuthorId(), null, null, "N")
-        );
-
-        bookAuthorRepository.deleteByIsbn(savedBook1.getIsbn());
-
-        List<BookAuthor> result =
-                bookAuthorRepository.findByIsbn(savedBook1.getIsbn());
-
-        assertTrue(result.isEmpty());
+        assertEquals(1, deleted);
+        assertEquals(1, bookAuthorRepository.findByIsbn(book1.getIsbn()).size());
     }
 }

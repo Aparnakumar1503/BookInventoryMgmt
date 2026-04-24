@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
@@ -29,8 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            RestAuthenticationEntryPoint restAuthenticationEntryPoint,
-            RestAccessDeniedHandler restAccessDeniedHandler) throws Exception {
+            RestSecurityExceptionHandler restSecurityExceptionHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -52,8 +52,8 @@ public class SecurityConfig {
                         .anyRequest().denyAll()
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(restAuthenticationEntryPoint)
-                        .accessDeniedHandler(restAccessDeniedHandler)
+                        .authenticationEntryPoint(restSecurityExceptionHandler)
+                        .accessDeniedHandler(restSecurityExceptionHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -85,5 +85,47 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+}
+
+final class SecurityAuthorities {
+
+    static final String OWNER_USER_AUTHOR = "OWNER_USER_AUTHOR";
+    static final String OWNER_BOOK = "OWNER_BOOK";
+    static final String OWNER_INVENTORY = "OWNER_INVENTORY";
+    static final String OWNER_ORDER = "OWNER_ORDER";
+    static final String OWNER_REVIEW = "OWNER_REVIEW";
+
+    private SecurityAuthorities() {
+    }
+
+    static List<String> moduleAuthoritiesFor(String username) {
+        String normalized = normalize(username);
+
+        return switch (normalized) {
+            case "aparna" -> List.of(OWNER_USER_AUTHOR);
+            case "moses" -> List.of(OWNER_BOOK);
+            case "sobika" -> List.of(OWNER_INVENTORY);
+            case "janapriya" -> List.of(OWNER_ORDER);
+            case "swarnalatha" -> List.of(OWNER_REVIEW);
+            default -> List.of();
+        };
+    }
+
+    static List<String> moduleIdsFor(String username) {
+        String normalized = normalize(username);
+
+        return switch (normalized) {
+            case "aparna" -> List.of("users-authors");
+            case "moses" -> List.of("books");
+            case "sobika" -> List.of("inventory");
+            case "janapriya" -> List.of("orders");
+            case "swarnalatha" -> List.of("reviews");
+            default -> List.of();
+        };
+    }
+
+    private static String normalize(String username) {
+        return username == null ? "" : username.toLowerCase(Locale.ROOT);
     }
 }

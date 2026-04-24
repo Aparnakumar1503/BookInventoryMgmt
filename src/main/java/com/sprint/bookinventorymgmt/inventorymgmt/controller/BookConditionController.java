@@ -10,6 +10,7 @@ import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.BookConditionR
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.BookCondition;
 import com.sprint.bookinventorymgmt.inventorymgmt.service.IBookConditionService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,8 @@ import java.util.List;
 @RequestMapping("/api/v1/book-conditions")
 public class BookConditionController {
 
-    private final IBookConditionService service;
+    @Autowired
+    private  IBookConditionService service;
 
     public BookConditionController(IBookConditionService service) {
         this.service = service;

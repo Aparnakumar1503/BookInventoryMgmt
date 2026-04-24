@@ -10,6 +10,7 @@ import com.sprint.bookinventorymgmt.inventorymgmt.dto.responsedto.InventoryRespo
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
 import com.sprint.bookinventorymgmt.inventorymgmt.service.IInventoryService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,8 @@ import java.util.List;
 @RequestMapping("/api/v1/inventory")
 public class InventoryController {
 
-    private final IInventoryService service;
+   @Autowired
+    private IInventoryService service;
 
     public InventoryController(IInventoryService service) {
         this.service = service;

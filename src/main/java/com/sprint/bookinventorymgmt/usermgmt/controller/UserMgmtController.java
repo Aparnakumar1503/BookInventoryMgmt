@@ -6,6 +6,7 @@ import com.sprint.bookinventorymgmt.usermgmt.dto.requestdto.UserRequestDTO;
 import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.service.IUserMgmtService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 public class UserMgmtController {
 
-    private final IUserMgmtService service;
+    @Autowired
+    private  IUserMgmtService service;
 
     public UserMgmtController(IUserMgmtService service) {
         this.service = service;

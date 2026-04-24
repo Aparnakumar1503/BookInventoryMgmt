@@ -8,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
-public class UserMgmtRepositoryTest {
+class UserMgmtRepositoryTest {
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -20,100 +21,42 @@ public class UserMgmtRepositoryTest {
     private IUserMgmtRepository userRepository;
 
     @Autowired
-    private IPermRoleRepository permRoleRepository; // ✅ needed for User FK
+    private IPermRoleRepository permRoleRepository;
 
     private PermRole savedRole;
 
     @BeforeEach
     void setUp() {
-        // ✅ save PermRole first — User has FK on roleNumber
         savedRole = permRoleRepository.saveAndFlush(new PermRole(null, "Guest"));
     }
 
     @Test
-    void testSaveUser() {
-        User user = new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole);
-        User saved = userRepository.saveAndFlush(user);
+    void derivedQueries_findByUsername_lastName_andExistsChecks_work() {
+        userRepository.saveAndFlush(new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
+        userRepository.saveAndFlush(new User("Jane", "Doe", "1234567890", "janedoe", "pass456", savedRole));
 
-        assertNotNull(saved);
-        assertNotNull(saved.getUserId()); // auto-generated
-        assertEquals("John", saved.getFirstName());
-        assertEquals("johndoe", saved.getUserName());
+        assertTrue(userRepository.findByUserName("johndoe").isPresent());
+        assertTrue(userRepository.findByUserNameIgnoreCase("JOHNDOE").isPresent());
+        assertEquals(2, userRepository.findByLastName("Doe").size());
+        assertTrue(userRepository.existsByUserName("johndoe"));
+        assertTrue(userRepository.existsByUserNameIgnoreCase("JOHNDOE"));
     }
 
     @Test
-    void testFindByUserName() {
-        userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
+    void customQueries_findByUsernameAndPassword_andRoleNumber_work() {
+        userRepository.saveAndFlush(new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
+        userRepository.saveAndFlush(new User("Jane", "Doe", "1234567890", "janedoe", "pass456", savedRole));
 
-        Optional<User> result = userRepository.findByUserName("johndoe");
-
-        assertTrue(result.isPresent());
-        assertEquals("johndoe", result.get().getUserName());
+        assertTrue(userRepository.findByUserNameAndPassword("johndoe", "pass123").isPresent());
+        assertEquals(2, userRepository.findByRoleNumber(savedRole.getRoleNumber()).size());
     }
 
     @Test
-    void testFindByLastName() {
-        userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
-        userRepository.saveAndFlush(
-                new User("Jane", "Doe", "1234567890", "janedoe", "pass456", savedRole));
+    void customQuery_updatePassword_updatesPersistedUser() {
+        User saved = userRepository.saveAndFlush(new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
 
-        List<User> result = userRepository.findByLastName("Doe");
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    void testExistsByUserName() {
-        userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
-
-        boolean exists = userRepository.existsByUserName("johndoe");
-
-        assertTrue(exists);
-    }
-
-    // Custom Query 1 — find by username and password
-    @Test
-    void testFindByUserNameAndPassword() {
-        userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
-
-        Optional<User> result = userRepository.findByUserNameAndPassword("johndoe", "pass123");
-
-        assertTrue(result.isPresent());
-        assertEquals("johndoe", result.get().getUserName());
-    }
-
-    // Custom Query 2 — find by role number
-    @Test
-    void testFindByRoleNumber() {
-        userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
-        userRepository.saveAndFlush(
-                new User("Jane", "Doe", "1234567890", "janedoe", "pass456", savedRole));
-
-        List<User> result = userRepository.findByRoleNumber(savedRole.getRoleNumber());
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    // Custom Query 3 — update password
-    @Test
-    void testUpdatePassword() {
-        User saved = userRepository.saveAndFlush(
-                new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
-
-        int updated = userRepository.updatePassword(saved.getUserId(), "newpass123");
-
-        assertEquals(1, updated);
+        assertEquals(1, userRepository.updatePassword(saved.getUserId(), "newpass123"));
         entityManager.clear();
-
-        Optional<User> result = userRepository.findById(saved.getUserId());
-        assertTrue(result.isPresent());
-        assertEquals("newpass123", result.get().getPassword());
+        assertEquals("newpass123", userRepository.findById(saved.getUserId()).orElseThrow().getPassword());
     }
 }

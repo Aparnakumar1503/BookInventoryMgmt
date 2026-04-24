@@ -2,6 +2,9 @@ package com.sprint.bookinventorymgmt.security;
 
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
+import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthRequest;
+import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthTokenResponse;
+import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthenticatedUserResponse;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
@@ -47,7 +50,7 @@ public class AuthController {
     public ResponseEntity<ResponseStructure<AuthTokenResponse>> login(@Valid @RequestBody AuthRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
             );
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();

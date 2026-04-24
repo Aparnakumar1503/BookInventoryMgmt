@@ -10,6 +10,7 @@ import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,8 @@ import java.util.List;
 @Tag(name = "Book APIs", description = "CRUD operations for Books")
 public class BookController {
 
-    private final IBookService IBookService;
+    @Autowired
+    private  IBookService IBookService;
 
     public BookController(IBookService IBookService) {
         this.IBookService = IBookService;

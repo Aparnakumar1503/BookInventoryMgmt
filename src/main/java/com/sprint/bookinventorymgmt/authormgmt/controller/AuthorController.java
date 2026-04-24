@@ -8,6 +8,7 @@ import com.sprint.bookinventorymgmt.authormgmt.service.IAuthorService;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,8 @@ import java.util.List;
 @RequestMapping("/api/v1/authors")
 public class AuthorController {
 
-    private final IAuthorService service;
+    @Autowired
+    private  IAuthorService service;
 
     public AuthorController(IAuthorService service) {
         this.service = service;
