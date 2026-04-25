@@ -1,5 +1,6 @@
 package com.sprint.bookinventorymgmt.ordermgmt.service;
 
+import com.sprint.bookinventorymgmt.bookmgmt.repository.BookRepository;
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCart;
@@ -23,14 +24,17 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
     private final IShoppingCartRepository repo;
     private final IPurchaseLogRepository purchaseLogRepository;
     private final IInventoryRepository inventoryRepository;
+    private final BookRepository bookRepository;
 
     public ShoppingCartServiceImpl(
             IShoppingCartRepository repo,
             IPurchaseLogRepository purchaseLogRepository,
-            IInventoryRepository inventoryRepository) {
+            IInventoryRepository inventoryRepository,
+            BookRepository bookRepository) {
         this.repo = repo;
         this.purchaseLogRepository = purchaseLogRepository;
         this.inventoryRepository = inventoryRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -43,6 +47,10 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
         ShoppingCart existing = repo.findByUserIdAndIsbn(dto.getUserId(), dto.getIsbn());
         if (existing != null) {
             throw new DuplicateCartItemException("Item already exists");
+        }
+
+        if (!bookRepository.existsByIsbn(dto.getIsbn())) {
+            throw new BookNotAvailableException(dto.getIsbn(), true);
         }
 
         ShoppingCart entity = new ShoppingCart(dto.getUserId(), dto.getIsbn());
