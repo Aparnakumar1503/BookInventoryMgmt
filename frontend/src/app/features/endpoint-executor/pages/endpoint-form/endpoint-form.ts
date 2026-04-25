@@ -177,11 +177,7 @@ export class EndpointFormComponent {
       return;
     }
 
-    const payload: EndpointRequestPayload = {
-      pathParams: this.collect(this.pathParamsGroup, this.pathFields(), false),
-      queryParams: this.collect(this.queryParamsGroup, this.queryFields(), true),
-      body: this.bodyFields().length ? this.collect(this.bodyGroup, this.bodyFields(), true) : null
-    };
+    const payload = this.buildRequestPayload();
 
     this.isLoading.set(true);
     this.response.set(null);
@@ -196,7 +192,7 @@ export class EndpointFormComponent {
           endpointId: this.endpointId(),
           payload
         });
-        this.viewMode.set('preview');
+        this.viewMode.set(this.preferredViewMode(result));
 
         if (result.ok) {
           this.prefillStatus.set('');
@@ -474,6 +470,21 @@ export class EndpointFormComponent {
     }, {});
   }
 
+  private buildRequestPayload(): EndpointRequestPayload {
+    const pathParams = this.collect(this.pathParamsGroup, this.pathFields(), false);
+    const queryParams = this.collect(this.queryParamsGroup, this.queryFields(), true);
+    const body = this.bodyFields().length ? this.collect(this.bodyGroup, this.bodyFields(), true) : null;
+
+    if (this.endpointId() === 'update-book-condition' && body) {
+      const rank = pathParams['rank'];
+      if (rank !== undefined && rank !== null && String(rank).trim() !== '') {
+        body['ranks'] = Number(rank);
+      }
+    }
+
+    return { pathParams, queryParams, body };
+  }
+
   private areRequiredPathParamsFilled(): boolean {
     return this.pathFields().every((field) => {
       const value = this.pathParamsGroup.controls[field.key]?.value;
@@ -719,6 +730,11 @@ export class EndpointFormComponent {
     if (Array.isArray(value)) return value.filter((item): item is Record<string, unknown> => this.isRecord(item));
     if (this.isRecord(value)) return [value];
     return [];
+  }
+
+  private preferredViewMode(result: ApiCallResult): 'preview' | 'table' | 'json' {
+    const body = this.extractResponseData(result.body);
+    return this.normalizeRows(body).length ? 'preview' : 'json';
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {

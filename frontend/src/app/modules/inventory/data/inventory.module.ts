@@ -146,6 +146,8 @@ export const INVENTORY_MODULE: ModuleConfig = {
       prefill: {
         endpointId: 'get-book-condition',
         bodyFieldMap: {
+          description: 'description',
+          fullDescription: 'fullDescription',
           price: 'price'
         }
       },
