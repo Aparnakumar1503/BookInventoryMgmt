@@ -11,6 +11,7 @@ public class PermRoleRequestDTO {
     @Size(min = 2, max = 30, message = "Role name must be between 2 and 30 characters")
     @Pattern(regexp = "^[A-Za-z][A-Za-z ]*$", message = "Role name must contain only letters and spaces")
     private String permRole;
+    //constructor
 
     public PermRoleRequestDTO() {}
 
