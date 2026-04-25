@@ -22,10 +22,8 @@ import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryNotFoundEx
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryPurchaseException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookNotAvailableException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.CheckoutFailedException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.DuplicateCartItemException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.EmptyCartException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.DuplicateReviewException;
@@ -153,11 +151,7 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, ex.getMessage());
     }
 
-    @ExceptionHandler({
-            InsufficientInventoryException.class,
-            CheckoutFailedException.class,
-            OrderProcessingException.class
-    })
+    @ExceptionHandler(InsufficientInventoryException.class)
     public ResponseEntity<ResponseStructure<String>> handleUnprocessable(RuntimeException ex) {
         return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
     }
