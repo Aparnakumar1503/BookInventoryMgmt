@@ -1,21 +1,85 @@
 .modules-hero-card {
-  border: 1px solid var(--bv-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(249, 245, 238, 0.9));
-  box-shadow: var(--bv-shadow-lg);
+  border: 1px solid rgba(78, 139, 143, 0.22);
+  background:
+    linear-gradient(135deg, rgba(47, 93, 98, 0.9) 0%, rgba(60, 117, 123, 0.88) 55%, rgba(138, 106, 67, 0.86) 100%);
+  box-shadow: 0 20px 48px rgba(47, 93, 98, 0.18);
+  color: #fff;
+}
+
+.modules-hero-card .bv-stat-label,
+.modules-hero-card .text-\[var\(--bv-text-soft\)\],
+.modules-hero-card .text-\[var\(--bv-text-muted\)\] {
+  color: rgba(255, 255, 255, 0.84) !important;
+}
+
+.modules-hero-card .text-\[var\(--bv-text\)\],
+.modules-hero-card .text-\[var\(--bv-accent\)\],
+.modules-hero-card .text-\[var\(--bv-secondary\)\] {
+  color: #f8fbfb !important;
+}
+
+.modules-hero-card h1 {
+  color: #f8fbfb !important;
+  text-shadow: 0 2px 10px rgba(28, 46, 42, 0.18);
+}
+
+.modules-hero-card p:not(.bv-stat-label) {
+  color: rgba(244, 249, 248, 0.9) !important;
 }
 
 .modules-stat-tile {
-  border: 1px solid var(--bv-border);
-  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(78, 139, 143, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(250, 246, 238, 0.86));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .modules-card {
-  border: 1px solid var(--bv-border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 242, 233, 0.95));
-  box-shadow: var(--bv-shadow-md);
+  border: 1px solid rgba(78, 139, 143, 0.14);
+  background:
+    radial-gradient(circle at top left, rgba(78, 139, 143, 0.1), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.99) 0%, rgba(246, 248, 245, 0.97) 55%, rgba(248, 243, 233, 0.96) 100%);
+  box-shadow: 0 16px 34px rgba(78, 139, 143, 0.1);
 }
 
 .modules-card-badge {
-  border: 1px solid var(--bv-border);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(78, 139, 143, 0.14);
+  background:
+    linear-gradient(145deg, rgba(78, 139, 143, 0.12) 0%, rgba(90, 122, 106, 0.09) 55%, rgba(138, 122, 82, 0.11) 100%),
+    rgba(255, 255, 255, 0.84);
+}
+
+.modules-card .bv-chip {
+  border-color: rgba(78, 139, 143, 0.16);
+  background:
+    linear-gradient(145deg, rgba(78, 139, 143, 0.08) 0%, rgba(90, 122, 106, 0.08) 52%, rgba(138, 122, 82, 0.09) 100%);
+}
+
+.modules-card .bv-chip:hover {
+  border-color: rgba(78, 139, 143, 0.28);
+  color: #3d7a7e;
+}
+
+.modules-card:hover {
+  box-shadow: 0 22px 44px rgba(78, 139, 143, 0.16);
+}
+
+.modules-stat-tile .bv-stat-label,
+.modules-stat-tile .text-\[var\(--bv-text\)\],
+.modules-stat-tile .text-\[var\(--bv-accent\)\],
+.modules-stat-tile .text-\[var\(--bv-secondary\)\] {
+  color: #111111 !important;
+}
+
+.modules-stat-tile p {
+  color: #111111 !important;
+}
+
+.modules-stat-number {
+  color: #111111 !important;
+}
+
+.modules-hero-card .modules-stat-number,
+.modules-hero-card p.modules-stat-number {
+  color: #111111 !important;
 }

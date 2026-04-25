@@ -14,6 +14,7 @@ import { ResponseViewerComponent } from '../../../../shared/ui/response-viewer/r
 
 type FieldValue = string | number | boolean | null;
 type FieldControls = Record<string, FormControl<FieldValue>>;
+type ErrorSections = 'pathParams' | 'queryParams' | 'body';
 
 @Component({
   selector: 'app-endpoint-form',
@@ -28,11 +29,15 @@ export class EndpointFormComponent {
   private readonly notificationService = inject(NotificationService);
   private readonly storageService = inject(StorageService);
 
-  readonly moduleId = this.route.snapshot.paramMap.get('moduleId') ?? '';
-  readonly endpointId = this.route.snapshot.paramMap.get('endpointId') ?? '';
-  readonly module = this.moduleService.getModule(this.moduleId);
-  readonly endpoint = this.moduleService.getEndpoint(this.moduleId, this.endpointId);
-  readonly endpointGroups = computed<EndpointGroup[]>(() => this.module ? groupEndpoints(this.module.endpoints) : []);
+  readonly moduleId = signal(this.route.snapshot.paramMap.get('moduleId') ?? '');
+  readonly endpointId = signal(this.route.snapshot.paramMap.get('endpointId') ?? '');
+  readonly module = computed(() => this.moduleService.getModule(this.moduleId()));
+  readonly endpoint = computed(() => this.moduleService.getEndpoint(this.moduleId(), this.endpointId()));
+  readonly endpointGroups = computed<EndpointGroup[]>(() => {
+    const module = this.module();
+    return module ? groupEndpoints(module.endpoints, module.id) : [];
+  });
+
   readonly isLoading = signal(false);
   readonly response = signal<ApiCallResult | null>(null);
   readonly isPrefillLoading = signal(false);
@@ -48,11 +53,18 @@ export class EndpointFormComponent {
     queryParams: {},
     body: {}
   });
-
-  readonly pathFields = computed(() => this.endpoint?.pathParams ?? []);
-  readonly queryFields = computed(() => this.endpoint?.queryParams ?? []);
-  readonly bodyFields = computed(() => this.endpoint?.body?.fields ?? []);
   readonly viewMode = signal<'preview' | 'table' | 'json'>('preview');
+
+  readonly pathFields = computed(() => this.endpoint()?.pathParams ?? []);
+  readonly queryFields = computed(() => this.endpoint()?.queryParams ?? []);
+  readonly bodyFields = computed(() => this.endpoint()?.body?.fields ?? []);
+
+  readonly form = new FormGroup({
+    pathParams: new FormGroup<FieldControls>({}),
+    queryParams: new FormGroup<FieldControls>({}),
+    body: new FormGroup<FieldControls>({})
+  });
+
   readonly responseReason = computed(() => {
     const body = this.response()?.body;
     if (body && typeof body === 'object' && !Array.isArray(body) && 'message' in body) {
@@ -66,20 +78,24 @@ export class EndpointFormComponent {
 
     return '';
   });
+
   readonly responseBody = computed<Record<string, unknown> | null>(() => {
     const body = this.response()?.body;
     return this.isRecord(body) ? body : null;
   });
-  readonly responseUrl = computed(() => this.response()?.url || this.endpoint?.path || '');
+
+  readonly responseUrl = computed(() => this.response()?.url || this.endpoint()?.path || '');
   readonly responseData = computed<unknown>(() => this.responseBody()?.['data'] ?? null);
   readonly paginatedData = computed<Record<string, unknown> | null>(() => {
     const data = this.responseData();
     return this.isRecord(data) && Array.isArray(data['items']) ? data : null;
   });
+
   readonly tableRows = computed<Record<string, unknown>[]>(() => {
     const paginated = this.paginatedData();
     return this.normalizeRows(paginated ? paginated['items'] : this.responseData());
   });
+
   readonly tableColumns = computed<string[]>(() => {
     const rows = this.tableRows();
     if (!rows.length) {
@@ -93,6 +109,7 @@ export class EndpointFormComponent {
       }, new Set<string>())
     );
   });
+
   readonly authorPreviewItems = computed(() => {
     const rows = this.tableRows();
     const firstRow = rows[0];
@@ -108,13 +125,26 @@ export class EndpointFormComponent {
       photo: String(item['photo'] ?? '')
     }));
   });
+
   private lastPrefillSignature = '';
 
-  readonly form = new FormGroup({
-    pathParams: this.createGroup(this.pathFields()),
-    queryParams: this.createGroup(this.queryFields()),
-    body: this.createGroup(this.bodyFields())
-  });
+  constructor() {
+    this.rebuildForm();
+
+    this.route.paramMap.subscribe((params) => {
+      const nextModuleId = params.get('moduleId') ?? '';
+      const nextEndpointId = params.get('endpointId') ?? '';
+
+      if (nextModuleId === this.moduleId() && nextEndpointId === this.endpointId()) {
+        return;
+      }
+
+      this.moduleId.set(nextModuleId);
+      this.endpointId.set(nextEndpointId);
+      this.resetUiState();
+      this.rebuildForm();
+    });
+  }
 
   get pathParamsGroup(): FormGroup<FieldControls> {
     return this.form.controls.pathParams;
@@ -129,7 +159,8 @@ export class EndpointFormComponent {
   }
 
   submit(): void {
-    if (!this.endpoint) {
+    const endpoint = this.endpoint();
+    if (!endpoint) {
       this.notificationService.error('Endpoint configuration was not found.');
       return;
     }
@@ -156,13 +187,13 @@ export class EndpointFormComponent {
     this.response.set(null);
     this.clearBackendErrors();
 
-    this.apiService.execute(this.endpoint, payload)
+    this.apiService.execute(endpoint, payload)
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe((result) => {
         this.response.set(result);
         this.storageService.setLastResponse(result, {
-          moduleId: this.moduleId,
-          endpointId: this.endpointId,
+          moduleId: this.moduleId(),
+          endpointId: this.endpointId(),
           payload
         });
         this.viewMode.set('preview');
@@ -178,15 +209,12 @@ export class EndpointFormComponent {
       });
   }
 
-  hasError(section: 'pathParams' | 'queryParams' | 'body', key: string): boolean {
+  hasError(section: ErrorSections, key: string): boolean {
     const control = this.form.controls[section].controls[key];
-    return Boolean(
-      (control?.invalid && (control.dirty || control.touched))
-      || this.backendErrors()[section][key]
-    );
+    return Boolean((control?.invalid && (control.dirty || control.touched)) || this.backendErrors()[section][key]);
   }
 
-  getErrorMessage(section: 'pathParams' | 'queryParams' | 'body', key: string): string {
+  getErrorMessage(section: ErrorSections, key: string): string {
     const backendMessage = this.backendErrors()[section][key];
     if (backendMessage) {
       return backendMessage;
@@ -226,7 +254,8 @@ export class EndpointFormComponent {
   }
 
   supportsPrefill(): boolean {
-    return Boolean(this.endpoint?.method === 'PUT' && this.endpoint?.prefill && this.bodyFields().length);
+    const endpoint = this.endpoint();
+    return Boolean(endpoint?.method === 'PUT' && endpoint.prefill && this.bodyFields().length);
   }
 
   canLoadExistingRecord(): boolean {
@@ -259,11 +288,12 @@ export class EndpointFormComponent {
   }
 
   loadExistingRecord(): void {
-    if (!this.endpoint?.prefill || !this.canLoadExistingRecord() || this.isPrefillLoading()) {
+    const endpoint = this.endpoint();
+    if (!endpoint?.prefill || !this.canLoadExistingRecord() || this.isPrefillLoading()) {
       return;
     }
 
-    const fetchEndpoint = this.moduleService.getEndpoint(this.moduleId, this.endpoint.prefill.endpointId);
+    const fetchEndpoint = this.moduleService.getEndpoint(this.moduleId(), endpoint.prefill.endpointId);
     if (!fetchEndpoint) {
       this.notificationService.error('Matching fetch endpoint configuration was not found.');
       return;
@@ -283,7 +313,7 @@ export class EndpointFormComponent {
       .subscribe((result) => {
         this.response.set(result);
         this.storageService.setLastResponse(result, {
-          moduleId: this.moduleId,
+          moduleId: this.moduleId(),
           endpointId: fetchEndpoint.id,
           payload: requestPayload
         });
@@ -309,17 +339,18 @@ export class EndpointFormComponent {
           const lockedResponse = this.buildLockedRecordResponse();
           this.response.set(lockedResponse);
           this.storageService.setLastResponse(lockedResponse, {
-            moduleId: this.moduleId,
-            endpointId: this.endpointId,
+            moduleId: this.moduleId(),
+            endpointId: this.endpointId(),
             payload: requestPayload
           });
           this.viewMode.set('json');
         }
         this.lastPrefillSignature = this.currentPrefillSignature();
-        const statusMessage = this.isRecordLocked()
-          ? this.lockedRecordMessage()
-          : 'Current data loaded. Review and update the fields below.';
-        this.prefillStatus.set(statusMessage);
+        this.prefillStatus.set(
+          this.isRecordLocked()
+            ? this.lockedRecordMessage()
+            : 'Current data loaded. Review and update the fields below.'
+        );
         this.notificationService.info(this.isRecordLocked() ? 'Current record loaded as read-only.' : 'Current record loaded.');
       });
   }
@@ -342,6 +373,50 @@ export class EndpointFormComponent {
     };
 
     return classes[method] ?? 'bg-slate-100 text-slate-800';
+  }
+
+  setViewMode(mode: 'preview' | 'table' | 'json'): void {
+    this.viewMode.set(mode);
+  }
+
+  formatColumnLabel(column: string): string {
+    return column
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  renderCellValue(row: Record<string, unknown>, column: string): string {
+    const value = row[column];
+    if (value === null || value === undefined || value === '') return '-';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  }
+
+  trackByColumn(index: number, column: string): string {
+    return `${index}-${column}`;
+  }
+
+  previewInitials(value: string): string {
+    return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AU';
+  }
+
+  private rebuildForm(): void {
+    this.form.setControl('pathParams', this.createGroup(this.pathFields()));
+    this.form.setControl('queryParams', this.createGroup(this.queryFields()));
+    this.form.setControl('body', this.createGroup(this.bodyFields()));
+  }
+
+  private resetUiState(): void {
+    this.isLoading.set(false);
+    this.response.set(null);
+    this.isPrefillLoading.set(false);
+    this.prefillStatus.set('');
+    this.isRecordLocked.set(false);
+    this.lockedRecordMessage.set('');
+    this.clearBackendErrors();
+    this.lastPrefillSignature = '';
+    this.viewMode.set('preview');
   }
 
   private createGroup(fields: readonly EndpointField[]): FormGroup<FieldControls> {
@@ -417,7 +492,7 @@ export class EndpointFormComponent {
   }
 
   private buildPrefillPathParams(): Record<string, string | number | boolean> {
-    const mapping = this.endpoint?.prefill?.pathParamMap ?? {};
+    const mapping = this.endpoint()?.prefill?.pathParamMap ?? {};
 
     return this.pathFields().reduce<Record<string, string | number | boolean>>((params, field) => {
       const targetKey = mapping[field.key] ?? field.key;
@@ -489,7 +564,7 @@ export class EndpointFormComponent {
   }
 
   private patchBodyFromRecord(record: Record<string, unknown>): void {
-    const fieldMap = this.endpoint?.prefill?.bodyFieldMap ?? {};
+    const fieldMap = this.endpoint()?.prefill?.bodyFieldMap ?? {};
 
     for (const field of this.bodyFields()) {
       const sourceKey = fieldMap[field.key] ?? field.key;
@@ -510,7 +585,7 @@ export class EndpointFormComponent {
   }
 
   private applyPrefillLockState(record: Record<string, unknown>): void {
-    const lockField = this.endpoint?.prefill?.lockWhenFieldTrue;
+    const lockField = this.endpoint()?.prefill?.lockWhenFieldTrue;
     if (!lockField) {
       this.unlockBodyControls();
       return;
@@ -522,7 +597,7 @@ export class EndpointFormComponent {
       return;
     }
 
-    const message = this.endpoint?.prefill?.lockedMessage ?? 'This record cannot be updated.';
+    const message = this.endpoint()?.prefill?.lockedMessage ?? 'This record cannot be updated.';
     this.isRecordLocked.set(true);
     this.lockedRecordMessage.set(message);
 
@@ -530,12 +605,12 @@ export class EndpointFormComponent {
   }
 
   private buildLockedRecordResponse(): ApiCallResult {
-    const message = this.endpoint?.prefill?.lockedMessage ?? 'This record cannot be updated.';
+    const message = this.endpoint()?.prefill?.lockedMessage ?? 'This record cannot be updated.';
 
     return {
       status: 409,
       ok: false,
-      url: this.endpoint?.path ?? null,
+      url: this.endpoint()?.path ?? null,
       receivedAt: new Date().toISOString(),
       body: {
         statusCode: 409,
@@ -544,29 +619,6 @@ export class EndpointFormComponent {
         timestamp: new Date().toISOString()
       }
     };
-  }
-
-  setViewMode(mode: 'preview' | 'table' | 'json'): void {
-    this.viewMode.set(mode);
-  }
-
-  formatColumnLabel(column: string): string {
-    return column.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-  }
-
-  renderCellValue(row: Record<string, unknown>, column: string): string {
-    const value = row[column];
-    if (value === null || value === undefined || value === '') return '-';
-    if (typeof value === 'object') return JSON.stringify(value);
-    return String(value);
-  }
-
-  trackByColumn(index: number, column: string): string {
-    return `${index}-${column}`;
-  }
-
-  previewInitials(value: string): string {
-    return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AU';
   }
 
   private applyBackendErrors(result: ApiCallResult): void {
@@ -653,7 +705,7 @@ export class EndpointFormComponent {
     return segments[segments.length - 1] ?? key;
   }
 
-  private findField(section: 'pathParams' | 'queryParams' | 'body', key: string): EndpointField | undefined {
+  private findField(section: ErrorSections, key: string): EndpointField | undefined {
     const fields = section === 'pathParams'
       ? this.pathFields()
       : section === 'queryParams'

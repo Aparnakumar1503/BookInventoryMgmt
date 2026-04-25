@@ -6,7 +6,7 @@
 .endpoint-workspace__frame {
   display: grid;
   min-height: calc(100vh - 8.5rem);
-  grid-template-columns: 18rem minmax(0, 1fr);
+  grid-template-columns: 30rem minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--bv-border);
   border-radius: 2rem;
@@ -38,11 +38,12 @@
 .endpoint-workspace__logo {
   color: var(--bv-text);
   font-family: var(--bv-display);
-  font-size: 1.5rem;
+  font-size: 1.32rem;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
   text-decoration: none;
+  word-break: keep-all;
 }
 
 .endpoint-workspace__back {

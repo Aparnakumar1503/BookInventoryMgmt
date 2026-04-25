@@ -1,4 +1,4 @@
-﻿import { ModuleConfig } from '../../../core/models/module.model';
+import { ModuleConfig } from '../../../core/models/module.model';
 import { TEAMMATES } from '../../../core/data/team-members.data';
 
 export const USERS_AUTHORS_MODULE: ModuleConfig = {
@@ -137,7 +137,7 @@ export const USERS_AUTHORS_MODULE: ModuleConfig = {
         fields: [
           { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Steve', minLength: 2, maxLength: 50, pattern: "^[A-Za-z][A-Za-z '-]*$", patternMessage: 'First name must contain only letters, spaces, apostrophes, or hyphens.' },
           { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Jacobs', minLength: 1, maxLength: 50, pattern: "^[A-Za-z][A-Za-z '-]*$", patternMessage: 'Last name must contain only letters, spaces, apostrophes, or hyphens.' },
-          { key: 'photo', label: 'Photo', type: 'text', placeholder: 'profile.jpg', maxLength: 255 }
+          { key: 'photo', label: 'Photo URL', type: 'text', placeholder: 'https://example.com/author.jpg', maxLength: 255 }
         ]
       }
     },
@@ -156,7 +156,7 @@ export const USERS_AUTHORS_MODULE: ModuleConfig = {
         fields: [
           { key: 'firstName', label: 'First Name', type: 'text', required: true, minLength: 2, maxLength: 50, pattern: "^[A-Za-z][A-Za-z '-]*$", patternMessage: 'First name must contain only letters, spaces, apostrophes, or hyphens.' },
           { key: 'lastName', label: 'Last Name', type: 'text', required: true, minLength: 1, maxLength: 50, pattern: "^[A-Za-z][A-Za-z '-]*$", patternMessage: 'Last name must contain only letters, spaces, apostrophes, or hyphens.' },
-          { key: 'photo', label: 'Photo', type: 'text', maxLength: 255 }
+          { key: 'photo', label: 'Photo URL', type: 'text', maxLength: 255 }
         ]
       }
     },

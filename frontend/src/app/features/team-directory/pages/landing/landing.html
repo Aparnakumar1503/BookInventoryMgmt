@@ -1,111 +1,92 @@
-<section class="bv-hero-shell">
-  <div class="bv-grid-bg"></div>
-  <div class="bv-blob bv-blob-ink"></div>
-  <div class="bv-blob bv-blob-blue"></div>
-  <div class="bv-blob bv-blob-gold"></div>
+<canvas #backgroundCanvas class="landing-canvas" aria-hidden="true"></canvas>
 
-  <div class="bv-container px-4 pb-10 pt-10 sm:px-6 lg:px-8 lg:pb-14 lg:pt-14">
-    <div class="mx-auto max-w-5xl text-center">
-      <div class="bv-kicker mx-auto">
-        <span class="h-2 w-2 rounded-full bg-[var(--bv-accent)]"></span>
-        Enterprise Library Workspace
-      </div>
-
-      <h1 class="bv-display mt-8 text-[clamp(3.6rem,9vw,7rem)] leading-[0.9] text-[var(--bv-text)]">
-        BOOK INVENTORY
-        <span class="block text-[var(--bv-accent)]">MANAGEMENT</span>
-      </h1>
-
-      <p class="mx-auto mt-6 max-w-3xl text-base leading-8 text-[var(--bv-text-soft)] sm:text-lg">
-        Learn the project flow with a cleaner UI. Start on the landing page, move into the six-module catalog,
-        sign in for the selected owner module, and then use the endpoint workspace with the same live preview,
-        table view, and JSON response formats you already have.
-      </p>
-
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <a
-          routerLink="/modules"
-          class="bv-button-primary inline-flex items-center gap-3 rounded-full px-7 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:brightness-105"
-        >
-          Open Module Catalog
-          <span aria-hidden="true">→</span>
-        </a>
-        <a
-          routerLink="/modules"
-          class="bv-button-secondary inline-flex items-center rounded-full px-6 py-4 text-sm font-black transition hover:-translate-y-0.5"
-        >
-          Explore The Flow
-        </a>
-      </div>
-
-      <div class="mt-10 flex flex-wrap justify-center gap-3">
-        @for (module of modules; track module.id) {
-          <span class="bv-pill">{{ module.owner.name }} · {{ module.name }}</span>
-        }
-      </div>
+<section class="landing-shell">
+  <section class="landing-hero">
+    <div class="landing-badge">
+      <span class="landing-badge__dot"></span>
+      Enterprise Library Workspace
     </div>
 
-    <section class="mt-16 bv-panel rounded-[2rem] p-6 sm:p-8">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p class="bv-stat-label">Platform Report</p>
-          <h2 class="bv-section-title mt-3">Current module coverage</h2>
+    <h1 class="landing-title">
+      <span class="landing-title__line landing-title__line--dark">Book Inventory</span>
+      <span class="landing-title__line landing-title__line--gradient">Management</span>
+    </h1>
+
+    <p class="landing-subtitle">
+      {{ stats.modules }} modules · {{ stats.teams }} owners · {{ stats.endpoints }} live endpoints — preview,
+      table and JSON response formats.
+    </p>
+
+    <div class="landing-cta">
+      <a routerLink="/modules" class="landing-cta__button">
+        <span>Open Module Catalog</span>
+        <span class="landing-cta__arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="landing-tags">
+      @for (summary of moduleSummaries; track summary.id) {
+        <span class="landing-tag"><b>{{ summary.ownerName }}</b> · {{ summary.moduleName }}</span>
+      }
+    </div>
+
+    <div class="landing-divider"></div>
+  </section>
+
+  <section id="coverage" class="landing-report">
+    <div class="landing-report__bar"></div>
+
+    <header class="landing-report__head">
+      <div>
+        <p class="landing-meta">Platform Report</p>
+        <h2 class="landing-section-title">Current module coverage</h2>
+      </div>
+
+      <div class="landing-live-pill">
+        <span class="landing-live-pill__dot"></span>
+        Live Workspace
+      </div>
+    </header>
+
+    <div class="landing-stats">
+      <article class="landing-stat">
+        <p class="landing-meta">Members</p>
+        <p class="landing-stat__number">{{ stats.teams }}</p>
+        <p class="landing-stat__copy">Module owners</p>
+      </article>
+
+      <article class="landing-stat">
+        <p class="landing-meta">Modules</p>
+        <p class="landing-stat__number">{{ stats.modules }}</p>
+        <p class="landing-stat__copy">API areas in UI</p>
+      </article>
+
+      <article class="landing-stat">
+        <p class="landing-meta">Endpoints</p>
+        <p class="landing-stat__number">{{ stats.endpoints }}</p>
+        <p class="landing-stat__copy">Live forms</p>
+      </article>
+    </div>
+
+    <div class="landing-table">
+      <div class="landing-table__head">
+        <span>#</span>
+        <span>Owner</span>
+        <span>Module</span>
+        <span>Endpoints</span>
+      </div>
+
+      @for (summary of moduleSummaries; track summary.id; let index = $index) {
+        <div class="landing-table__row">
+          <span class="landing-table__index">{{ index + 1 }}</span>
+          <span class="landing-table__owner">
+            <span class="landing-table__avatar">{{ summary.ownerName.charAt(0) }}</span>
+            <span class="landing-table__owner-name">{{ summary.ownerName }}</span>
+          </span>
+          <span class="landing-table__module">{{ summary.moduleName }}</span>
+          <span class="landing-table__count">{{ summary.endpointCount }}</span>
         </div>
-        <span class="bv-status-pill">Live frontend workspace</span>
-      </div>
-
-      <div class="mt-8 grid gap-px overflow-hidden rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-border)] md:grid-cols-3">
-        <article class="bg-white p-5">
-          <p class="bv-stat-label">Members</p>
-          <p class="mt-3 text-4xl font-black text-[var(--bv-text)]">{{ stats.teams }}</p>
-          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Module owners available in the workspace</p>
-        </article>
-        <article class="bg-white p-5">
-          <p class="bv-stat-label">Modules</p>
-          <p class="mt-3 text-4xl font-black text-[var(--bv-accent)]">{{ stats.modules }}</p>
-          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Major API areas mapped into the UI</p>
-        </article>
-        <article class="bg-white p-5">
-          <p class="bv-stat-label">Endpoints</p>
-          <p class="mt-3 text-4xl font-black text-[var(--bv-secondary)]">{{ stats.endpoints }}</p>
-          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Live forms with preview, table, and JSON responses</p>
-        </article>
-      </div>
-
-      <div class="mt-8 overflow-hidden rounded-[1.25rem] border border-[color:var(--bv-border)]">
-        <div class="grid grid-cols-[0.6fr_1.4fr_2fr_1fr] bg-[var(--bv-surface-muted)] px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">
-          <span>#</span>
-          <span>Owner</span>
-          <span>Module</span>
-          <span>Endpoints</span>
-        </div>
-        @for (module of modules; track module.id; let index = $index) {
-          <div class="grid grid-cols-[0.6fr_1.4fr_2fr_1fr] items-center border-t border-[color:var(--bv-border)] bg-white px-5 py-4 text-sm text-[var(--bv-text-soft)]">
-            <span class="font-mono text-xs">{{ index + 1 }}</span>
-            <span class="font-bold text-[var(--bv-text)]">{{ module.owner.name }}</span>
-            <span>{{ module.name }}</span>
-            <span class="font-black text-[var(--bv-text)]">{{ module.endpoints.length }}</span>
-          </div>
-        }
-      </div>
-    </section>
-
-    <section class="mt-12">
-      <div class="flex items-end justify-between gap-4">
-        <div>
-          <p class="bv-stat-label">Step One</p>
-          <h2 class="bv-section-title mt-3">Meet the owners</h2>
-        </div>
-        <a routerLink="/modules" class="text-sm font-black text-[var(--bv-accent)] transition hover:opacity-80">
-          Continue to modules →
-        </a>
-      </div>
-
-      <div class="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-        @for (teammate of teammates; track teammate.id) {
-          <app-teammate-card [teammate]="teammate" />
-        }
-      </div>
-    </section>
-  </div>
+      }
+    </div>
+  </section>
 </section>

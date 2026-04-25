@@ -9,14 +9,12 @@
         </span>
       </a>
 
-      @if (currentUser(); as user) {
-        <div class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-semibold text-[var(--bv-text-soft)] lg:block">
-          Signed in as <span class="font-black text-[var(--bv-text)]">{{ user.firstName }}</span>
-        </div>
-      }
-
       <div class="flex items-center gap-3">
-        @if (currentUser()) {
+        @if (currentUser(); as user) {
+          <div class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-semibold text-[var(--bv-text-soft)] lg:block">
+            Signed in as <span class="font-black text-[var(--bv-text)]">{{ user.firstName }}</span>
+          </div>
+
           <button
             type="button"
             (click)="logout()"
@@ -24,6 +22,34 @@
           >
             Logout
           </button>
+        } @else {
+          <div class="hidden items-center gap-9 lg:flex">
+            <a
+              routerLink="/modules"
+              class="text-[1.05rem] font-medium text-[var(--bv-text-soft)] transition hover:text-[var(--bv-primary)]"
+            >
+              Modules
+            </a>
+            <a
+              routerLink="/"
+              fragment="coverage"
+              class="text-[1.05rem] font-medium text-[var(--bv-text-soft)] transition hover:text-[var(--bv-primary)]"
+            >
+              Owners
+            </a>
+            <a
+              routerLink="/modules"
+              class="text-[1.05rem] font-medium text-[var(--bv-text-soft)] transition hover:text-[var(--bv-primary)]"
+            >
+              Docs
+            </a>
+            <a
+              routerLink="/modules"
+              class="inline-flex items-center rounded-full px-6 py-3 text-[1.05rem] font-semibold text-white shadow-[0_10px_24px_rgba(47,93,98,0.22)] transition hover:-translate-y-0.5 hover:brightness-105 bv-button-primary"
+            >
+              Sign In
+            </a>
+          </div>
         }
 
         <button
@@ -54,6 +80,21 @@
         >
           Modules
         </a>
+        <a
+          routerLink="/"
+          fragment="coverage"
+          (click)="closeMenu()"
+          class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+        >
+          Owners
+        </a>
+        <a
+          routerLink="/modules"
+          (click)="closeMenu()"
+          class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+        >
+          Docs
+        </a>
 
         @if (currentUser()) {
           <button
@@ -63,6 +104,14 @@
           >
             Logout
           </button>
+        } @else {
+          <a
+            routerLink="/modules"
+            (click)="closeMenu()"
+            class="block w-full rounded-[1rem] px-4 py-3 text-center text-sm font-black text-white bv-button-primary"
+          >
+            Sign In
+          </a>
         }
       </div>
     </div>

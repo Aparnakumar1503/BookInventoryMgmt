@@ -17,7 +17,7 @@ export class ModuleHomeComponent {
   readonly module = computed(() => this.moduleService.getModule(this.moduleId()));
   readonly endpointGroups = computed<EndpointGroup[]>(() => {
     const selectedModule = this.module();
-    return selectedModule ? groupEndpoints(selectedModule.endpoints) : [];
+    return selectedModule ? groupEndpoints(selectedModule.endpoints, selectedModule.id) : [];
   });
 
   methodClass(method: string): string {

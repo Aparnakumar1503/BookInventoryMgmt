@@ -5,8 +5,8 @@ export const TEAMMATES: readonly Teammate[] = [
     id: 'aparna',
     name: 'Aparna',
     role: 'Access and Author API Owner',
-    moduleId: 'users',
-    moduleName: 'User Access and Author Management',
+    moduleId: 'users-authors',
+    moduleName: 'User and Author Management',
     modules: ['Authentication', 'Users', 'Roles', 'Authors', 'Book-Author Mapping'],
     username: 'Aparna',
     email: 'aparna@bookinventory.dev'

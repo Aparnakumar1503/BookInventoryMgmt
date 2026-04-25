@@ -6,7 +6,7 @@
 .module-workspace__frame {
   display: grid;
   min-height: calc(100vh - 8.5rem);
-  grid-template-columns: 18rem minmax(0, 1fr) minmax(18rem, 0.92fr);
+  grid-template-columns: 28rem minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--bv-border);
   border-radius: 2rem;
@@ -39,10 +39,11 @@
 .module-workspace__logo {
   color: var(--bv-text);
   font-family: var(--bv-display);
-  font-size: 2rem;
+  font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.04em;
   text-decoration: none;
+  word-break: keep-all;
 }
 
 .module-workspace__logo span {
@@ -157,14 +158,6 @@
   background: rgba(255, 255, 255, 0.78);
 }
 
-.module-workspace__panel + .module-workspace__panel {
-  border-left: 1px solid var(--bv-border);
-}
-
-.module-workspace__panel--soft {
-  background: rgba(247, 243, 235, 0.72);
-}
-
 .module-workspace__panel-header {
   padding: 1.75rem 2rem 1.1rem;
   border-bottom: 1px solid var(--bv-border);
@@ -185,10 +178,6 @@
   gap: 1rem;
   text-align: center;
   animation: moduleFloat 6s ease-in-out infinite;
-}
-
-.module-workspace__message-card--compact {
-  max-width: 20rem;
 }
 
 .module-workspace__message-icon {
@@ -244,11 +233,7 @@
 
 @media (max-width: 1180px) {
   .module-workspace__frame {
-    grid-template-columns: 18rem minmax(0, 1fr);
-  }
-
-  .module-workspace__panel--soft {
-    display: none;
+    grid-template-columns: 28rem minmax(0, 1fr);
   }
 }
 

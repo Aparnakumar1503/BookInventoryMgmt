@@ -1,15 +1,16 @@
 import { EndpointConfig } from '../models/endpoint.model';
+import { ModuleConfig } from '../models/module.model';
 
 export interface EndpointGroup {
   readonly title: string;
   readonly endpoints: readonly EndpointConfig[];
 }
 
-export function groupEndpoints(endpoints: readonly EndpointConfig[]): EndpointGroup[] {
+export function groupEndpoints(endpoints: readonly EndpointConfig[], moduleId?: string): EndpointGroup[] {
   const groups = new Map<string, EndpointConfig[]>();
 
   endpoints.forEach((endpoint) => {
-    const title = resolveEndpointGroupTitle(endpoint.path);
+    const title = resolveEndpointGroupTitle(endpoint.path, moduleId);
     const collection = groups.get(title) ?? [];
     collection.push(endpoint);
     groups.set(title, collection);
@@ -21,7 +22,12 @@ export function groupEndpoints(endpoints: readonly EndpointConfig[]): EndpointGr
   }));
 }
 
-function resolveEndpointGroupTitle(path: string): string {
+function resolveEndpointGroupTitle(path: string, moduleId?: string): string {
+  if (moduleId === 'users-authors') {
+    if (path.includes('/auth/') || path.includes('/users') || path.includes('/roles')) return 'UserMgmt API';
+    if (path.includes('/authors') || (path.includes('/books') && path.includes('/authors'))) return 'AuthorMgmt API';
+  }
+
   if (path.includes('/books') && path.includes('/authors')) return 'Book-Author Mapping';
   if (path.includes('/books') && path.includes('/reviews')) return 'Review APIs';
   if (path.includes('/books')) return 'Book APIs';
