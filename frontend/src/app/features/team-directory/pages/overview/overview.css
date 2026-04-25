@@ -1,0 +1,62 @@
+.ov-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(47, 93, 98, 0.04), transparent 24%),
+    radial-gradient(circle at 100% 10%, rgba(138, 106, 67, 0.05), transparent 20%);
+  pointer-events: none;
+}
+
+.ov-hero {
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(47, 93, 98, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 241, 232, 0.9));
+  box-shadow: 0 20px 48px rgba(25, 35, 49, 0.08);
+}
+
+.ov-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(111, 121, 136, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 121, 136, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 92%);
+  pointer-events: none;
+}
+
+.ov-stat {
+  border: 1px solid rgba(52, 62, 80, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 22px rgba(23, 33, 48, 0.05);
+}
+
+.ov-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--bv-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.ov-report {
+  border: 1px solid var(--bv-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(252, 249, 243, 0.9));
+  box-shadow: 0 14px 32px rgba(23, 33, 48, 0.06);
+}
+
+.ov-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--bv-primary-soft), #fff);
+  color: var(--bv-primary);
+  font-size: 0.85rem;
+  font-weight: 800;
+}

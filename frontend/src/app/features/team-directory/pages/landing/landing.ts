@@ -1,16 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ModuleService } from '../../../../core/services/module.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { TeammateCardComponent } from '../../../../shared/ui/teammate-card/teammate-card';
 
 @Component({
   selector: 'app-landing',
-  imports: [ReactiveFormsModule, TeammateCardComponent],
-  templateUrl: './landing.html'
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './landing.html',
+  styleUrl: './landing.css'
 })
 export class LandingComponent {
   private readonly moduleService = inject(ModuleService);

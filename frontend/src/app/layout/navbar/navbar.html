@@ -16,9 +16,21 @@
       }
 
       <div class="flex items-center gap-3">
-        <div class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-black text-[var(--bv-text-soft)] xl:inline-flex">
-          {{ currentLabel() }}
-        </div>
+        @if (!currentUser()) {
+          <a
+            routerLink="/"
+            class="hidden rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2 text-sm font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)] md:inline-flex"
+          >
+            Overview
+          </a>
+
+          <a
+            routerLink="/signin"
+            class="hidden rounded-full px-4 py-2 text-sm font-black text-white transition hover:brightness-105 md:inline-flex bv-button-primary"
+          >
+            Sign In
+          </a>
+        }
 
         @if (currentUser()) {
           <button
@@ -32,18 +44,18 @@
 
         <button
           type="button"
-          class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--bv-border)] bg-white/80 text-[var(--bv-text)] lg:hidden"
+          class="inline-flex h-11 min-w-11 items-center justify-center rounded-full border border-[color:var(--bv-border)] bg-white/80 px-3 text-[var(--bv-text)] lg:hidden"
           (click)="toggleMenu()"
           [attr.aria-expanded]="menuOpen()"
           aria-label="Toggle navigation"
         >
-          <span class="text-lg font-black">{{ menuOpen() ? '×' : '≡' }}</span>
+          <span class="text-[10px] font-black uppercase tracking-[0.18em]">{{ menuOpen() ? 'Close' : 'Menu' }}</span>
         </button>
       </div>
     </div>
 
     @if (currentUser()) {
-      <div class="mt-4 hidden flex-wrap items-center justify-between gap-3 lg:flex">
+      <div class="mt-4 hidden items-center justify-between gap-3 lg:flex">
         <div class="flex flex-wrap gap-2">
           @for (module of accessibleModules(); track module.id) {
             <a
@@ -55,23 +67,10 @@
             </a>
           }
         </div>
-
-        <div class="flex flex-wrap gap-2">
-          @if (recentResultAvailable()) {
-            <a routerLink="/result" class="rounded-full border border-[color:var(--bv-border)] bg-white/82 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]">
-              Last Result
-            </a>
-          }
-          @if (currentModuleId(); as moduleId) {
-            <a [routerLink]="['/member', moduleId]" class="rounded-full border border-[color:var(--bv-border)] bg-white/82 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]">
-              Current Workspace
-            </a>
-          }
-        </div>
       </div>
     }
 
-    <div class="overflow-hidden transition-all duration-200 lg:hidden" [class.max-h-0]="!menuOpen()" [class.max-h-[28rem]]="menuOpen()">
+    <div class="overflow-hidden transition-all duration-200 lg:hidden" [class.max-h-0]="!menuOpen()" [class.max-h-[32rem]]="menuOpen()">
       <div class="mt-4 space-y-3 rounded-[1.4rem] border border-[color:var(--bv-border)] bg-white/88 p-4 shadow-xl shadow-slate-900/8">
         @if (currentUser(); as user) {
           <div class="rounded-[1rem] bg-[var(--bv-surface-muted)] px-4 py-3">
@@ -80,26 +79,21 @@
           </div>
         }
 
-        <div class="rounded-[1rem] bg-[var(--bv-surface-muted)] px-4 py-3">
-          <p class="text-[0.7rem] font-black uppercase tracking-[0.24em] text-[var(--bv-text-muted)]">Current View</p>
-          <p class="mt-1 text-sm font-black text-[var(--bv-text)]">{{ currentLabel() }}</p>
-        </div>
-
         <a
           routerLink="/"
           (click)="closeMenu()"
           class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
         >
-          Application Home
+          Overview
         </a>
 
-        @if (recentResultAvailable()) {
+        @if (!currentUser()) {
           <a
-            routerLink="/result"
+            routerLink="/signin"
             (click)="closeMenu()"
             class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
           >
-            Last Result
+            Sign In
           </a>
         }
 

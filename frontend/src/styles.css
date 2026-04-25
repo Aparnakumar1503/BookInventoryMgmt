@@ -225,6 +225,15 @@ body::-webkit-scrollbar-track,
   box-shadow: 0 12px 30px rgba(23, 33, 48, 0.06);
 }
 
+.bv-report-metric {
+  min-height: 9rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.bv-report-metric:not(:last-child) {
+  border-right: 1px solid var(--bv-border);
+}
+
 .bv-shelf-panel {
   border: 1px solid rgba(52, 62, 80, 0.08);
   background:

@@ -1,41 +1,45 @@
-<section class="bv-paper-shell relative overflow-hidden">
-  <div class="bv-container px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-    <div class="bv-landing-hero relative overflow-hidden rounded-[2rem] p-6 sm:p-7 lg:p-8">
-      <div class="space-y-6">
-        <div class="bv-page-header relative z-10">
-          <span class="bv-kicker">Book Inventory Team</span>
-          <h1 class="bv-display max-w-4xl text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">
-            Book Inventory Management System
-          </h1>
-          <p class="bv-page-note max-w-3xl text-base sm:text-lg">
-            Select a team member, sign in with the matching account, and open the protected module workspace.
-          </p>
-        </div>
+<section class="signin-shell">
+  <div class="bv-container px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+    <div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(24rem,1fr)] lg:items-start">
+      <section class="signin-side rounded-[1.8rem] px-6 py-7 sm:px-7 sm:py-8">
+        <span class="bv-kicker">Secure Access</span>
+        <h1 class="bv-display mt-5 text-4xl leading-none text-[var(--bv-text)] sm:text-5xl">
+          Sign in
+        </h1>
+        <p class="bv-page-note mt-4 max-w-md text-base">
+          Enter a valid owner account to continue into the protected workspace.
+        </p>
 
-        <section class="bv-panel rounded-[1.75rem] p-5 sm:p-6">
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <p class="bv-stat-label">Secure Access</p>
-              <h2 class="bv-display mt-2 text-3xl leading-none text-[var(--bv-text)] sm:text-4xl">Sign in</h2>
-              <p class="bv-page-note mt-3 max-w-2xl">
-                Use the matching owner account to access the protected module workspace.
-              </p>
-            </div>
+        <a
+          routerLink="/"
+          class="mt-6 inline-flex rounded-full border border-[color:var(--bv-border)] bg-white/80 px-4 py-2.5 text-sm font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+        >
+          Back to Overview
+        </a>
+      </section>
 
-            <div class="flex flex-wrap gap-2 lg:max-w-[22rem] lg:justify-end">
-              @for (teammate of teammates; track teammate.id) {
-                <button
-                  type="button"
-                  (click)="fillDemo(teammate.username)"
-                  class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
-                >
-                  {{ teammate.username }}
-                </button>
-              }
-            </div>
+      <section class="signin-panel rounded-[1.8rem] p-5 sm:p-6">
+        <div class="flex flex-col gap-4">
+          <div>
+            <p class="bv-stat-label">Demo Accounts</p>
+            <p class="mt-2 text-sm font-semibold leading-6 text-[var(--bv-text-soft)]">
+              Click any account to auto-fill the form. The demo password remains <span class="font-black text-[var(--bv-text)]">password</span>.
+            </p>
           </div>
 
-          <form class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_12rem]" [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="flex flex-wrap gap-2">
+            @for (teammate of teammates; track teammate.id) {
+              <button
+                type="button"
+                (click)="fillDemo(teammate.username)"
+                class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
+              >
+                {{ teammate.username }}
+              </button>
+            }
+          </div>
+
+          <form class="grid gap-4" [formGroup]="loginForm" (ngSubmit)="login()">
             <label class="block">
               <span class="text-sm font-black text-[var(--bv-text)]">Username</span>
               <input formControlName="username" type="text" class="bv-field mt-2" placeholder="Aparna" />
@@ -46,36 +50,16 @@
               <input formControlName="password" type="password" class="bv-field mt-2" placeholder="password" />
             </label>
 
-            <div class="flex items-end">
-              <button
-                type="submit"
-                [disabled]="isSubmitting()"
-                class="bv-button-primary w-full rounded-[1.1rem] px-5 py-3.5 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
-              </button>
-            </div>
+            <button
+              type="submit"
+              [disabled]="isSubmitting()"
+              class="bv-button-primary mt-2 w-full rounded-[1.1rem] px-5 py-3.5 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
+            </button>
           </form>
-        </section>
-
-        <section class="bv-shelf-panel rounded-[1.7rem] p-5 sm:p-6">
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p class="bv-stat-label">Team Directory</p>
-              <h2 class="bv-slim-heading mt-2">Members and Module Ownership</h2>
-            </div>
-            <p class="max-w-lg text-sm font-semibold leading-6 text-[var(--bv-text-soft)]">
-              Each member card shows the assigned module and module coverage.
-            </p>
-          </div>
-
-          <div class="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
-            @for (teammate of teammates; track teammate.id) {
-              <app-teammate-card [teammate]="teammate" />
-            }
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   </div>
 </section>

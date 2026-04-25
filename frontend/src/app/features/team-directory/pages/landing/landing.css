@@ -1,0 +1,25 @@
+.signin-shell {
+  position: relative;
+}
+
+.signin-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(47, 93, 98, 0.04), transparent 22%),
+    radial-gradient(circle at 92% 0%, rgba(138, 106, 67, 0.05), transparent 18%);
+  pointer-events: none;
+}
+
+.signin-side {
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(247, 241, 232, 0.88));
+  box-shadow: 0 16px 38px rgba(25, 35, 49, 0.06);
+}
+
+.signin-panel {
+  border: 1px solid var(--bv-border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(252, 249, 243, 0.92));
+  box-shadow: 0 16px 34px rgba(23, 33, 48, 0.06);
+}
