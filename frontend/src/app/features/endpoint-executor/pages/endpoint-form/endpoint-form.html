@@ -26,13 +26,27 @@
                   @for (field of pathFields(); track field.key) {
                     <label class="block">
                       <span class="text-sm font-black text-[var(--bv-text)]">{{ field.label }}</span>
-                      <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" />
+                      <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.min]="field.type === 'number' && field.min !== undefined ? field.min : null" [attr.max]="field.type === 'number' && field.max !== undefined ? field.max : null" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null" [attr.pattern]="field.pattern ?? null" (input)="onPathParamInput()" (blur)="maybeLoadExistingRecord()" />
                       @if (hasError('pathParams', field.key)) {
-                        <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">Required field</span>
+                        <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">{{ getErrorMessage('pathParams', field.key) }}</span>
                       }
                     </label>
                   }
                 </div>
+                @if (supportsPrefill()) {
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      class="bv-button-secondary inline-flex items-center rounded-full px-4 py-2 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+                      [disabled]="!canLoadExistingRecord() || isPrefillLoading()"
+                      (click)="loadExistingRecord()">
+                      {{ isPrefillLoading() ? 'Loading...' : 'Load Current Data' }}
+                    </button>
+                    @if (prefillStatus()) {
+                      <span class="text-sm font-semibold" [class.text-[var(--bv-danger-text)]]="isRecordLocked()" [class.text-[var(--bv-text-soft)]]="!isRecordLocked()">{{ prefillStatus() }}</span>
+                    }
+                  </div>
+                }
               </div>
             }
 
@@ -56,7 +70,10 @@
                           }
                         </select>
                       } @else {
-                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" />
+                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.min]="field.type === 'number' && field.min !== undefined ? field.min : null" [attr.max]="field.type === 'number' && field.max !== undefined ? field.max : null" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null" [attr.pattern]="field.pattern ?? null" />
+                      }
+                      @if (hasError('queryParams', field.key)) {
+                        <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">{{ getErrorMessage('queryParams', field.key) }}</span>
                       }
                     </label>
                   }
@@ -72,7 +89,7 @@
                     <label class="block">
                       <span class="text-sm font-black text-[var(--bv-text)]">{{ field.label }}</span>
                       @if (field.type === 'textarea') {
-                        <textarea class="bv-textarea mt-2" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key"></textarea>
+                        <textarea class="bv-textarea mt-2" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null"></textarea>
                       } @else if (field.type === 'boolean') {
                         <span class="mt-2 flex min-h-12 items-center gap-3 rounded-[1rem] border border-[color:var(--bv-border)] bg-white px-4 py-3">
                           <input class="h-5 w-5 accent-[var(--bv-primary)]" type="checkbox" [formControlName]="field.key" />
@@ -86,10 +103,10 @@
                           }
                         </select>
                       } @else {
-                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" />
+                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.min]="field.type === 'number' && field.min !== undefined ? field.min : null" [attr.max]="field.type === 'number' && field.max !== undefined ? field.max : null" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null" [attr.pattern]="field.pattern ?? null" />
                       }
                       @if (hasError('body', field.key)) {
-                        <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">Required field</span>
+                        <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">{{ getErrorMessage('body', field.key) }}</span>
                       }
                     </label>
                   }
@@ -98,7 +115,7 @@
             }
 
             <div class="flex flex-wrap items-center gap-4 border-t border-[color:var(--bv-border)] pt-6">
-              <button type="submit" class="bv-button-primary rounded-[1rem] px-6 py-3 text-sm font-black text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60" [disabled]="isLoading()">
+              <button type="submit" class="bv-button-primary rounded-[1rem] px-6 py-3 text-sm font-black text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60" [disabled]="isLoading() || isPrefillLoading() || form.invalid || isRecordLocked()">
                 Submit Request
               </button>
               @if (isLoading()) {
@@ -106,6 +123,103 @@
               }
             </div>
           </form>
+
+          @if (response(); as apiResponse) {
+            <div class="mt-8 space-y-3 border-t border-[color:var(--bv-border)] pt-6">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p class="text-sm font-black uppercase tracking-[0.16em] text-[var(--bv-text-muted)]">Latest API Response</p>
+                  @if (responseReason()) {
+                    <p class="mt-2 text-sm font-semibold text-[var(--bv-text-soft)]">Reason: {{ responseReason() }}</p>
+                  }
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                  <span class="rounded-full px-3 py-1 text-xs font-black" [class.bv-method-post]="apiResponse.ok" [class.bv-method-delete]="!apiResponse.ok">
+                    {{ apiResponse.status || 'ERR' }}
+                  </span>
+                  <div class="flex flex-wrap gap-2 rounded-[1rem] border border-[color:var(--bv-border)] bg-white p-2">
+                    <button type="button" class="bv-tab-button rounded-lg px-4 py-2 text-sm font-black transition" [class.bv-tab-button-active]="viewMode() === 'preview'" (click)="setViewMode('preview')">Preview</button>
+                    <button type="button" class="bv-tab-button rounded-lg px-4 py-2 text-sm font-black transition" [class.bv-tab-button-active]="viewMode() === 'table'" (click)="setViewMode('table')">Table</button>
+                    <button type="button" class="bv-tab-button rounded-lg px-4 py-2 text-sm font-black transition" [class.bv-tab-button-active]="viewMode() === 'json'" (click)="setViewMode('json')">JSON</button>
+                  </div>
+                </div>
+              </div>
+
+              @if (viewMode() === 'preview') {
+                @if (authorPreviewItems().length) {
+                  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    @for (author of authorPreviewItems(); track $index) {
+                      <article class="rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-surface-muted)] p-5">
+                        @if (author.photo) {
+                          <img [src]="author.photo" [alt]="author.fullName" class="h-48 w-full rounded-[1rem] object-cover" />
+                        } @else {
+                          <div class="flex h-48 w-full items-center justify-center rounded-[1rem] bg-[var(--bv-primary-strong)] text-3xl font-black text-white">
+                            {{ previewInitials(author.fullName) }}
+                          </div>
+                        }
+                        <p class="mt-4 text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Author #{{ author.authorId }}</p>
+                        <h3 class="mt-2 text-lg font-black text-[var(--bv-text)]">{{ author.fullName || 'Unnamed author' }}</h3>
+                        <div class="mt-3 space-y-1 text-sm font-semibold text-[var(--bv-text-soft)]">
+                          <p>First Name: <span class="font-black text-[var(--bv-text)]">{{ author.firstName || '-' }}</span></p>
+                          <p>Last Name: <span class="font-black text-[var(--bv-text)]">{{ author.lastName || '-' }}</span></p>
+                        </div>
+                      </article>
+                    }
+                  </div>
+                } @else if (tableRows().length) {
+                  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    @for (row of tableRows(); track $index) {
+                      <article class="rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-surface-muted)] p-5">
+                        @for (column of tableColumns(); track trackByColumn($index, column)) {
+                          <div class="flex items-start justify-between gap-3 border-b border-[color:var(--bv-border)] py-2 last:border-b-0">
+                            <span class="text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text-muted)]">{{ formatColumnLabel(column) }}</span>
+                            <span class="max-w-[60%] break-words text-right text-sm font-semibold text-[var(--bv-text)]">{{ renderCellValue(row, column) }}</span>
+                          </div>
+                        }
+                      </article>
+                    }
+                  </div>
+                } @else {
+                  <div class="rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-surface-muted)] p-5 text-sm font-semibold text-[var(--bv-text-soft)]">
+                    No preview data is available for this response.
+                  </div>
+                }
+              }
+
+              @if (viewMode() === 'table') {
+                <div class="overflow-x-auto rounded-[1.25rem] border border-[color:var(--bv-border)] bg-white">
+                  @if (tableRows().length) {
+                    <table class="min-w-full divide-y divide-slate-200">
+                      <thead class="bg-[var(--bv-primary-strong)] text-left text-xs font-black uppercase tracking-[0.2em] text-white">
+                        <tr>
+                          @for (column of tableColumns(); track trackByColumn($index, column)) {
+                            <th class="px-5 py-4">{{ formatColumnLabel(column) }}</th>
+                          }
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100 bg-white">
+                        @for (row of tableRows(); track $index) {
+                          <tr>
+                            @for (column of tableColumns(); track trackByColumn($index, column)) {
+                              <td class="max-w-xs px-5 py-4 text-sm font-medium text-[var(--bv-text-soft)]">
+                                <span class="line-clamp-4 break-words">{{ renderCellValue(row, column) }}</span>
+                              </td>
+                            }
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  } @else {
+                    <div class="px-6 py-12 text-center text-sm font-semibold text-[var(--bv-text-soft)]">No tabular data is available for this response.</div>
+                  }
+                </div>
+              }
+
+              @if (viewMode() === 'json') {
+                <app-response-viewer [response]="apiResponse" />
+              }
+            </div>
+          }
         </section>
       </div>
     </div>

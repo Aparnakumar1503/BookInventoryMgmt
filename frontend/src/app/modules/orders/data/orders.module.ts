@@ -9,45 +9,64 @@ export const ORDERS_MODULE: ModuleConfig = {
   owner: TEAMMATES[3],
   endpoints: [
     {
+      id: 'list-cart',
+      name: 'List All Cart Items',
+      method: 'GET',
+      path: '/api/v1/cart',
+      description: 'Fetch all cart items across users.'
+    },
+    {
       id: 'get-cart',
       name: 'Get Cart',
       method: 'GET',
       path: '/api/v1/cart/{userId}',
       description: 'Fetch the shopping cart for a user.',
-      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
+      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' }]
     },
     {
       id: 'add-cart-item',
       name: 'Add Cart Item',
       method: 'POST',
-      path: '/api/v1/cart/{userId}/items/{isbn}',
+      path: '/api/v1/cart',
       description: 'Add one book to a user cart.',
-      pathParams: [
-        { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' },
-        { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }
-      ]
+      body: {
+        title: 'Cart Payload',
+        fields: [
+          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' },
+          { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }
+        ]
+      }
     },
     {
       id: 'delete-cart-item',
       name: 'Delete Cart Item',
       method: 'DELETE',
-      path: '/api/v1/cart/{userId}/items/{isbn}',
+      path: '/api/v1/cart/{userId}/{isbn}',
       description: 'Delete one book from a user cart.',
       pathParams: [
-        { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' },
-        { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }
+        { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' },
+        { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }
       ]
     },
     {
+      id: 'list-orders',
+      name: 'List All Orders',
+      method: 'GET',
+      path: '/api/v1/orders',
+      description: 'Fetch all purchase records.'
+    },
+    {
       id: 'checkout-order',
-      name: 'Checkout Order',
+      name: 'Create Purchase',
       method: 'POST',
-      path: '/api/v1/orders/checkout/{userId}',
-      description: 'Checkout a selected inventory copy for a user.',
-      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }],
+      path: '/api/v1/orders',
+      description: 'Create a purchase record for a user and inventory copy.',
       body: {
-        title: 'Checkout Payload',
-        fields: [{ key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1' }]
+        title: 'Purchase Payload',
+        fields: [
+          { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' },
+          { key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1', min: 1, minMessage: 'Inventory ID must be greater than 0.' }
+        ]
       }
     },
     {
@@ -56,7 +75,18 @@ export const ORDERS_MODULE: ModuleConfig = {
       method: 'GET',
       path: '/api/v1/orders/user/{userId}',
       description: 'Fetch all purchases for a user.',
-      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001' }]
+      pathParams: [{ key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' }]
+    },
+    {
+      id: 'delete-order',
+      name: 'Delete Order',
+      method: 'DELETE',
+      path: '/api/v1/orders/{userId}/{inventoryId}',
+      description: 'Delete one purchase record by user and inventory ID.',
+      pathParams: [
+        { key: 'userId', label: 'User ID', type: 'number', required: true, placeholder: '1001', min: 1, minMessage: 'User ID must be greater than 0.' },
+        { key: 'inventoryId', label: 'Inventory ID', type: 'number', required: true, placeholder: '1000000', min: 1, minMessage: 'Inventory ID must be greater than 0.' }
+      ]
     }
   ]
 };

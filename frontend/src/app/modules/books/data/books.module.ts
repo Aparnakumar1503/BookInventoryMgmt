@@ -15,8 +15,10 @@ export const BOOKS_MODULE: ModuleConfig = {
       path: '/api/v1/books',
       description: 'Fetch all books or filter by category and publisher.',
       queryParams: [
-        { key: 'categoryId', label: 'Category ID', type: 'number', placeholder: '3' },
-        { key: 'publisherId', label: 'Publisher ID', type: 'number', placeholder: '7' }
+        { key: 'categoryId', label: 'Category ID', type: 'number', placeholder: '3', min: 1, minMessage: 'Category ID must be greater than 0.' },
+        { key: 'publisherId', label: 'Publisher ID', type: 'number', placeholder: '7', min: 1, minMessage: 'Publisher ID must be greater than 0.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
     {
@@ -25,7 +27,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'GET',
       path: '/api/v1/books/{isbn}',
       description: 'Fetch one book by ISBN.',
-      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
+      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }]
     },
     {
       id: 'create-book',
@@ -36,12 +38,12 @@ export const BOOKS_MODULE: ModuleConfig = {
       body: {
         title: 'Book Payload',
         fields: [
-          { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' },
-          { key: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Master Java' },
-          { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Book description' },
-          { key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3' },
-          { key: 'edition', label: 'Edition', type: 'text', placeholder: '1' },
-          { key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '7' }
+          { key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 },
+          { key: 'title', label: 'Title', type: 'text', required: true, placeholder: 'Master Java', minLength: 2, maxLength: 100 },
+          { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Book description', maxLength: 500 },
+          { key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3', min: 1, minMessage: 'Category ID must be greater than 0.' },
+          { key: 'edition', label: 'Edition', type: 'text', required: true, placeholder: '1', minLength: 1, maxLength: 20 },
+          { key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '7', min: 1, minMessage: 'Publisher ID must be greater than 0.' }
         ]
       }
     },
@@ -51,15 +53,18 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'PUT',
       path: '/api/v1/books/{isbn}',
       description: 'Update an existing book.',
-      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }],
+      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }],
+      prefill: {
+        endpointId: 'get-book'
+      },
       body: {
         title: 'Updated Book Payload',
         fields: [
-          { key: 'title', label: 'Title', type: 'text', required: true },
-          { key: 'description', label: 'Description', type: 'textarea' },
-          { key: 'categoryId', label: 'Category ID', type: 'number', required: true },
-          { key: 'edition', label: 'Edition', type: 'text' },
-          { key: 'publisherId', label: 'Publisher ID', type: 'number', required: true }
+          { key: 'title', label: 'Title', type: 'text', required: true, minLength: 2, maxLength: 100 },
+          { key: 'description', label: 'Description', type: 'textarea', maxLength: 500 },
+          { key: 'categoryId', label: 'Category ID', type: 'number', required: true, min: 1, minMessage: 'Category ID must be greater than 0.' },
+          { key: 'edition', label: 'Edition', type: 'text', required: true, minLength: 1, maxLength: 20 },
+          { key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, min: 1, minMessage: 'Publisher ID must be greater than 0.' }
         ]
       }
     },
@@ -69,14 +74,18 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'DELETE',
       path: '/api/v1/books/{isbn}',
       description: 'Delete a book by ISBN.',
-      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4' }]
+      pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }]
     },
     {
       id: 'list-categories',
       name: 'List Categories',
       method: 'GET',
       path: '/api/v1/categories',
-      description: 'Fetch all categories.'
+      description: 'Fetch all categories.',
+      queryParams: [
+        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
+      ]
     },
     {
       id: 'get-category',
@@ -84,14 +93,18 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'GET',
       path: '/api/v1/categories/{categoryId}',
       description: 'Fetch a category by ID.',
-      pathParams: [{ key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3' }]
+      pathParams: [{ key: 'categoryId', label: 'Category ID', type: 'number', required: true, placeholder: '3', min: 1, minMessage: 'Category ID must be greater than 0.' }]
     },
     {
       id: 'list-publishers',
       name: 'List Publishers',
       method: 'GET',
       path: '/api/v1/publishers',
-      description: 'Fetch all publishers.'
+      description: 'Fetch all publishers.',
+      queryParams: [
+        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
+      ]
     },
     {
       id: 'get-publisher',
@@ -99,7 +112,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'GET',
       path: '/api/v1/publishers/{publisherId}',
       description: 'Fetch one publisher by ID.',
-      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }]
+      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1', min: 1, minMessage: 'Publisher ID must be greater than 0.' }]
     },
     {
       id: 'create-publisher',
@@ -110,9 +123,9 @@ export const BOOKS_MODULE: ModuleConfig = {
       body: {
         title: 'Publisher Payload',
         fields: [
-          { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'New Press' },
-          { key: 'city', label: 'City', type: 'text', placeholder: 'Rochester' },
-          { key: 'stateCode', label: 'State Code', type: 'text', placeholder: 'NY' }
+          { key: 'name', label: 'Name', type: 'text', required: true, placeholder: 'New Press', minLength: 2, maxLength: 100 },
+          { key: 'city', label: 'City', type: 'text', placeholder: 'Rochester', maxLength: 100 },
+          { key: 'stateCode', label: 'State Code', type: 'text', required: true, placeholder: 'NY', minLength: 2, maxLength: 10 }
         ]
       }
     },
@@ -122,13 +135,16 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'PUT',
       path: '/api/v1/publishers/{publisherId}',
       description: 'Update a publisher.',
-      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }],
+      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1', min: 1, minMessage: 'Publisher ID must be greater than 0.' }],
+      prefill: {
+        endpointId: 'get-publisher'
+      },
       body: {
         title: 'Updated Publisher Payload',
         fields: [
-          { key: 'name', label: 'Name', type: 'text', required: true },
-          { key: 'city', label: 'City', type: 'text' },
-          { key: 'stateCode', label: 'State Code', type: 'text' }
+          { key: 'name', label: 'Name', type: 'text', required: true, minLength: 2, maxLength: 100 },
+          { key: 'city', label: 'City', type: 'text', maxLength: 100 },
+          { key: 'stateCode', label: 'State Code', type: 'text', required: true, minLength: 2, maxLength: 10 }
         ]
       }
     },
@@ -138,14 +154,18 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'DELETE',
       path: '/api/v1/publishers/{publisherId}',
       description: 'Delete a publisher.',
-      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1' }]
+      pathParams: [{ key: 'publisherId', label: 'Publisher ID', type: 'number', required: true, placeholder: '1', min: 1, minMessage: 'Publisher ID must be greater than 0.' }]
     },
     {
       id: 'list-states',
       name: 'List States',
       method: 'GET',
       path: '/api/v1/states',
-      description: 'Fetch all state reference values.'
+      description: 'Fetch all state reference values.',
+      queryParams: [
+        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
+      ]
     },
     {
       id: 'get-state',
@@ -153,7 +173,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       method: 'GET',
       path: '/api/v1/states/{code}',
       description: 'Fetch a state by code.',
-      pathParams: [{ key: 'code', label: 'State Code', type: 'text', required: true, placeholder: 'NY' }]
+      pathParams: [{ key: 'code', label: 'State Code', type: 'text', required: true, placeholder: 'NY', minLength: 2, maxLength: 10 }]
     }
   ]
 };

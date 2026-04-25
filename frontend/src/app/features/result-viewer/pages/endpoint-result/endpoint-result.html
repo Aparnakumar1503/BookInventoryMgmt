@@ -94,6 +94,26 @@
                     </article>
                   }
                 </div>
+              } @else if (previewType() === 'authors' && authorPreviewItems().length) {
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  @for (author of authorPreviewItems(); track trackByValue($index, author)) {
+                    <article class="rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-surface-muted)] p-5">
+                      @if (author.photo) {
+                        <img [src]="author.photo" [alt]="author.fullName" class="h-48 w-full rounded-[1rem] object-cover" />
+                      } @else {
+                        <div class="flex h-48 w-full items-center justify-center rounded-[1rem] bg-[var(--bv-primary-strong)] text-3xl font-black text-white">
+                          {{ previewInitials(author.fullName) }}
+                        </div>
+                      }
+                      <p class="mt-4 text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Author #{{ author.authorId }}</p>
+                      <h3 class="mt-2 text-lg font-black text-[var(--bv-text)]">{{ author.fullName || 'Unnamed author' }}</h3>
+                      <div class="mt-3 space-y-1 text-sm font-semibold text-[var(--bv-text-soft)]">
+                        <p>First Name: <span class="font-black text-[var(--bv-text)]">{{ author.firstName || '-' }}</span></p>
+                        <p>Last Name: <span class="font-black text-[var(--bv-text)]">{{ author.lastName || '-' }}</span></p>
+                      </div>
+                    </article>
+                  }
+                </div>
               } @else {
                 <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   @for (row of tableRows(); track $index) {

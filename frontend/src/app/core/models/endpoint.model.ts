@@ -15,11 +15,30 @@ export interface EndpointField {
   readonly placeholder?: string;
   readonly defaultValue?: string | number | boolean;
   readonly options?: readonly EndpointFieldOption[];
+  readonly min?: number;
+  readonly max?: number;
+  readonly minLength?: number;
+  readonly maxLength?: number;
+  readonly pattern?: string;
+  readonly requiredMessage?: string;
+  readonly minMessage?: string;
+  readonly maxMessage?: string;
+  readonly minLengthMessage?: string;
+  readonly maxLengthMessage?: string;
+  readonly patternMessage?: string;
 }
 
 export interface EndpointBodyConfig {
   readonly title: string;
   readonly fields: readonly EndpointField[];
+}
+
+export interface EndpointPrefillConfig {
+  readonly endpointId: string;
+  readonly pathParamMap?: Readonly<Record<string, string>>;
+  readonly bodyFieldMap?: Readonly<Record<string, string>>;
+  readonly lockWhenFieldTrue?: string;
+  readonly lockedMessage?: string;
 }
 
 export interface EndpointConfig {
@@ -31,6 +50,7 @@ export interface EndpointConfig {
   readonly pathParams?: readonly EndpointField[];
   readonly queryParams?: readonly EndpointField[];
   readonly body?: EndpointBodyConfig;
+  readonly prefill?: EndpointPrefillConfig;
 }
 
 export interface EndpointRequestPayload {

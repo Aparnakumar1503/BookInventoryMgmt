@@ -162,7 +162,8 @@ export class EndpointResultComponent {
         authorId: Number(item['authorId'] ?? 0),
         fullName: `${String(item['firstName'] ?? '')} ${String(item['lastName'] ?? '')}`.trim(),
         firstName: String(item['firstName'] ?? ''),
-        lastName: String(item['lastName'] ?? '')
+        lastName: String(item['lastName'] ?? ''),
+        photo: String(item['photo'] ?? '')
       }))
     : []);
 
