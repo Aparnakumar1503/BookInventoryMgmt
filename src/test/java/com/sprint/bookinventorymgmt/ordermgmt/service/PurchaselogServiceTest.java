@@ -1,6 +1,7 @@
 package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryNotFoundException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryPurchaseException;
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
@@ -8,7 +9,6 @@ import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestD
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.PurchaseLogResponseDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.OrderProcessingException;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCart;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository;
@@ -109,8 +109,8 @@ class PurchaseLogServiceTest {
 
     @Test
     void addPurchase_rejectsNullOrIncompleteRequest() {
-        assertThrows(OrderProcessingException.class, () -> service.addPurchase(null));
-        assertThrows(OrderProcessingException.class, () -> service.addPurchase(new PurchaseLogRequestDTO()));
+        assertThrows(InvalidInventoryDataException.class, () -> service.addPurchase(null));
+        assertThrows(InvalidInventoryDataException.class, () -> service.addPurchase(new PurchaseLogRequestDTO()));
     }
 
     @Test

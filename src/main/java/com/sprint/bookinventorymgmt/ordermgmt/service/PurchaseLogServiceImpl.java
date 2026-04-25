@@ -1,12 +1,15 @@
 package com.sprint.bookinventorymgmt.ordermgmt.service;
 
 import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.DatabaseOperationException;
+import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InvalidInventoryDataException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryNotFoundException;
 import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.InventoryPurchaseException;
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLog;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.PurchaseLogId;
-import com.sprint.bookinventorymgmt.ordermgmt.exceptions.*;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.BookAlreadyPurchasedException;
+import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundException;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.PurchaseLogRequestDTO;
@@ -39,7 +42,7 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
     public PurchaseLogResponseDTO addPurchase(PurchaseLogRequestDTO dto) {
 
         if (dto == null || dto.getUserId() == null || dto.getInventoryId() == null) {
-            throw new OrderProcessingException("UserId and inventoryId are required");
+            throw new InvalidInventoryDataException("UserId and inventoryId are required");
         }
 
         PurchaseLog existing = repo.findByUserIdAndInventoryId(dto.getUserId(), dto.getInventoryId());
@@ -66,7 +69,7 @@ public class PurchaseLogServiceImpl implements IPurchaseLogService {
 
             cleanupMatchingCartItem(dto.getUserId(), dto.getInventoryId());
         } catch (Exception e) {
-            throw new CheckoutFailedException("Failed to create purchase");
+            throw new DatabaseOperationException("Failed to create purchase", e);
         }
 
         return mapToDTO(saved);
