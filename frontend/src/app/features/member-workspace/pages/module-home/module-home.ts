@@ -1,18 +1,13 @@
-﻿import { Component, computed, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { EndpointConfig } from '../../../../core/models/endpoint.model';
+import { Component, computed, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { ModuleService } from '../../../../core/services/module.service';
-import { EndpointCardComponent } from '../../../../shared/ui/endpoint-card/endpoint-card';
-
-interface EndpointGroup {
-  title: string;
-  endpoints: readonly EndpointConfig[];
-}
+import { EndpointGroup, groupEndpoints } from '../../../../core/utils/endpoint-groups';
 
 @Component({
   selector: 'app-module-home',
-  imports: [EndpointCardComponent, RouterLink],
-  templateUrl: './module-home.html'
+  imports: [RouterLink, RouterLinkActive],
+  templateUrl: './module-home.html',
+  styleUrl: './module-home.css'
 })
 export class ModuleHomeComponent {
   private readonly route = inject(ActivatedRoute);
@@ -22,38 +17,18 @@ export class ModuleHomeComponent {
   readonly module = computed(() => this.moduleService.getModule(this.moduleId()));
   readonly endpointGroups = computed<EndpointGroup[]>(() => {
     const selectedModule = this.module();
-    if (!selectedModule) {
-      return [];
-    }
-
-    const groups = new Map<string, EndpointConfig[]>();
-
-    selectedModule.endpoints.forEach((endpoint) => {
-      const title = this.resolveGroupTitle(endpoint.path);
-      const collection = groups.get(title) ?? [];
-      collection.push(endpoint);
-      groups.set(title, collection);
-    });
-
-    return Array.from(groups.entries()).map(([title, endpoints]) => ({ title, endpoints }));
+    return selectedModule ? groupEndpoints(selectedModule.endpoints) : [];
   });
 
-  private resolveGroupTitle(path: string): string {
-    if (path.includes('/books') && path.includes('/authors')) return 'Book-Author Mapping';
-    if (path.includes('/books') && path.includes('/reviews')) return 'Review APIs';
-    if (path.includes('/books')) return 'Book APIs';
-    if (path.includes('/authors')) return 'Author APIs';
-    if (path.includes('/publishers')) return 'Publisher APIs';
-    if (path.includes('/categories')) return 'Category APIs';
-    if (path.includes('/states')) return 'Reference APIs';
-    if (path.includes('/inventory')) return 'Inventory APIs';
-    if (path.includes('/book-conditions')) return 'Book Condition APIs';
-    if (path.includes('/users') && path.includes('/roles')) return 'Role APIs';
-    if (path.includes('/users')) return 'User APIs';
-    if (path.includes('/roles')) return 'Role APIs';
-    if (path.includes('/orders')) return 'Order APIs';
-    if (path.includes('/cart')) return 'Shopping Cart APIs';
-    if (path.includes('/reviewers')) return 'Reviewer APIs';
-    return 'Module APIs';
+  methodClass(method: string): string {
+    const classes: Record<string, string> = {
+      GET: 'bg-blue-100 text-blue-800',
+      POST: 'bg-teal-100 text-teal-800',
+      PUT: 'bg-amber-100 text-amber-800',
+      PATCH: 'bg-violet-100 text-violet-800',
+      DELETE: 'bg-rose-100 text-rose-800'
+    };
+
+    return classes[method] ?? 'bg-slate-100 text-slate-800';
   }
 }

@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-import { ModuleRegistryService } from '../../core/services/module-registry.service';
+import { ModuleService } from '../../core/services/module.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -14,23 +16,48 @@ export class LoginComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
-  private readonly registry = inject(ModuleRegistryService);
+  private readonly moduleService = inject(ModuleService);
+  private readonly notificationService = inject(NotificationService);
 
-  readonly module = this.registry.getModule(this.route.snapshot.paramMap.get('moduleId'));
+  readonly isSubmitting = signal(false);
+  readonly moduleId = this.route.snapshot.paramMap.get('moduleId') ?? '';
+  readonly module = computed(() => this.moduleService.getModule(this.moduleId));
+
   readonly form = new FormGroup({
-    username: new FormControl(this.module?.loginHint.username ?? 'admin', { nonNullable: true, validators: [Validators.required] }),
-    password: new FormControl(this.module?.loginHint.password ?? 'admin123', { nonNullable: true, validators: [Validators.required] })
+    username: new FormControl(this.module()?.owner.username ?? '', { nonNullable: true, validators: [Validators.required] }),
+    password: new FormControl('password', { nonNullable: true, validators: [Validators.required] })
   });
 
   signIn(): void {
-    if (this.form.invalid || !this.module) {
+    const selectedModule = this.module();
+    if (this.form.invalid || !selectedModule) {
       this.form.markAllAsTouched();
       return;
     }
 
     const value = this.form.getRawValue();
-    this.authService.login(value.username, value.password).subscribe(() => {
-      void this.router.navigateByUrl(this.module?.route ?? '/modules');
+    this.isSubmitting.set(true);
+
+    this.authService.login(value.username, value.password)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.notificationService.success('Login successful.');
+          void this.router.navigate(['/member', selectedModule.id]);
+        },
+        error: () => this.notificationService.error('Login failed. Check the username and password.')
+      });
+  }
+
+  fillDemo(): void {
+    const selectedModule = this.module();
+    if (!selectedModule) {
+      return;
+    }
+
+    this.form.patchValue({
+      username: selectedModule.owner.username,
+      password: 'password'
     });
   }
 }

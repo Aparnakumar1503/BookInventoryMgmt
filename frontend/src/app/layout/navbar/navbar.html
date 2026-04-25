@@ -4,8 +4,8 @@
       <a routerLink="/" class="group flex items-center gap-4" (click)="closeMenu()">
         <span class="grid h-12 w-12 place-items-center rounded-[1.1rem] border border-white/60 bg-[linear-gradient(135deg,#2f5d62_0%,#3c757b_55%,#8a6a43_100%)] text-sm font-black tracking-[0.18em] text-white shadow-lg shadow-slate-900/10 transition group-hover:scale-105">BIMS</span>
         <span>
-          <span class="bv-display block text-[1.75rem] leading-none text-[var(--bv-text)] sm:text-[2rem]">Book Inventory</span>
-          <span class="block text-[0.68rem] font-black uppercase tracking-[0.28em] text-[var(--bv-text-muted)]">Management System</span>
+          <span class="bv-display block text-[1.45rem] leading-none text-[var(--bv-text)] sm:text-[1.7rem]">Book Inventory Management</span>
+          <span class="block text-[0.68rem] font-black uppercase tracking-[0.28em] text-[var(--bv-text-muted)]">Enterprise Workspace</span>
         </span>
       </a>
 
@@ -48,11 +48,11 @@
         }
 
         <a
-          routerLink="/"
+          routerLink="/modules"
           (click)="closeMenu()"
           class="block rounded-[1rem] px-4 py-3 text-sm font-bold text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
         >
-          Team Directory
+          Modules
         </a>
 
         @if (currentUser()) {

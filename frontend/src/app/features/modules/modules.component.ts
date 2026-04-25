@@ -1,13 +1,16 @@
 import { Component, inject } from '@angular/core';
-import { DataCardComponent } from '../../shared/components/data-card/data-card.component';
-import { ModuleRegistryService } from '../../core/services/module-registry.service';
+import { RouterLink } from '@angular/router';
+import { ModuleService } from '../../core/services/module.service';
 
 @Component({
   selector: 'app-modules',
-  imports: [DataCardComponent],
+  imports: [RouterLink],
   templateUrl: './modules.component.html',
   styleUrl: './modules.component.scss'
 })
 export class ModulesComponent {
-  readonly modules = inject(ModuleRegistryService).getModules();
+  private readonly moduleService = inject(ModuleService);
+
+  readonly modules = this.moduleService.getModules();
+  readonly stats = this.moduleService.getStats();
 }

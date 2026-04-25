@@ -16,6 +16,7 @@
   --bv-primary: #2f5d62;
   --bv-primary-strong: #23494d;
   --bv-primary-soft: #e6efee;
+  --bv-accent: #2d5be3;
   --bv-secondary: #8a6a43;
   --bv-secondary-soft: #f2e7d8;
   --bv-success-soft: #e4f3ea;
@@ -28,8 +29,9 @@
   --bv-shadow-md: 0 10px 28px rgba(23, 33, 48, 0.08);
   --bv-radius-xl: 2rem;
   --bv-radius-lg: 1.4rem;
-  --bv-display: 'Baskerville', 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
-  --bv-body: 'Aptos', 'Segoe UI Variable Text', 'Trebuchet MS', sans-serif;
+  --bv-display: 'DM Serif Display', 'Baskerville', 'Palatino Linotype', 'Book Antiqua', 'Times New Roman', serif;
+  --bv-body: 'DM Sans', 'Segoe UI Variable Text', 'Trebuchet MS', sans-serif;
+  --bv-mono: 'DM Mono', 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
 }
 
 * {
@@ -70,7 +72,7 @@ button {
 
 code,
 pre {
-  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  font-family: var(--bv-mono);
 }
 
 ::selection {

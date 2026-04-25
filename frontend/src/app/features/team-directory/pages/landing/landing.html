@@ -1,81 +1,104 @@
-﻿<section class="bv-paper-shell relative overflow-hidden">
-  <div class="bv-container px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
-    <div class="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-      <div class="space-y-6">
-        <div class="bv-page-header">
-          <span class="bv-kicker">Team Directory</span>
-          <h1 class="bv-display text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">Frontend workspace for team-owned modules</h1>
-          <p class="bv-page-note max-w-3xl text-base sm:text-lg">
-            Select a team member to open that member's module page, review their assigned endpoints, submit requests, and view secured results.
-          </p>
-        </div>
+<section class="bv-hero-shell">
+  <div class="bv-grid-bg"></div>
+  <div class="bv-blob bv-blob-ink"></div>
+  <div class="bv-blob bv-blob-blue"></div>
+  <div class="bv-blob bv-blob-gold"></div>
 
-        <div class="grid gap-4 sm:grid-cols-3">
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Members</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.teams }}</p>
-          </article>
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Modules</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.modules }}</p>
-          </article>
-          <article class="bv-card bv-stat-card rounded-[1.5rem] p-5">
-            <p class="bv-stat-label">Endpoints</p>
-            <p class="mt-3 text-3xl font-black text-[var(--bv-text)]">{{ stats.endpoints }}</p>
-          </article>
-        </div>
+  <div class="bv-container px-4 pb-10 pt-10 sm:px-6 lg:px-8 lg:pb-14 lg:pt-14">
+    <div class="mx-auto max-w-5xl text-center">
+      <div class="bv-kicker mx-auto">
+        <span class="h-2 w-2 rounded-full bg-[var(--bv-accent)]"></span>
+        Enterprise Library Workspace
       </div>
 
-      <aside class="bv-panel rounded-[1.8rem] p-6 sm:p-7 lg:sticky lg:top-24">
-        <p class="bv-stat-label">Secure Access</p>
-        <h2 class="bv-display mt-3 text-4xl leading-none text-[var(--bv-text)]">Sign in</h2>
-        <p class="bv-page-note mt-4">
-          Protected member pages and endpoint forms require login in this browser. Opening the same URL in another browser will still require that browser to authenticate separately.
-        </p>
+      <h1 class="bv-display mt-8 text-[clamp(3.6rem,9vw,7rem)] leading-[0.9] text-[var(--bv-text)]">
+        BOOK INVENTORY
+        <span class="block text-[var(--bv-accent)]">MANAGEMENT</span>
+      </h1>
 
-        <form class="mt-6 space-y-4" [formGroup]="loginForm" (ngSubmit)="login()">
-          <label class="block">
-            <span class="text-sm font-black text-[var(--bv-text)]">Username</span>
-            <input formControlName="username" type="text" class="bv-field mt-2" placeholder="Aparna" />
-          </label>
+      <p class="mx-auto mt-6 max-w-3xl text-base leading-8 text-[var(--bv-text-soft)] sm:text-lg">
+        Learn the project flow with a cleaner UI. Start on the landing page, move into the six-module catalog,
+        sign in for the selected owner module, and then use the endpoint workspace with the same live preview,
+        table view, and JSON response formats you already have.
+      </p>
 
-          <label class="block">
-            <span class="text-sm font-black text-[var(--bv-text)]">Password</span>
-            <input formControlName="password" type="password" class="bv-field mt-2" placeholder="password" />
-          </label>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a
+          routerLink="/modules"
+          class="bv-button-primary inline-flex items-center gap-3 rounded-full px-7 py-4 text-sm font-black text-white transition hover:-translate-y-0.5 hover:brightness-105"
+        >
+          Open Module Catalog
+          <span aria-hidden="true">→</span>
+        </a>
+        <a
+          routerLink="/modules"
+          class="bv-button-secondary inline-flex items-center rounded-full px-6 py-4 text-sm font-black transition hover:-translate-y-0.5"
+        >
+          Explore The Flow
+        </a>
+      </div>
 
-          <button
-            type="submit"
-            [disabled]="isSubmitting()"
-            class="bv-button-primary w-full rounded-[1rem] px-5 py-3 text-sm font-black transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
-          </button>
-        </form>
-
-        <div class="bv-muted-block mt-6 p-4">
-          <p class="text-xs font-black uppercase tracking-[0.22em] text-[var(--bv-text-muted)]">Quick Fill</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            @for (teammate of teammates; track teammate.id) {
-              <button
-                type="button"
-                (click)="fillDemo(teammate.username)"
-                class="rounded-full border border-[color:var(--bv-border)] bg-white px-3 py-2 text-xs font-black text-[var(--bv-text-soft)] transition hover:bg-[var(--bv-primary-soft)] hover:text-[var(--bv-primary)]"
-              >
-                {{ teammate.username }}
-              </button>
-            }
-          </div>
-        </div>
-      </aside>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        @for (module of modules; track module.id) {
+          <span class="bv-pill">{{ module.owner.name }} · {{ module.name }}</span>
+        }
+      </div>
     </div>
 
-    <div class="mt-10">
+    <section class="mt-16 bv-panel rounded-[2rem] p-6 sm:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p class="bv-stat-label">Platform Report</p>
+          <h2 class="bv-section-title mt-3">Current module coverage</h2>
+        </div>
+        <span class="bv-status-pill">Live frontend workspace</span>
+      </div>
+
+      <div class="mt-8 grid gap-px overflow-hidden rounded-[1.25rem] border border-[color:var(--bv-border)] bg-[var(--bv-border)] md:grid-cols-3">
+        <article class="bg-white p-5">
+          <p class="bv-stat-label">Members</p>
+          <p class="mt-3 text-4xl font-black text-[var(--bv-text)]">{{ stats.teams }}</p>
+          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Module owners available in the workspace</p>
+        </article>
+        <article class="bg-white p-5">
+          <p class="bv-stat-label">Modules</p>
+          <p class="mt-3 text-4xl font-black text-[var(--bv-accent)]">{{ stats.modules }}</p>
+          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Major API areas mapped into the UI</p>
+        </article>
+        <article class="bg-white p-5">
+          <p class="bv-stat-label">Endpoints</p>
+          <p class="mt-3 text-4xl font-black text-[var(--bv-secondary)]">{{ stats.endpoints }}</p>
+          <p class="mt-2 text-sm text-[var(--bv-text-soft)]">Live forms with preview, table, and JSON responses</p>
+        </article>
+      </div>
+
+      <div class="mt-8 overflow-hidden rounded-[1.25rem] border border-[color:var(--bv-border)]">
+        <div class="grid grid-cols-[0.6fr_1.4fr_2fr_1fr] bg-[var(--bv-surface-muted)] px-5 py-3 text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">
+          <span>#</span>
+          <span>Owner</span>
+          <span>Module</span>
+          <span>Endpoints</span>
+        </div>
+        @for (module of modules; track module.id; let index = $index) {
+          <div class="grid grid-cols-[0.6fr_1.4fr_2fr_1fr] items-center border-t border-[color:var(--bv-border)] bg-white px-5 py-4 text-sm text-[var(--bv-text-soft)]">
+            <span class="font-mono text-xs">{{ index + 1 }}</span>
+            <span class="font-bold text-[var(--bv-text)]">{{ module.owner.name }}</span>
+            <span>{{ module.name }}</span>
+            <span class="font-black text-[var(--bv-text)]">{{ module.endpoints.length }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="mt-12">
       <div class="flex items-end justify-between gap-4">
         <div>
-          <p class="bv-stat-label">Members and Modules</p>
-          <h2 class="bv-section-title mt-3">Select a team member</h2>
+          <p class="bv-stat-label">Step One</p>
+          <h2 class="bv-section-title mt-3">Meet the owners</h2>
         </div>
+        <a routerLink="/modules" class="text-sm font-black text-[var(--bv-accent)] transition hover:opacity-80">
+          Continue to modules →
+        </a>
       </div>
 
       <div class="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
@@ -83,6 +106,6 @@
           <app-teammate-card [teammate]="teammate" />
         }
       </div>
-    </div>
+    </section>
   </div>
 </section>

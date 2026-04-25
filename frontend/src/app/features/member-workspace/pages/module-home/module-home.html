@@ -1,62 +1,94 @@
-﻿@if (module(); as selectedModule) {
-  <section class="bv-paper-shell relative overflow-hidden">
-    <div class="bv-container px-4 py-10 sm:px-6 lg:px-8">
-      <a routerLink="/" class="bv-button-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-black transition hover:brightness-105">
-        <span>←</span>
-        <span>Back to Team Directory</span>
-      </a>
+@if (module(); as selectedModule) {
+  <section class="bv-paper-shell module-workspace">
+    <div class="module-workspace__frame">
+      <aside class="module-workspace__sidebar">
+        <div class="module-workspace__brand">
+          <a routerLink="/modules" class="module-workspace__logo">BookInventoryManagement</a>
+          <a routerLink="/modules" class="module-workspace__back">← Switch Module</a>
+        </div>
 
-      <div class="mt-6 bv-panel rounded-[1.8rem] p-6 sm:p-8">
-        <div class="grid gap-6 lg:grid-cols-[1fr_16rem] lg:items-start">
-          <div class="bv-page-header">
-            <p class="bv-stat-label">Member Workspace</p>
-            <h1 class="bv-display text-5xl leading-none text-[var(--bv-text)]">{{ selectedModule.owner.name }}</h1>
-            <p class="text-base font-semibold text-[var(--bv-primary)]">{{ selectedModule.owner.role }}</p>
-            <p class="max-w-3xl text-base leading-7 text-[var(--bv-text-soft)]">{{ selectedModule.description }}</p>
-
-            <div class="mt-5 flex flex-wrap gap-2">
-              @for (moduleName of selectedModule.owner.modules; track moduleName) {
-                <span class="bv-chip">{{ moduleName }}</span>
-              }
-            </div>
-          </div>
-
-          <div class="bv-muted-block p-5">
-            <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--bv-text-muted)]">Access</p>
-            <p class="mt-3 text-sm font-semibold text-[var(--bv-text-soft)]">Username</p>
-            <p class="text-lg font-black text-[var(--bv-text)]">{{ selectedModule.owner.username }}</p>
-            <p class="mt-4 text-sm font-semibold text-[var(--bv-text-soft)]">Endpoints</p>
-            <p class="text-lg font-black text-[var(--bv-text)]">{{ selectedModule.endpoints.length }}</p>
+        <div class="module-workspace__module-chip">
+          <span class="module-workspace__module-mark">★</span>
+          <div>
+            <p class="module-workspace__eyebrow">Current Module</p>
+            <h1 class="module-workspace__module-title">{{ selectedModule.name }}</h1>
           </div>
         </div>
-      </div>
 
-      <div class="mt-8 space-y-6">
-        @for (group of endpointGroups(); track group.title) {
-          <section class="bv-card rounded-[1.6rem] p-5 sm:p-6">
-            <div class="mb-5 flex items-end justify-between gap-4 border-b border-[color:var(--bv-border)] pb-4">
-              <div>
-                <p class="bv-stat-label">Endpoint Group</p>
-                <h2 class="bv-slim-heading mt-2">{{ group.title }}</h2>
+        <div class="module-workspace__sidebar-body">
+          @for (group of endpointGroups(); track group.title) {
+            <section class="module-workspace__group">
+              <p class="module-workspace__group-label">{{ group.title }}</p>
+
+              <div class="module-workspace__endpoint-list">
+                @for (endpoint of group.endpoints; track endpoint.id) {
+                  <a
+                    [routerLink]="['/endpoint-form', selectedModule.id, endpoint.id]"
+                    routerLinkActive="module-workspace__endpoint-link--active"
+                    class="module-workspace__endpoint-link">
+                    <span class="module-workspace__method" [class]="methodClass(endpoint.method)">{{ endpoint.method }}</span>
+                    <span class="module-workspace__endpoint-name">{{ endpoint.name }}</span>
+                  </a>
+                }
               </div>
-              <p class="text-sm font-semibold text-[var(--bv-text-soft)]">{{ group.endpoints.length }} endpoints</p>
-            </div>
+            </section>
+          }
+        </div>
+      </aside>
 
-            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              @for (endpoint of group.endpoints; track endpoint.id) {
-                <app-endpoint-card [moduleId]="selectedModule.id" [endpoint]="endpoint" />
-              }
+      <section class="module-workspace__panel">
+        <header class="module-workspace__panel-header">
+          <p class="module-workspace__panel-kicker">Select an endpoint →</p>
+        </header>
+
+        <div class="module-workspace__panel-body">
+          <article class="module-workspace__message-card">
+            <span class="module-workspace__message-icon">★</span>
+            <h2 class="module-workspace__message-title">{{ selectedModule.name }}</h2>
+            <p class="module-workspace__message-copy">
+              Choose an endpoint from the sidebar to open the live request form with the same validation and request flow as your previous application.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="module-workspace__panel module-workspace__panel--soft">
+        <header class="module-workspace__panel-header">
+          <p class="module-workspace__panel-kicker">Ready</p>
+        </header>
+
+        <div class="module-workspace__panel-body">
+          <article class="module-workspace__message-card module-workspace__message-card--compact">
+            <span class="module-workspace__message-icon">★</span>
+            <h2 class="module-workspace__message-title">Live Functionality</h2>
+            <p class="module-workspace__message-copy">
+              Pick an endpoint and continue to the request workspace where you can submit data and inspect the result in Preview, Table, and JSON formats.
+            </p>
+
+            <div class="module-workspace__meta">
+              <div>
+                <p class="module-workspace__meta-label">Owner</p>
+                <p class="module-workspace__meta-value">{{ selectedModule.owner.name }}</p>
+              </div>
+              <div>
+                <p class="module-workspace__meta-label">Endpoints</p>
+                <p class="module-workspace__meta-value">{{ selectedModule.endpoints.length }}</p>
+              </div>
+              <div>
+                <p class="module-workspace__meta-label">Username</p>
+                <p class="module-workspace__meta-value">{{ selectedModule.owner.username }}</p>
+              </div>
             </div>
-          </section>
-        }
-      </div>
+          </article>
+        </div>
+      </section>
     </div>
   </section>
 } @else {
   <section class="grid min-h-[70vh] place-items-center px-4">
     <div class="bv-card max-w-md rounded-[2rem] p-8 text-center">
       <h1 class="bv-display text-4xl text-[var(--bv-text)]">Module not found</h1>
-      <a routerLink="/" class="bv-button-primary mt-6 inline-flex rounded-full px-5 py-3 text-sm font-black text-white transition hover:brightness-105">Go home</a>
+      <a routerLink="/modules" class="bv-button-primary mt-6 inline-flex rounded-full px-5 py-3 text-sm font-black text-white transition hover:brightness-105">Back to modules</a>
     </div>
   </section>
 }

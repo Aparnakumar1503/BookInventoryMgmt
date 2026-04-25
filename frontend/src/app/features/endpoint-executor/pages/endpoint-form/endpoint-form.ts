@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { finalize } from 'rxjs';
 import { EndpointConfig, EndpointField, EndpointRequestPayload } from '../../../../core/models/endpoint.model';
 import { ApiCallResult } from '../../../../core/models/response.model';
@@ -8,6 +8,7 @@ import { ApiService } from '../../../../core/services/api.service';
 import { ModuleService } from '../../../../core/services/module.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { StorageService } from '../../../../core/services/storage.service';
+import { EndpointGroup, groupEndpoints } from '../../../../core/utils/endpoint-groups';
 import { LoadingSpinnerComponent } from '../../../../shared/ui/loading-spinner/loading-spinner';
 import { ResponseViewerComponent } from '../../../../shared/ui/response-viewer/response-viewer';
 
@@ -16,8 +17,9 @@ type FieldControls = Record<string, FormControl<FieldValue>>;
 
 @Component({
   selector: 'app-endpoint-form',
-  imports: [ReactiveFormsModule, RouterLink, LoadingSpinnerComponent, ResponseViewerComponent],
-  templateUrl: './endpoint-form.html'
+  imports: [ReactiveFormsModule, RouterLink, RouterLinkActive, LoadingSpinnerComponent, ResponseViewerComponent],
+  templateUrl: './endpoint-form.html',
+  styleUrl: './endpoint-form.css'
 })
 export class EndpointFormComponent {
   private readonly route = inject(ActivatedRoute);
@@ -30,6 +32,7 @@ export class EndpointFormComponent {
   readonly endpointId = this.route.snapshot.paramMap.get('endpointId') ?? '';
   readonly module = this.moduleService.getModule(this.moduleId);
   readonly endpoint = this.moduleService.getEndpoint(this.moduleId, this.endpointId);
+  readonly endpointGroups = computed<EndpointGroup[]>(() => this.module ? groupEndpoints(this.module.endpoints) : []);
   readonly isLoading = signal(false);
   readonly response = signal<ApiCallResult | null>(null);
   readonly isPrefillLoading = signal(false);
@@ -67,6 +70,7 @@ export class EndpointFormComponent {
     const body = this.response()?.body;
     return this.isRecord(body) ? body : null;
   });
+  readonly responseUrl = computed(() => this.response()?.url || this.endpoint?.path || '');
   readonly responseData = computed<unknown>(() => this.responseBody()?.['data'] ?? null);
   readonly paginatedData = computed<Record<string, unknown> | null>(() => {
     const data = this.responseData();

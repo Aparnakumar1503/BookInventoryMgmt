@@ -1,28 +1,92 @@
-@if (module) {
-  <section class="login-page">
-    <div class="login-card">
-      <div class="module-chip">{{ module.icon }} {{ module.title }}</div>
-      <h1>Welcome back</h1>
-      <p>Sign in to access the module</p>
+@if (module(); as selectedModule) {
+  <section class="login-shell">
+    <div class="bv-container px-4 py-10 sm:px-6 lg:px-8">
+      <a routerLink="/modules" class="bv-button-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-black transition hover:brightness-105">
+        <span>←</span>
+        <span>Back to Modules</span>
+      </a>
 
-      <div class="demo-box">
-        Demo - Username: <strong>{{ module.loginHint.username }}</strong> · Password:
-        <strong>{{ module.loginHint.password }}</strong>
+      <div class="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <section class="login-intro rounded-[2rem] p-6 sm:p-8">
+          <p class="bv-stat-label">Step Three</p>
+          <h1 class="bv-display mt-4 text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">{{ selectedModule.name }}</h1>
+          <p class="mt-5 text-lg font-bold text-[var(--bv-accent)]">{{ selectedModule.owner.role }}</p>
+          <p class="mt-5 max-w-3xl text-base leading-8 text-[var(--bv-text-soft)]">
+            Sign in to open the endpoint workspace for this module. Once authenticated, the same request flow stays available:
+            endpoint form, inline validation, preview cards, table view, and JSON response view.
+          </p>
+
+          <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            <article class="login-info-card rounded-[1.3rem] p-5">
+              <p class="bv-stat-label">Owner</p>
+              <p class="mt-3 text-2xl font-black text-[var(--bv-text)]">{{ selectedModule.owner.name }}</p>
+              <p class="mt-2 text-sm text-[var(--bv-text-soft)]">{{ selectedModule.owner.email }}</p>
+            </article>
+
+            <article class="login-info-card rounded-[1.3rem] p-5">
+              <p class="bv-stat-label">Endpoints</p>
+              <p class="mt-3 text-2xl font-black text-[var(--bv-text)]">{{ selectedModule.endpoints.length }}</p>
+              <p class="mt-2 text-sm text-[var(--bv-text-soft)]">{{ selectedModule.tagline }}</p>
+            </article>
+          </div>
+
+          <div class="mt-8 flex flex-wrap gap-2">
+            @for (feature of selectedModule.owner.modules; track feature) {
+              <span class="bv-chip">{{ feature }}</span>
+            }
+          </div>
+        </section>
+
+        <section class="login-panel rounded-[2rem] p-6 sm:p-8">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="bv-stat-label">Module Access</p>
+              <h2 class="mt-3 text-3xl font-black text-[var(--bv-text)]">Sign in</h2>
+            </div>
+            <span class="rounded-full bg-[var(--bv-primary-soft)] px-4 py-2 text-sm font-black text-[var(--bv-primary)]">
+              {{ selectedModule.owner.name }}
+            </span>
+          </div>
+
+          <div class="login-demo mt-6 rounded-[1.25rem] p-4">
+            <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--bv-text-muted)]">Demo Credentials</p>
+            <p class="mt-3 text-sm leading-7 text-[var(--bv-text-soft)]">
+              Username: <strong>{{ selectedModule.owner.username }}</strong><br />
+              Password: <strong>password</strong>
+            </p>
+            <button type="button" (click)="fillDemo()" class="mt-4 rounded-full border border-[color:var(--bv-border)] bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--bv-text)] transition hover:bg-[var(--bv-primary-soft)]">
+              Fill demo values
+            </button>
+          </div>
+
+          <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="signIn()">
+            <label class="block">
+              <span class="text-sm font-black text-[var(--bv-text)]">Username</span>
+              <input formControlName="username" type="text" class="bv-field mt-2" placeholder="Owner username" />
+            </label>
+
+            <label class="block">
+              <span class="text-sm font-black text-[var(--bv-text)]">Password</span>
+              <input formControlName="password" type="password" class="bv-field mt-2" placeholder="password" />
+            </label>
+
+            <button
+              type="submit"
+              [disabled]="isSubmitting()"
+              class="bv-button-primary w-full rounded-[1rem] px-5 py-3 text-sm font-black text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ isSubmitting() ? 'Signing in...' : 'Open Module Workspace' }}
+            </button>
+          </form>
+        </section>
       </div>
-
-      <form [formGroup]="form" (ngSubmit)="signIn()">
-        <label>
-          <span>Username</span>
-          <input formControlName="username" />
-        </label>
-        <label>
-          <span>Password</span>
-          <input formControlName="password" type="password" />
-        </label>
-        <button type="submit">Sign In</button>
-      </form>
-
-      <a routerLink="/modules">← All modules</a>
+    </div>
+  </section>
+} @else {
+  <section class="grid min-h-[70vh] place-items-center px-4">
+    <div class="bv-card max-w-md rounded-[2rem] p-8 text-center">
+      <h1 class="bv-display text-4xl text-[var(--bv-text)]">Module not found</h1>
+      <a routerLink="/modules" class="bv-button-primary mt-6 inline-flex rounded-full px-5 py-3 text-sm font-black text-white transition hover:brightness-105">Go to modules</a>
     </div>
   </section>
 }

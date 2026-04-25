@@ -1,3 +1,5 @@
+-- Destructive setup script for a fresh database.
+-- Do not run this automatically on every application startup if you want data to persist.
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 

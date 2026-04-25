@@ -1,24 +1,36 @@
 package com.sprint.bookinventorymgmt.ordermgmt.service;
 
+import com.sprint.bookinventorymgmt.inventorymgmt.entity.Inventory;
+import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCart;
 import com.sprint.bookinventorymgmt.ordermgmt.entity.ShoppingCartId;
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.*;
+import com.sprint.bookinventorymgmt.ordermgmt.repository.IPurchaseLogRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartServiceImpl implements IShoppingCartService {
 
     private final IShoppingCartRepository repo;
+    private final IPurchaseLogRepository purchaseLogRepository;
+    private final IInventoryRepository inventoryRepository;
 
-    public ShoppingCartServiceImpl(IShoppingCartRepository repo) {
+    public ShoppingCartServiceImpl(
+            IShoppingCartRepository repo,
+            IPurchaseLogRepository purchaseLogRepository,
+            IInventoryRepository inventoryRepository) {
         this.repo = repo;
+        this.purchaseLogRepository = purchaseLogRepository;
+        this.inventoryRepository = inventoryRepository;
     }
 
     @Override
@@ -41,9 +53,11 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
     }
 
     @Override
+    @Transactional
     public List<ShoppingCartResponseDTO> getAll() {
 
         List<ShoppingCart> list = repo.findAll();
+        list = removePurchasedItems(list);
         List<ShoppingCartResponseDTO> response = new ArrayList<>();
 
         for (ShoppingCart c : list) {
@@ -54,9 +68,11 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
     }
 
     @Override
+    @Transactional
     public List<ShoppingCartResponseDTO> getByUserId(Integer userId) {
 
         List<ShoppingCart> list = repo.findByIdUserId(userId);
+        list = removePurchasedItems(list);
         List<ShoppingCartResponseDTO> response = new ArrayList<>();
 
         for (ShoppingCart c : list) {
@@ -87,5 +103,29 @@ public class ShoppingCartServiceImpl implements IShoppingCartService {
         dto.setIsbn(entity.getIsbn());
 
         return dto;
+    }
+
+    private List<ShoppingCart> removePurchasedItems(List<ShoppingCart> cartItems) {
+        List<ShoppingCart> visibleItems = new ArrayList<>();
+
+        for (ShoppingCart cartItem : cartItems) {
+            if (hasPurchasedBook(cartItem.getUserId(), cartItem.getIsbn())) {
+                repo.delete(cartItem);
+                continue;
+            }
+            visibleItems.add(cartItem);
+        }
+
+        repo.flush();
+        return visibleItems;
+    }
+
+    private boolean hasPurchasedBook(Integer userId, String isbn) {
+        return purchaseLogRepository.findByIdUserId(userId).stream()
+                .map(purchase -> inventoryRepository.findById(purchase.getInventoryId()).orElse(null))
+                .filter(inventory -> inventory != null)
+                .map(Inventory::getIsbn)
+                .collect(Collectors.toSet())
+                .contains(isbn);
     }
 }
