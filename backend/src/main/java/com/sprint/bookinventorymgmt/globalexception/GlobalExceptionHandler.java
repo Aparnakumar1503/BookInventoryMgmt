@@ -28,7 +28,6 @@ import com.sprint.bookinventorymgmt.ordermgmt.exceptions.PurchaseNotFoundExcepti
 import com.sprint.bookinventorymgmt.ordermgmt.exceptions.ShoppingCartNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.DuplicateReviewException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException;
-import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotAllowedException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
@@ -109,8 +108,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            UnauthorizedRoleAccessException.class,
-            ReviewNotAllowedException.class
+            UnauthorizedRoleAccessException.class
     })
     public ResponseEntity<ResponseStructure<String>> handleForbidden(RuntimeException ex) {
         return build(HttpStatus.FORBIDDEN, ex.getMessage());

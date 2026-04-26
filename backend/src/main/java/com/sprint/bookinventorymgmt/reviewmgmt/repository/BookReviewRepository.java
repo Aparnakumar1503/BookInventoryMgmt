@@ -14,6 +14,4 @@ public interface BookReviewRepository extends JpaRepository<BookReview, Integer>
 
     @Query("SELECT br FROM BookReview br WHERE br.rating = (SELECT MAX(b.rating) FROM BookReview b)")
     List<BookReview> findByMaxRating();
-    @Query("SELECT r FROM Reviewer r WHERE r.employedBy = :company")
-    List<Reviewer> findReviewersByCompany(@Param("company") String company);
 }

@@ -10,12 +10,4 @@ public class ReviewNotFoundException extends RuntimeException {
     {
         super(message);
     }
-
-    public ReviewNotFoundException(Integer reviewId) {
-        super("Review not found with ID: " + reviewId);
-    }
-
-    public ReviewNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

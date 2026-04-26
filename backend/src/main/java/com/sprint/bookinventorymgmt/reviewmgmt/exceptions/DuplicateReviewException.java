@@ -10,11 +10,4 @@ public class DuplicateReviewException extends RuntimeException {
         super(message);
     }
 
-    public DuplicateReviewException(String isbn, Integer reviewerId) {
-        super("Review already exists for isbn: " + isbn + " and reviewerId: " + reviewerId);
-    }
-
-    public DuplicateReviewException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
