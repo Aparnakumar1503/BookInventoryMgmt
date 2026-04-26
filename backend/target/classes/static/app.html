@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookInventoryMgmt Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="app-page">
+<main class="shell shell-app">
+    <header class="app-header">
+        <div>
+            <p class="eyebrow">Authenticated Session</p>
+            <h1>Owner dashboard</h1>
+        </div>
+        <form method="post" action="/logout">
+            <button type="submit" class="secondary-button">Logout</button>
+        </form>
+    </header>
+
+    <section class="profile-panel">
+        <div>
+            <p class="profile-label">Signed in as</p>
+            <h2 id="display-name">Loading...</h2>
+            <p id="display-role" class="muted"></p>
+        </div>
+        <div class="session-note">
+            <strong>Session rule:</strong>
+            <span>Only this browser session can use your permissions. Another browser without login receives `401` or `403`.</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <div>
+                <p class="eyebrow">Module Access</p>
+                <h2>Your available areas</h2>
+            </div>
+        </div>
+        <div id="module-grid" class="module-grid"></div>
+    </section>
+
+    <section class="explorer">
+        <div class="section-header">
+            <div>
+                <p class="eyebrow">Endpoint Explorer</p>
+                <h2>Test protected APIs from the authenticated UI</h2>
+            </div>
+        </div>
+        <div class="explorer-controls">
+            <label class="field">
+                <span>Endpoint</span>
+                <select id="endpoint-select"></select>
+            </label>
+            <button id="run-endpoint" class="primary-button" type="button">Fetch Data</button>
+        </div>
+        <pre id="api-output" class="api-output">Select an endpoint and run it.</pre>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
