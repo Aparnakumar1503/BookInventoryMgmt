@@ -1,0 +1,11 @@
+com\sprint\bookinventorymgmt\bookmgmt\BookServiceTest.class
+com\sprint\bookinventorymgmt\ordermgmt\service\ShoppingCartServiceTest.class
+com\sprint\bookinventorymgmt\authormgmt\service\BookAuthorServiceImplTest.class
+com\sprint\bookinventorymgmt\inventorymgmt\service\BookConditionServiceImplTest.class
+com\sprint\bookinventorymgmt\authormgmt\service\AuthorServiceImplTest.class
+com\sprint\bookinventorymgmt\reviewmgmt\service\BookReviewServiceTest.class
+com\sprint\bookinventorymgmt\usermgmt\service\UserMgmtServiceTest.class
+com\sprint\bookinventorymgmt\reviewmgmt\service\ReviewerServiceTest.class
+com\sprint\bookinventorymgmt\inventorymgmt\service\InventoryServiceImplTest.class
+com\sprint\bookinventorymgmt\ordermgmt\service\PurchaseLogServiceTest.class
+com\sprint\bookinventorymgmt\usermgmt\service\PermRoleServiceImplTest.class
