@@ -10,11 +10,5 @@ public class InvalidRatingException extends RuntimeException {
         super(message);
     }
 
-    public InvalidRatingException(Integer rating) {
-        super("Rating must be between 1 and 10. Received: " + rating);
-    }
 
-    public InvalidRatingException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

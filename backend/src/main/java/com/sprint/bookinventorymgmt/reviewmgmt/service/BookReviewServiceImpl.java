@@ -1,6 +1,7 @@
 package com.sprint.bookinventorymgmt.reviewmgmt.service;
 
 import com.sprint.bookinventorymgmt.reviewmgmt.entity.BookReview;
+import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.DuplicateReviewException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
@@ -33,12 +34,27 @@ public class BookReviewServiceImpl implements BookReviewService {
             throw new InvalidRatingException("Reviewer ID cannot be null");
         }
 
+        if (dto.getIsbn() == null || dto.getIsbn().isBlank()) {
+            throw new InvalidRatingException("ISBN cannot be null or empty");
+        }
+
         if (dto.getRating() == null || dto.getRating() < 1 || dto.getRating() > 10) {
             throw new InvalidRatingException("Rating must be between 1 and 10");
         }
 
         if (!reviewerRepository.existsById(dto.getReviewerID())) {
             throw new ReviewerNotFoundException("Reviewer not found with ID: " + dto.getReviewerID());
+        }
+
+        List<BookReview> existingReviews = reviewRepository.findByReviewerID(dto.getReviewerID());
+
+        for (BookReview existingReview : existingReviews) {
+            if (existingReview.getIsbn() != null
+                    && existingReview.getIsbn().equalsIgnoreCase(dto.getIsbn())) {
+                throw new DuplicateReviewException(
+                        "Reviewer already reviewed this book (ISBN: " + dto.getIsbn() + ")"
+                );
+            }
         }
 
         BookReview review = new BookReview();
