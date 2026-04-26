@@ -58,7 +58,6 @@ com\sprint\bookinventorymgmt\bookmgmt\service\BookServiceImpl.class
 com\sprint\bookinventorymgmt\inventorymgmt\repository\IInventoryRepository.class
 com\sprint\bookinventorymgmt\reviewmgmt\repository\ReviewerRepository.class
 com\sprint\bookinventorymgmt\bookmgmt\controller\StateController.class
-com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewNotAllowedException.class
 com\sprint\bookinventorymgmt\reviewmgmt\repository\BookReviewRepository.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InvalidConditionRankException.class
 com\sprint\bookinventorymgmt\security\dto\AuthDtos.class
