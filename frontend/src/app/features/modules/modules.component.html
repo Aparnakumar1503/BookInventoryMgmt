@@ -6,8 +6,8 @@
     </a>
 
     <div class="mt-6 modules-hero-card rounded-[2rem] p-6 sm:p-8">
-      <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-        <div>
+      <div class="modules-hero-layout grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <div class="modules-hero-copy">
           <p class="bv-stat-label">Step One</p>
           <h1 class="bv-display mt-3 text-5xl leading-none text-[var(--bv-text)] sm:text-6xl">Choose your module</h1>
           <p class="mt-5 max-w-3xl text-base leading-8 text-[var(--bv-text-soft)] sm:text-lg">
@@ -16,18 +16,18 @@
           </p>
         </div>
 
-        <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+        <div class="modules-hero-stats grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
           <article class="modules-stat-tile rounded-[1.4rem] p-4">
             <p class="bv-stat-label">Modules</p>
-            <p class="modules-stat-number mt-3 text-3xl font-black">{{ stats.modules }}</p>
+            <p class="modules-stat-number text-3xl font-black">{{ stats.modules }}</p>
           </article>
           <article class="modules-stat-tile rounded-[1.4rem] p-4">
             <p class="bv-stat-label">Endpoints</p>
-            <p class="modules-stat-number mt-3 text-3xl font-black">{{ stats.endpoints }}</p>
+            <p class="modules-stat-number text-3xl font-black">{{ stats.endpoints }}</p>
           </article>
           <article class="modules-stat-tile rounded-[1.4rem] p-4">
             <p class="bv-stat-label">Owners</p>
-            <p class="modules-stat-number mt-3 text-3xl font-black">{{ stats.teams }}</p>
+            <p class="modules-stat-number text-3xl font-black">{{ stats.teams }}</p>
           </article>
         </div>
       </div>

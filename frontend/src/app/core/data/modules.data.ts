@@ -18,6 +18,6 @@ export const MODULES: readonly ModuleConfig[] = [
 
 export const PLATFORM_STATS: PlatformStats = {
   teams: TEAMMATES.length,
-  modules: MODULES.length,
+  modules: 6,
   endpoints: MODULES.reduce((count, module) => count + module.endpoints.length, 0)
 };

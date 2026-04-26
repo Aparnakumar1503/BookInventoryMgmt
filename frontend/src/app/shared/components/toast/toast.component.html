@@ -1,7 +1,0 @@
-<div class="toast-stack">
-  @for (message of messages; track message.id) {
-    <button type="button" class="toast" [attr.data-type]="message.type" (click)="dismiss(message.id)">
-      {{ message.message }}
-    </button>
-  }
-</div>

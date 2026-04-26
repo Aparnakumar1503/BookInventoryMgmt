@@ -56,7 +56,8 @@ interface BookPreviewItem {
 @Component({
   selector: 'app-endpoint-result',
   imports: [RouterLink, ResponseViewerComponent, DecimalPipe],
-  templateUrl: './endpoint-result.html'
+  templateUrl: './endpoint-result.html',
+  styleUrl: './endpoint-result.css'
 })
 export class EndpointResultComponent {
   private readonly storageService = inject(StorageService);
@@ -68,7 +69,8 @@ export class EndpointResultComponent {
   readonly moduleId = this.storageService.getLastModuleId();
   readonly requestContext = signal<StoredRequestContext | null>(this.storageService.getLastRequestContext());
   readonly isLoadingPage = signal(false);
-  readonly viewMode = signal<ViewMode>('table');
+  readonly viewMode = signal<ViewMode>('preview');
+  readonly pageSizeOptions = [6, 9, 12] as const;
 
   readonly endpoint = computed(() => {
     const context = this.requestContext();
@@ -145,6 +147,8 @@ export class EndpointResultComponent {
   ));
 
   readonly previewSupported = computed(() => this.previewType() !== null);
+  readonly currentPageSize = computed(() => this.paginatedData()?.size || 0);
+  readonly shownCount = computed(() => this.tableRows().length);
 
   readonly bookPreviewItems = computed<BookPreviewItem[]>(() => this.previewType() === 'books'
     ? this.tableRows().map((item) => ({
@@ -286,6 +290,15 @@ export class EndpointResultComponent {
     if (paginated?.hasNext) this.reloadPage(paginated.page + 1);
   }
 
+  updatePageSize(size: number): void {
+    const paginated = this.paginatedData();
+    if (!paginated || paginated.size === size) {
+      return;
+    }
+
+    this.reloadPage(0, size);
+  }
+
   formatColumnLabel(column: string): string {
     return column.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
   }
@@ -320,7 +333,24 @@ export class EndpointResultComponent {
   }
 
   previewInitials(value: string): string {
-    return value.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'BV';
+    const parts = value.split(/\s+/).filter(Boolean);
+    if (!parts.length) {
+      return 'BV';
+    }
+
+    if (parts.length === 1) {
+      return parts[0].slice(0, 2).toUpperCase() || 'BV';
+    }
+
+    return parts.slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'BV';
+  }
+
+  previewLeadValue(row: Record<string, unknown>): string {
+    const entries = Object.values(row)
+      .map((value) => value === null || value === undefined ? '' : String(value).trim())
+      .filter((value) => value.length > 0);
+
+    return entries[0] || 'Item';
   }
 
   ratingStars(rating: number): string[] {
@@ -332,15 +362,16 @@ export class EndpointResultComponent {
     return purchased ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
   }
 
-  private reloadPage(page: number): void {
+  private reloadPage(page: number, sizeOverride?: number): void {
     const context = this.requestContext();
     const endpoint = this.endpoint();
     const paginated = this.paginatedData();
     if (!context || !endpoint || !paginated) return;
 
+    const nextSize = sizeOverride ?? paginated.size ?? 10;
     const payload: EndpointRequestPayload = {
       ...context.payload,
-      queryParams: { ...context.payload.queryParams, page, size: paginated.size || 10 }
+      queryParams: { ...context.payload.queryParams, page, size: nextSize }
     };
 
     this.isLoadingPage.set(true);

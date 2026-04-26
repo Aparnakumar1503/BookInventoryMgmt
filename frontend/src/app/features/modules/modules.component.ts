@@ -6,7 +6,7 @@ import { ModuleService } from '../../core/services/module.service';
   selector: 'app-modules',
   imports: [RouterLink],
   templateUrl: './modules.component.html',
-  styleUrl: './modules.component.scss'
+  styleUrl: './modules.component.css'
 })
 export class ModulesComponent {
   private readonly moduleService = inject(ModuleService);

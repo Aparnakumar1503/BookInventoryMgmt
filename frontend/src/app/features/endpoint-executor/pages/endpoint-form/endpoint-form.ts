@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { finalize } from 'rxjs';
 import { EndpointConfig, EndpointField, EndpointRequestPayload } from '../../../../core/models/endpoint.model';
 import { ApiCallResult } from '../../../../core/models/response.model';
@@ -24,6 +24,7 @@ type ErrorSections = 'pathParams' | 'queryParams' | 'body';
 })
 export class EndpointFormComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly apiService = inject(ApiService);
   private readonly moduleService = inject(ModuleService);
   private readonly notificationService = inject(NotificationService);
@@ -192,16 +193,16 @@ export class EndpointFormComponent {
           endpointId: this.endpointId(),
           payload
         });
-        this.viewMode.set(this.preferredViewMode(result));
 
         if (result.ok) {
           this.prefillStatus.set('');
           this.notificationService.success('API request completed successfully.');
-          return;
+        } else {
+          this.applyBackendErrors(result);
+          this.notificationService.error(this.buildErrorMessage(result));
         }
 
-        this.applyBackendErrors(result);
-        this.notificationService.error(this.buildErrorMessage(result));
+        void this.router.navigate(['/result']);
       });
   }
 
