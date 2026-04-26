@@ -6,7 +6,6 @@ import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthRequest;
 import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthTokenResponse;
 import com.sprint.bookinventorymgmt.security.dto.AuthDtos.AuthenticatedUserResponse;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
-import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class AuthController {
                     ResponseBuilder.success(HttpStatus.OK.value(), "Login successful", payload)
             );
         } catch (BadCredentialsException ex) {
-            throw new InvalidCredentialsException("Invalid username or password");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
     }
 

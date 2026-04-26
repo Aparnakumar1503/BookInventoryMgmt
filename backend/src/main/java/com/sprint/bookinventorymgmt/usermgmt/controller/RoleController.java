@@ -14,12 +14,15 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -54,6 +57,11 @@ public class RoleController {
             @PathVariable @Positive(message = "User ID must be greater than 0") Integer userId,
             @PathVariable @Positive(message = "Role ID must be greater than 0") Integer roleId) {
         UserResponseDTO user = userService.getUserById(userId);
+        PermRoleResponseDTO targetRole = permRoleService.getRoleById(roleId);
+
+        if (isAdminRole(targetRole) && !currentUserIsAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only an Admin can assign the Admin role.");
+        }
 
         UserRequestDTO requestDTO = new UserRequestDTO();
         requestDTO.setFirstName(user.getFirstName());
@@ -61,7 +69,7 @@ public class RoleController {
         requestDTO.setPhoneNumber(user.getPhoneNumber());
         requestDTO.setUserName(user.getUserName());
         requestDTO.setPassword("");
-        requestDTO.setRoleNumber(roleId);
+        requestDTO.setRoleNumber(targetRole.getRoleNumber());
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
@@ -70,5 +78,16 @@ public class RoleController {
                         userService.updateUser(userId, requestDTO)
                 )
         );
+    }
+
+    private boolean isAdminRole(PermRoleResponseDTO role) {
+        return role.getPermRole() != null && "admin".equalsIgnoreCase(role.getPermRole());
+    }
+
+    private boolean currentUserIsAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null
+                && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equalsIgnoreCase(authority.getAuthority()));
     }
 }

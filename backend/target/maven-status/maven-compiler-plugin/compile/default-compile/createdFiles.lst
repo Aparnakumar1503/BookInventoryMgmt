@@ -40,7 +40,6 @@ com\sprint\bookinventorymgmt\bookmgmt\repository\BookRepository.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\ResourceNotFoundException.class
 com\sprint\bookinventorymgmt\ordermgmt\entity\PurchaseLogId.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InvalidInventoryDataException.class
-com\sprint\bookinventorymgmt\usermgmt\exceptions\InvalidCredentialsException.class
 com\sprint\bookinventorymgmt\common\ResponseBuilder.class
 com\sprint\bookinventorymgmt\reviewmgmt\exceptions\DuplicateReviewException.class
 com\sprint\bookinventorymgmt\reviewmgmt\entity\BookReview.class
@@ -124,7 +123,6 @@ com\sprint\bookinventorymgmt\bookmgmt\dto\response\StateResponseDTO.class
 com\sprint\bookinventorymgmt\ordermgmt\service\IPurchaseLogService.class
 com\sprint\bookinventorymgmt\security\SecurityAuthorities.class
 com\sprint\bookinventorymgmt\inventorymgmt\dto\requestdto\InventoryMapper.class
-com\sprint\bookinventorymgmt\usermgmt\exceptions\UnauthorizedRoleAccessException.class
 com\sprint\bookinventorymgmt\reviewmgmt\controller\ReviewerController.class
 com\sprint\bookinventorymgmt\bookmgmt\entity\Book.class
 com\sprint\bookinventorymgmt\ordermgmt\exceptions\DuplicateCartItemException.class
