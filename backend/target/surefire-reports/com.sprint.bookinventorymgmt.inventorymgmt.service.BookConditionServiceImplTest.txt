@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.sprint.bookinventorymgmt.inventorymgmt.service.BookConditionServiceImplTest
--------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.206 s -- in com.sprint.bookinventorymgmt.inventorymgmt.service.BookConditionServiceImplTest
