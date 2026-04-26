@@ -9,27 +9,6 @@ export const USERS_MODULE: ModuleConfig = {
   owner: TEAMMATES[0],
   endpoints: [
     {
-      id: 'login',
-      name: 'Login',
-      method: 'POST',
-      path: '/api/v1/auth/login',
-      description: 'Authenticate a user and return a JWT token payload.',
-      body: {
-        title: 'Login Payload',
-        fields: [
-          { key: 'username', label: 'Username', type: 'text', required: true, placeholder: 'aparna', minLength: 1, maxLength: 50 },
-          { key: 'password', label: 'Password', type: 'text', required: true, placeholder: 'Password@123', minLength: 1, maxLength: 100 }
-        ]
-      }
-    },
-    {
-      id: 'auth-me',
-      name: 'Authenticated User',
-      method: 'GET',
-      path: '/api/v1/auth/me',
-      description: 'Fetch the authenticated user details for the active JWT token.'
-    },
-    {
       id: 'create-user',
       name: 'Create User',
       method: 'POST',
