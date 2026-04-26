@@ -10,14 +10,15 @@ import com.sprint.bookinventorymgmt.inventorymgmt.repository.IBookConditionRepos
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
 public class BookConditionServiceImpl implements IBookConditionService {
-
-    private final IBookConditionRepository repository;
+    @Autowired
+    private  IBookConditionRepository repository;
 
     public BookConditionServiceImpl(IBookConditionRepository repository) {
         this.repository = repository;

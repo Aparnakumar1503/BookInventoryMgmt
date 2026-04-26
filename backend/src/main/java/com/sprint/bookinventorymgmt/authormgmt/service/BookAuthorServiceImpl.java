@@ -6,6 +6,7 @@ import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundExce
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.BookAuthorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,8 @@ import java.util.List;
 @Service
 public class BookAuthorServiceImpl implements IBookAuthorService {
 
-
-    private final BookAuthorRepository repo;
+    @Autowired
+    private  BookAuthorRepository repo;
 
     public BookAuthorServiceImpl(BookAuthorRepository repo) {
         this.repo = repo;

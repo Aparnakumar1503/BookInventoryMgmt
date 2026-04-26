@@ -9,6 +9,7 @@ import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundExceptio
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,13 @@ import java.util.List;
 
 @Service
 public class UserMgmtServiceImpl implements IUserMgmtService {
-    private final IUserMgmtRepository userRepo;
-    private final IPermRoleRepository permRoleRepo;
-    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private  IUserMgmtRepository userRepo;
+    @Autowired
+    private  IPermRoleRepository permRoleRepo;
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
 
     public UserMgmtServiceImpl(
             IUserMgmtRepository userRepo,

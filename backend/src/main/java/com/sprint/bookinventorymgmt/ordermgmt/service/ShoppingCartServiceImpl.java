@@ -11,6 +11,7 @@ import com.sprint.bookinventorymgmt.ordermgmt.repository.IShoppingCartRepository
 import com.sprint.bookinventorymgmt.ordermgmt.dto.requestDto.ShoppingCartRequestDTO;
 import com.sprint.bookinventorymgmt.ordermgmt.dto.responseDto.ShoppingCartResponseDTO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartServiceImpl implements IShoppingCartService {
-
-    private final IShoppingCartRepository repo;
-    private final IPurchaseLogRepository purchaseLogRepository;
-    private final IInventoryRepository inventoryRepository;
-    private final BookRepository bookRepository;
+    @Autowired
+    private  IShoppingCartRepository repo;
+    @Autowired
+    private  IPurchaseLogRepository purchaseLogRepository;
+    @Autowired
+    private  IInventoryRepository inventoryRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     public ShoppingCartServiceImpl(
             IShoppingCartRepository repo,
