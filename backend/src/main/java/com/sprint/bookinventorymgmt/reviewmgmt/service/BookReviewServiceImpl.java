@@ -8,6 +8,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.repository.BookReviewRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewRequestDTO;
 import com.sprint.bookinventorymgmt.reviewmgmt.dto.BookReviewResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,9 +16,10 @@ import java.util.List;
 
 @Service
 public class BookReviewServiceImpl implements BookReviewService {
-
-    private final BookReviewRepository reviewRepository;
-    private final ReviewerRepository reviewerRepository;
+    @Autowired
+    private  BookReviewRepository reviewRepository;
+    @Autowired
+    private  ReviewerRepository reviewerRepository;
 
     public BookReviewServiceImpl(BookReviewRepository reviewRepository, ReviewerRepository reviewerRepository) {
         this.reviewRepository = reviewRepository;

@@ -5,14 +5,15 @@ import com.sprint.bookinventorymgmt.bookmgmt.entity.State;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.DataNotFoundException;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.InvalidInputException;
 import com.sprint.bookinventorymgmt.bookmgmt.repository.StateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StateServiceImpl implements IStateService {
-
-    private final StateRepository stateRepository;
+    @Autowired
+    private StateRepository stateRepository;
 
     public StateServiceImpl(StateRepository stateRepository) {
         this.stateRepository = stateRepository;
