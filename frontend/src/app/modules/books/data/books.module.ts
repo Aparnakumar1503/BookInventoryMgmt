@@ -17,7 +17,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       queryParams: [
         { key: 'categoryId', label: 'Category ID', type: 'number', placeholder: '3', min: 1, minMessage: 'Category ID must be greater than 0.' },
         { key: 'publisherId', label: 'Publisher ID', type: 'number', placeholder: '7', min: 1, minMessage: 'Publisher ID must be greater than 0.' },
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -83,7 +83,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       path: '/api/v1/categories',
       description: 'Fetch all categories.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -102,7 +102,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       path: '/api/v1/publishers',
       description: 'Fetch all publishers.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -163,7 +163,7 @@ export const BOOKS_MODULE: ModuleConfig = {
       path: '/api/v1/states',
       description: 'Fetch all state reference values.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },

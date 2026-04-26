@@ -16,7 +16,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       description: 'Fetch all reviews for a given ISBN.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -44,7 +44,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       description: 'Fetch reviews using the review query API by ISBN.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -56,7 +56,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       description: 'Fetch all reviews created by one reviewer.',
       pathParams: [{ key: 'reviewerId', label: 'Reviewer ID', type: 'number', required: true, placeholder: '19', min: 1, minMessage: 'Reviewer ID must be greater than 0.' }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -67,7 +67,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       path: '/api/v1/reviews/max-rating',
       description: 'Fetch the highest rated reviews available.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -86,7 +86,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       path: '/api/v1/reviewers',
       description: 'Fetch all reviewers.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -106,7 +106,7 @@ export const REVIEWS_MODULE: ModuleConfig = {
       description: 'Fetch reviewers filtered by company name.',
       pathParams: [{ key: 'company', label: 'Company', type: 'text', required: true, placeholder: 'BookWorld', minLength: 2, maxLength: 100 }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },

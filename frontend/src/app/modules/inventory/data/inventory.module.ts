@@ -15,7 +15,7 @@ export const INVENTORY_MODULE: ModuleConfig = {
       path: '/api/v1/inventory',
       description: 'Fetch all inventory records.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -35,7 +35,7 @@ export const INVENTORY_MODULE: ModuleConfig = {
       description: 'Fetch all inventory copies for a book ISBN.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -47,7 +47,7 @@ export const INVENTORY_MODULE: ModuleConfig = {
       description: 'Fetch only the available inventory copies for a book ISBN.',
       pathParams: [{ key: 'isbn', label: 'ISBN', type: 'text', required: true, placeholder: '1-111-11111-4', minLength: 3, maxLength: 20 }],
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
@@ -108,7 +108,7 @@ export const INVENTORY_MODULE: ModuleConfig = {
       path: '/api/v1/book-conditions',
       description: 'Fetch all book condition references.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },

@@ -16,6 +16,34 @@ type FieldValue = string | number | boolean | null;
 type FieldControls = Record<string, FormControl<FieldValue>>;
 type ErrorSections = 'pathParams' | 'queryParams' | 'body';
 
+interface ApiEnvelope {
+  statusCode?: number;
+  message?: string;
+  data?: unknown;
+}
+
+interface ErrorViewModel {
+  status: number;
+  title: string;
+  heading: string;
+  exceptionName: string | null;
+  summary: string;
+  details: string[];
+  timestampLabel: string;
+  requestLabel: string;
+  footerMessage: string;
+}
+
+interface NotModifiedViewModel {
+  status: number;
+  title: string;
+  summary: string;
+  details: string[];
+  timestampLabel: string;
+  requestLabel: string;
+  footerMessage: string;
+}
+
 @Component({
   selector: 'app-endpoint-form',
   imports: [ReactiveFormsModule, RouterLink, RouterLinkActive, LoadingSpinnerComponent, ResponseViewerComponent],
@@ -83,6 +111,68 @@ export class EndpointFormComponent {
   readonly responseBody = computed<Record<string, unknown> | null>(() => {
     const body = this.response()?.body;
     return this.isRecord(body) ? body : null;
+  });
+  readonly isNotModifiedResponse = computed(() => {
+    const result = this.response();
+    const status = result?.status || this.toNumber((this.responseBody() as ApiEnvelope | null)?.statusCode);
+    return status === 304;
+  });
+  readonly isErrorResponse = computed(() => Boolean(this.response() && !this.response()?.ok));
+  readonly showErrorState = computed(() => this.isErrorResponse() && !this.isNotModifiedResponse());
+  readonly errorViewModel = computed<ErrorViewModel | null>(() => {
+    const result = this.response();
+    if (!result || result.ok || this.isNotModifiedResponse()) {
+      return null;
+    }
+
+    const body = this.responseBody() as ApiEnvelope | null;
+    const status = result.status || this.toNumber(body?.statusCode);
+    const rawMessage = typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : 'The request was unsuccessful.';
+    const detailEntries = this.errorDetails(body?.data);
+    const exceptionName = this.exceptionName(body?.data);
+
+    return {
+      status,
+      title: exceptionName || `${status || 'Error'} - ${this.statusLabel(status)}`,
+      heading: exceptionName
+        ? `${exceptionName} · ${status || 'error'} ${this.statusLabel(status).toLowerCase()}`
+        : `Request failed - ${status || 'error'} ${this.statusLabel(status).toLowerCase()}`,
+      exceptionName,
+      summary: rawMessage,
+      details: detailEntries.length
+        ? detailEntries
+        : ['Check the request values and verify the endpoint details are correct.'],
+      timestampLabel: this.formatTimestamp(result.receivedAt),
+      requestLabel: `${this.endpoint()?.method ?? 'REQUEST'} ${result.url ?? this.endpoint()?.path ?? ''}`.trim(),
+      footerMessage: this.footerMessage(status)
+    };
+  });
+  readonly notModifiedViewModel = computed<NotModifiedViewModel | null>(() => {
+    const result = this.response();
+    if (!result || !this.isNotModifiedResponse()) {
+      return null;
+    }
+
+    const body = this.responseBody() as ApiEnvelope | null;
+    const status = result.status || this.toNumber(body?.statusCode);
+    const rawMessage = typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : 'No changes were detected, so the existing record was kept as-is.';
+
+    return {
+      status,
+      title: 'No Data Updated',
+      summary: rawMessage,
+      details: [
+        'The submitted values are the same as the current record.',
+        'Nothing changed, so the server returned Not Modified.'
+      ],
+      timestampLabel: this.formatTimestamp(result.receivedAt),
+      requestLabel: `${this.endpoint()?.method ?? 'REQUEST'} ${result.url ?? this.endpoint()?.path ?? ''}`.trim(),
+      footerMessage: 'Request completed successfully. The server kept the existing data because no fields were changed.'
+    };
   });
 
   readonly responseUrl = computed(() => this.response()?.url || this.endpoint()?.path || '');
@@ -197,6 +287,9 @@ export class EndpointFormComponent {
         if (result.ok) {
           this.prefillStatus.set('');
           this.notificationService.success('API request completed successfully.');
+        } else if (this.isNotModifiedResult(result)) {
+          this.prefillStatus.set('');
+          this.notificationService.info('No data updated. The submitted values match the current record.');
         } else {
           this.applyBackendErrors(result);
           this.notificationService.error(this.buildErrorMessage(result));
@@ -419,7 +512,6 @@ export class EndpointFormComponent {
   private createGroup(fields: readonly EndpointField[]): FormGroup<FieldControls> {
     const controls = fields.reduce<FieldControls>((group, field) => {
       const validators: ValidatorFn[] = [];
-
       if (field.required) {
         validators.push(Validators.required);
       }
@@ -457,7 +549,8 @@ export class EndpointFormComponent {
   private collect(
     group: FormGroup<FieldControls>,
     fields: readonly EndpointField[],
-    omitEmpty: boolean
+    omitEmpty: boolean,
+    section: 'pathParams' | 'queryParams' | 'body'
   ): Record<string, string | number | boolean> {
     return fields.reduce<Record<string, string | number | boolean>>((payload, field) => {
       const value = group.controls[field.key]?.value;
@@ -466,15 +559,23 @@ export class EndpointFormComponent {
         return payload;
       }
 
-      payload[field.key] = field.type === 'number' && value !== null && value !== '' ? Number(value) : value ?? '';
+      if (field.type === 'number' && value !== null && value !== '') {
+        const numericValue = Number(value);
+        payload[field.key] = section === 'queryParams' && field.key === 'page'
+          ? Math.max(0, numericValue - 1)
+          : numericValue;
+        return payload;
+      }
+
+      payload[field.key] = value ?? '';
       return payload;
     }, {});
   }
 
   private buildRequestPayload(): EndpointRequestPayload {
-    const pathParams = this.collect(this.pathParamsGroup, this.pathFields(), false);
-    const queryParams = this.collect(this.queryParamsGroup, this.queryFields(), true);
-    const body = this.bodyFields().length ? this.collect(this.bodyGroup, this.bodyFields(), true) : null;
+    const pathParams = this.collect(this.pathParamsGroup, this.pathFields(), false, 'pathParams');
+    const queryParams = this.collect(this.queryParamsGroup, this.queryFields(), true, 'queryParams');
+    const body = this.bodyFields().length ? this.collect(this.bodyGroup, this.bodyFields(), true, 'body') : null;
 
     if (this.endpointId() === 'update-book-condition' && body) {
       const rank = pathParams['rank'];
@@ -736,6 +837,91 @@ export class EndpointFormComponent {
   private preferredViewMode(result: ApiCallResult): 'preview' | 'table' | 'json' {
     const body = this.extractResponseData(result.body);
     return this.normalizeRows(body).length ? 'preview' : 'json';
+  }
+
+  private isNotModifiedResult(result: ApiCallResult): boolean {
+    const body = this.isRecord(result.body) ? result.body as ApiEnvelope : null;
+    const status = result.status || this.toNumber(body?.statusCode);
+    return status === 304;
+  }
+
+  private toNumber(value: unknown): number {
+    return typeof value === 'number' ? value : Number(value ?? 0);
+  }
+
+  private statusLabel(status: number): string {
+    const labels: Record<number, string> = {
+      400: 'Bad Request',
+      401: 'Unauthorized',
+      403: 'Forbidden',
+      404: 'Not Found',
+      304: 'Not Modified',
+      409: 'Conflict',
+      422: 'Unprocessable Entity',
+      500: 'Internal Server Error'
+    };
+
+    return labels[status] ?? 'Request Failed';
+  }
+
+  private errorDetails(data: unknown): string[] {
+    if (!this.isRecord(data)) {
+      return [];
+    }
+
+    return Object.entries(data)
+      .filter(([key, value]) => key !== 'exception' && value !== null && value !== undefined && String(value).trim().length > 0)
+      .map(([key, value]) => `${this.formatColumnLabel(key)}: ${String(value).trim()}`);
+  }
+
+  private exceptionName(data: unknown): string | null {
+    if (!this.isRecord(data)) {
+      return null;
+    }
+
+    const value = data['exception'];
+    if (typeof value !== 'string' || !value.trim()) {
+      return null;
+    }
+
+    return value.trim();
+  }
+
+  private formatTimestamp(value: string): string {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return new Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(date);
+  }
+
+  private footerMessage(status: number): string {
+    if (status === 404) {
+      return 'The server could not find the requested resource. Verify the ID and try again.';
+    }
+
+    if (status === 400 || status === 422) {
+      return 'The request data was rejected by the server. Review the inputs and try again.';
+    }
+
+    if (status === 401 || status === 403) {
+      return 'Access to this resource was blocked. Check the current user permissions and try again.';
+    }
+
+    if (status === 409) {
+      return 'The request conflicts with existing data. Review the current record state and retry.';
+    }
+
+    return 'The request could not be completed successfully. Review the details and try again.';
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {

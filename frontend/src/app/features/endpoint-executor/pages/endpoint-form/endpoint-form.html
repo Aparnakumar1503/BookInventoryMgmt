@@ -57,7 +57,7 @@
                     @for (field of pathFields(); track field.key) {
                       <label class="block">
                         <span class="endpoint-workspace__field-label">{{ field.label }}</span>
-                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.min]="field.type === 'number' && field.min !== undefined ? field.min : null" [attr.max]="field.type === 'number' && field.max !== undefined ? field.max : null" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null" [attr.pattern]="field.pattern ?? null" (input)="onPathParamInput()" (blur)="maybeLoadExistingRecord()" />
+                        <input class="bv-field mt-2" [type]="inputType(field)" [placeholder]="field.placeholder ?? ''" [formControlName]="field.key" [attr.min]="field.type === 'number' && field.min !== undefined ? field.min : null" [attr.max]="field.type === 'number' && field.max !== undefined ? field.max : null" [attr.minlength]="field.minLength ?? null" [attr.maxlength]="field.maxLength ?? null" [attr.pattern]="field.pattern ?? null" (input)="onPathParamInput()" />
                         @if (hasError('pathParams', field.key)) {
                           <span class="mt-2 block text-sm font-bold text-[var(--bv-danger-text)]">{{ getErrorMessage('pathParams', field.key) }}</span>
                         }
@@ -167,7 +167,10 @@
                   </div>
 
                   <div class="endpoint-workspace__response-tools">
-                    <span class="rounded-full px-3 py-1 text-xs font-black" [class.bv-method-post]="apiResponse.ok" [class.bv-method-delete]="!apiResponse.ok">
+                    <span
+                      class="rounded-full px-3 py-1 text-xs font-black"
+                      [class.bv-method-post]="apiResponse.ok || isNotModifiedResponse()"
+                      [class.bv-method-delete]="showErrorState()">
                       {{ apiResponse.status || 'ERR' }}
                     </span>
                     <div class="endpoint-workspace__response-tabs">
@@ -184,14 +187,87 @@
                       <p class="endpoint-workspace__response-label">Response</p>
                       <p class="endpoint-workspace__response-url">{{ responseUrl() }}</p>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-black" [class.bv-method-post]="apiResponse.ok" [class.bv-method-delete]="!apiResponse.ok">
+                    <span
+                      class="rounded-full px-3 py-1 text-xs font-black"
+                      [class.bv-method-post]="apiResponse.ok || isNotModifiedResponse()"
+                      [class.bv-method-delete]="showErrorState()">
                       {{ apiResponse.status || 'ERR' }}
                     </span>
                   </div>
 
                   <div class="endpoint-workspace__response-content">
                     @if (viewMode() === 'preview') {
-                      @if (authorPreviewItems().length) {
+                      @if (isNotModifiedResponse() && notModifiedViewModel(); as noChangeModel) {
+                        <div class="endpoint-workspace__success-preview">
+                          <div class="endpoint-workspace__success-preview-main">
+                            <div class="endpoint-workspace__success-preview-icon">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 7v5"></path>
+                                <circle cx="12" cy="16.5" r="0.9" class="endpoint-workspace__success-preview-dot"></circle>
+                              </svg>
+                            </div>
+
+                            <div class="endpoint-workspace__success-preview-badge">HTTP {{ noChangeModel.status }}</div>
+
+                            <h3 class="endpoint-workspace__success-preview-title">{{ noChangeModel.title }}</h3>
+                            <p class="endpoint-workspace__success-preview-summary">{{ noChangeModel.summary }}</p>
+
+                            @for (detail of noChangeModel.details; track detail) {
+                              <p class="endpoint-workspace__success-preview-detail">{{ detail }}</p>
+                            }
+
+                            <div class="endpoint-workspace__success-preview-chips">
+                              <div class="endpoint-workspace__success-preview-chip">
+                                <span>{{ noChangeModel.timestampLabel }}</span>
+                              </div>
+                              <div class="endpoint-workspace__success-preview-chip">
+                                <span>{{ noChangeModel.requestLabel }}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="endpoint-workspace__success-preview-footer">
+                            <span class="endpoint-workspace__success-preview-footer-icon">i</span>
+                            <span>{{ noChangeModel.footerMessage }}</span>
+                          </div>
+                        </div>
+                      } @else if (showErrorState() && errorViewModel(); as errorModel) {
+                        <div class="endpoint-workspace__error-preview">
+                          <div class="endpoint-workspace__error-preview-main">
+                            <div class="endpoint-workspace__error-preview-icon">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 7v5"></path>
+                                <circle cx="12" cy="16.5" r="0.9" class="endpoint-workspace__error-preview-dot"></circle>
+                              </svg>
+                            </div>
+
+                            <div class="endpoint-workspace__error-preview-badge">HTTP {{ errorModel.status || 'ERR' }}</div>
+
+                            <h3 class="endpoint-workspace__error-preview-title">{{ errorModel.title }}</h3>
+                            <p class="endpoint-workspace__error-preview-summary">{{ errorModel.summary }}</p>
+
+                            @for (detail of errorModel.details; track detail) {
+                              <p class="endpoint-workspace__error-preview-detail">{{ detail }}</p>
+                            }
+
+                            <div class="endpoint-workspace__error-preview-chips">
+                              <div class="endpoint-workspace__error-preview-chip">
+                                <span>{{ errorModel.timestampLabel }}</span>
+                              </div>
+                              <div class="endpoint-workspace__error-preview-chip">
+                                <span>{{ errorModel.requestLabel }}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="endpoint-workspace__error-preview-footer">
+                            <span class="endpoint-workspace__error-preview-footer-icon">!</span>
+                            <span>{{ errorModel.footerMessage }}</span>
+                          </div>
+                        </div>
+                      } @else if (authorPreviewItems().length) {
                         <div class="endpoint-workspace__preview-grid">
                           @for (author of authorPreviewItems(); track $index) {
                             <article class="endpoint-workspace__preview-item">
@@ -233,7 +309,25 @@
 
                     @if (viewMode() === 'table') {
                       <div class="endpoint-workspace__table-shell">
-                        @if (tableRows().length) {
+                        @if (isNotModifiedResponse() && notModifiedViewModel(); as noChangeModel) {
+                          <div class="endpoint-workspace__table-success">
+                            <div class="endpoint-workspace__table-success-icon">i</div>
+                            <h3 class="endpoint-workspace__table-success-title">{{ noChangeModel.title }}</h3>
+                            <p class="endpoint-workspace__table-success-copy">{{ noChangeModel.summary }}</p>
+                            @for (detail of noChangeModel.details; track detail) {
+                              <p class="endpoint-workspace__table-success-detail">{{ detail }}</p>
+                            }
+                          </div>
+                        } @else if (showErrorState() && errorViewModel(); as errorModel) {
+                          <div class="endpoint-workspace__table-error">
+                            <div class="endpoint-workspace__table-error-icon">!</div>
+                            <h3 class="endpoint-workspace__table-error-title">{{ errorModel.heading }}</h3>
+                            <p class="endpoint-workspace__table-error-copy">{{ errorModel.summary }}</p>
+                            @for (detail of errorModel.details; track detail) {
+                              <p class="endpoint-workspace__table-error-detail">{{ detail }}</p>
+                            }
+                          </div>
+                        } @else if (tableRows().length) {
                           <table class="min-w-full divide-y divide-slate-200">
                             <thead class="bg-[var(--bv-primary-strong)] text-left text-xs font-black uppercase tracking-[0.2em] text-white">
                               <tr>

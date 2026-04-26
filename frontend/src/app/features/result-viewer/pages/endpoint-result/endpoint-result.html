@@ -15,7 +15,7 @@
 
     @if (response(); as apiResponse) {
       <div class="result-page__segment-row">
-        <button type="button" class="result-page__helper-chip" [class.result-page__helper-chip--active]="viewMode() === 'preview'" (click)="setViewMode('preview')">Preview first</button>
+        <button type="button" class="result-page__helper-chip" [class.result-page__helper-chip--active]="viewMode() === 'preview'" (click)="setViewMode('preview')">Preview UI</button>
         <button type="button" class="result-page__helper-chip" [class.result-page__helper-chip--active]="viewMode() === 'table'" (click)="setViewMode('table')">Table for structure</button>
         <button type="button" class="result-page__helper-chip" [class.result-page__helper-chip--active]="viewMode() === 'json'" (click)="setViewMode('json')">JSON for raw response</button>
       </div>
@@ -28,7 +28,7 @@
           </div>
 
           <div class="result-page__response-tools">
-            <span class="result-page__status-badge" [class.result-page__status-badge--error]="!apiResponse.ok">
+            <span class="result-page__status-badge" [class.result-page__status-badge--error]="showErrorState()">
               {{ apiResponse.status || 'ERR' }}
             </span>
 
@@ -64,7 +64,111 @@
 
         @if (viewMode() === 'preview') {
           <div class="result-page__body">
-            @if (previewType() === 'books' && bookPreviewItems().length) {
+            @if (isNotModifiedResponse() && notModifiedViewModel(); as noChangeModel) {
+              <div class="result-page__success-preview">
+                <div class="result-page__success-preview-main">
+                  <div class="result-page__success-preview-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v5"></path>
+                      <circle cx="12" cy="16.5" r="0.9" class="result-page__success-preview-dot"></circle>
+                    </svg>
+                  </div>
+
+                  <div class="result-page__success-preview-badge">HTTP {{ noChangeModel.status }}</div>
+
+                  <h3 class="result-page__success-preview-title">{{ noChangeModel.title }}</h3>
+                  <p class="result-page__success-preview-summary">{{ noChangeModel.summary }}</p>
+
+                  @for (detail of noChangeModel.details; track detail) {
+                    <p class="result-page__success-preview-detail">{{ detail }}</p>
+                  }
+
+                  <div class="result-page__success-preview-chips">
+                    <div class="result-page__success-preview-chip">
+                      <span>{{ noChangeModel.timestampLabel }}</span>
+                    </div>
+                    <div class="result-page__success-preview-chip">
+                      <span>{{ noChangeModel.requestLabel }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="result-page__success-preview-footer">
+                  <span class="result-page__success-preview-footer-icon">i</span>
+                  <span>{{ noChangeModel.footerMessage }}</span>
+                </div>
+              </div>
+            } @else if (actionSuccessViewModel(); as successModel) {
+              <div class="result-page__success-preview">
+                <div class="result-page__success-preview-main">
+                  <div class="result-page__success-preview-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M8 12.3l2.5 2.5 5-5.6"></path>
+                    </svg>
+                  </div>
+
+                  <div class="result-page__success-preview-badge">HTTP {{ successModel.status }}</div>
+
+                  <h3 class="result-page__success-preview-title">{{ successModel.title }}</h3>
+                  <p class="result-page__success-preview-summary">{{ successModel.summary }}</p>
+
+                  @for (detail of successModel.details; track detail) {
+                    <p class="result-page__success-preview-detail">{{ detail }}</p>
+                  }
+
+                  <div class="result-page__success-preview-chips">
+                    <div class="result-page__success-preview-chip">
+                      <span>{{ successModel.timestampLabel }}</span>
+                    </div>
+                    <div class="result-page__success-preview-chip">
+                      <span>{{ successModel.requestLabel }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="result-page__success-preview-footer">
+                  <span class="result-page__success-preview-footer-icon">i</span>
+                  <span>{{ successModel.footerMessage }}</span>
+                </div>
+              </div>
+            } @else if (showErrorState() && errorViewModel(); as errorModel) {
+              <div class="result-page__error-preview">
+                <div class="result-page__error-preview-main">
+                  <div class="result-page__error-preview-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v5"></path>
+                      <circle cx="12" cy="16.5" r="0.9" class="result-page__error-preview-dot"></circle>
+                    </svg>
+                  </div>
+
+                  <div class="result-page__error-preview-badge">HTTP {{ errorModel.status || 'ERR' }}</div>
+
+                  <h3 class="result-page__error-preview-title">{{ errorModel.title }}</h3>
+                  <p class="result-page__error-preview-summary">{{ errorModel.summary }}</p>
+
+                  @for (detail of errorModel.details; track detail) {
+                    <p class="result-page__error-preview-detail">{{ detail }}</p>
+                  }
+
+                  <div class="result-page__error-preview-chips">
+                    <div class="result-page__error-preview-chip">
+                      <span>{{ errorModel.timestampLabel }}</span>
+                    </div>
+                    <div class="result-page__error-preview-chip">
+                      <span>{{ errorModel.requestLabel }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="result-page__error-preview-footer">
+                  <span class="result-page__error-preview-footer-icon">!</span>
+                  <span>{{ errorModel.footerMessage }}</span>
+                </div>
+              </div>
+            } @else if (previewType() === 'books' && bookPreviewItems().length) {
               <div class="result-page__card-grid">
                 @for (book of bookPreviewItems(); track trackByBook($index, book)) {
                   <article class="result-page__card">
@@ -98,11 +202,66 @@
                   </article>
                 }
               </div>
+            } @else if (previewType() === 'roles' && rolePreviewItems().length) {
+              <div class="result-page__role-grid">
+                @for (role of rolePreviewItems(); track trackByRole($index, role)) {
+                  <article class="result-page__role-card" [attr.data-tone]="roleTone(role)">
+                    <div class="result-page__role-card-top" [attr.data-tone]="roleTone(role)">
+                      <div class="result-page__role-icon">
+                        @switch (roleTone(role)) {
+                          @case ('guest') {
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <circle cx="12" cy="8" r="4"></circle>
+                              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+                            </svg>
+                          }
+                          @case ('registered') {
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <circle cx="12" cy="8" r="4"></circle>
+                              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+                              <path d="M17 11l1.5 1.5L21 10"></path>
+                            </svg>
+                          }
+                          @case ('owner') {
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                              <path d="M9 22V12h6v10"></path>
+                            </svg>
+                          }
+                          @default {
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"></path>
+                            </svg>
+                          }
+                        }
+                      </div>
+
+                      @if (roleTone(role) === 'admin') {
+                        <span class="result-page__role-super">SUPER</span>
+                      }
+
+                      <p class="result-page__role-name">{{ roleLabel(role) }}</p>
+                      <span class="result-page__role-access">{{ roleBadge(role) }}</span>
+                    </div>
+
+                    <div class="result-page__role-meta">
+                      <div class="result-page__role-row">
+                        <span>Role Number</span>
+                        <strong>{{ role.roleNumber }}</strong>
+                      </div>
+                      <div class="result-page__role-row">
+                        <span>Perm Role</span>
+                        <em [attr.data-tone]="roleTone(role)">{{ role.permRole }}</em>
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
             } @else if (tableRows().length) {
               <div class="result-page__card-grid">
                 @for (row of tableRows(); track $index) {
                   <article class="result-page__card">
-                    <div class="result-page__author-fallback">{{ previewInitials(previewLeadValue(row)) }}</div>
+                    <div class="result-page__author-fallback result-page__author-fallback--text">{{ previewHeroValue(row) }}</div>
                     @for (column of tableColumns(); track trackByColumn($index, column)) {
                       <div class="result-page__row">
                         <span class="result-page__row-key">{{ formatColumnLabel(column) }}</span>
@@ -124,7 +283,34 @@
 
         @if (viewMode() === 'table') {
           <div class="result-page__body result-page__body--table">
-            @if (tableRows().length) {
+            @if (isNotModifiedResponse() && notModifiedViewModel(); as noChangeModel) {
+              <div class="result-page__table-success">
+                <div class="result-page__table-success-icon">i</div>
+                <h3 class="result-page__table-success-title">{{ noChangeModel.title }}</h3>
+                <p class="result-page__table-success-copy">{{ noChangeModel.summary }}</p>
+                @for (detail of noChangeModel.details; track detail) {
+                  <p class="result-page__table-success-detail">{{ detail }}</p>
+                }
+              </div>
+            } @else if (actionSuccessViewModel(); as successModel) {
+              <div class="result-page__table-success">
+                <div class="result-page__table-success-icon">i</div>
+                <h3 class="result-page__table-success-title">{{ successModel.title }}</h3>
+                <p class="result-page__table-success-copy">{{ successModel.summary }}</p>
+                @for (detail of successModel.details; track detail) {
+                  <p class="result-page__table-success-detail">{{ detail }}</p>
+                }
+              </div>
+            } @else if (showErrorState() && errorViewModel(); as errorModel) {
+              <div class="result-page__table-error">
+                <div class="result-page__table-error-icon">!</div>
+                <h3 class="result-page__table-error-title">{{ errorModel.heading }}</h3>
+                <p class="result-page__table-error-copy">{{ errorModel.summary }}</p>
+                @for (detail of errorModel.details; track detail) {
+                  <p class="result-page__table-error-detail">{{ detail }}</p>
+                }
+              </div>
+            } @else if (tableRows().length) {
               <div class="result-page__table-shell">
                 <table class="result-page__table">
                   <thead>

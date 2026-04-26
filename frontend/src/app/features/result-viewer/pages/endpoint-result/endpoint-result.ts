@@ -53,6 +53,43 @@ interface BookPreviewItem {
   publisherName: string;
 }
 
+interface RolePreviewItem {
+  roleNumber: number;
+  permRole: string;
+}
+
+interface ErrorViewModel {
+  status: number;
+  title: string;
+  heading: string;
+  exceptionName: string | null;
+  summary: string;
+  details: string[];
+  timestampLabel: string;
+  requestLabel: string;
+  footerMessage: string;
+}
+
+interface NotModifiedViewModel {
+  status: number;
+  title: string;
+  summary: string;
+  details: string[];
+  timestampLabel: string;
+  requestLabel: string;
+  footerMessage: string;
+}
+
+interface ActionSuccessViewModel {
+  status: number;
+  title: string;
+  summary: string;
+  details: string[];
+  timestampLabel: string;
+  requestLabel: string;
+  footerMessage: string;
+}
+
 @Component({
   selector: 'app-endpoint-result',
   imports: [RouterLink, ResponseViewerComponent, DecimalPipe],
@@ -83,6 +120,101 @@ export class EndpointResultComponent {
   });
 
   readonly responseData = computed<unknown>(() => this.responseBody()?.data ?? null);
+  readonly isNotModifiedResponse = computed(() => {
+    const result = this.response();
+    const status = result?.status || this.toNumber(this.responseBody()?.statusCode);
+    return status === 304;
+  });
+  readonly isErrorResponse = computed(() => Boolean(this.response() && !this.response()?.ok));
+  readonly showErrorState = computed(() => this.isErrorResponse() && !this.isNotModifiedResponse());
+  readonly errorViewModel = computed<ErrorViewModel | null>(() => {
+    const result = this.response();
+    if (!result || result.ok || this.isNotModifiedResponse()) {
+      return null;
+    }
+
+    const status = result.status || this.toNumber(this.responseBody()?.statusCode);
+    const body = this.responseBody();
+    const rawMessage = typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : 'The request was unsuccessful.';
+    const detailEntries = this.errorDetails(body?.data);
+    const exceptionName = this.exceptionName(body?.data);
+    const title = exceptionName || `${status || 'Error'} - ${this.statusLabel(status)}`;
+
+    return {
+      status,
+      title,
+      heading: exceptionName
+        ? `${exceptionName} · ${status || 'error'} ${this.statusLabel(status).toLowerCase()}`
+        : `Request failed - ${status || 'error'} ${this.statusLabel(status).toLowerCase()}`,
+      exceptionName,
+      summary: rawMessage,
+      details: detailEntries.length
+        ? detailEntries
+        : ['Check the request values and verify the endpoint details are correct.'],
+      timestampLabel: this.formatTimestamp(result.receivedAt),
+      requestLabel: `${this.endpoint()?.method ?? 'REQUEST'} ${result.url ?? this.endpoint()?.path ?? ''}`.trim(),
+      footerMessage: this.footerMessage(status)
+    };
+  });
+  readonly notModifiedViewModel = computed<NotModifiedViewModel | null>(() => {
+    const result = this.response();
+    if (!result || !this.isNotModifiedResponse()) {
+      return null;
+    }
+
+    const body = this.responseBody();
+    const status = result.status || this.toNumber(body?.statusCode);
+    const rawMessage = typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : 'No changes were detected, so the existing record was kept as-is.';
+
+    return {
+      status,
+      title: 'No Data Updated',
+      summary: rawMessage,
+      details: [
+        'The submitted values match the current record.',
+        'No update was needed, so the server returned Not Modified.'
+      ],
+      timestampLabel: this.formatTimestamp(result.receivedAt),
+      requestLabel: `${this.endpoint()?.method ?? 'REQUEST'} ${result.url ?? this.endpoint()?.path ?? ''}`.trim(),
+      footerMessage: 'Request completed successfully. No fields were changed, so the existing data was preserved.'
+    };
+  });
+  readonly actionSuccessViewModel = computed<ActionSuccessViewModel | null>(() => {
+    const result = this.response();
+    const body = this.responseBody();
+    if (!result?.ok || this.isNotModifiedResponse() || this.paginatedData() || this.tableRows().length) {
+      return null;
+    }
+
+    const status = result.status || this.toNumber(body?.statusCode);
+    const summary = typeof body?.message === 'string' && body.message.trim()
+      ? body.message.trim()
+      : 'The request completed successfully.';
+    const method = this.endpoint()?.method ?? 'REQUEST';
+    const actionTitle = method === 'DELETE'
+      ? 'Delete Completed'
+      : method === 'PUT'
+        ? 'Update Completed'
+        : method === 'POST'
+          ? 'Request Completed'
+          : 'Success';
+
+    return {
+      status,
+      title: actionTitle,
+      summary,
+      details: method === 'DELETE'
+        ? ['The selected record or mapping was removed successfully.']
+        : ['The operation finished successfully and there is no row data to display.'],
+      timestampLabel: this.formatTimestamp(result.receivedAt),
+      requestLabel: `${method} ${result.url ?? this.endpoint()?.path ?? ''}`.trim(),
+      footerMessage: 'Request completed successfully.'
+    };
+  });
 
   readonly paginatedData = computed<PaginatedData | null>(() => {
     const data = this.responseData();
@@ -146,7 +278,7 @@ export class EndpointResultComponent {
     this.requestContext()
   ));
 
-  readonly previewSupported = computed(() => this.previewType() !== null);
+  readonly previewSupported = computed(() => this.isErrorResponse() || this.previewType() !== null || this.isNotModifiedResponse());
   readonly currentPageSize = computed(() => this.paginatedData()?.size || 0);
   readonly shownCount = computed(() => this.tableRows().length);
 
@@ -256,7 +388,7 @@ export class EndpointResultComponent {
       }))
     : []);
 
-  readonly rolePreviewItems = computed(() => this.previewType() === 'roles'
+  readonly rolePreviewItems = computed<RolePreviewItem[]>(() => this.previewType() === 'roles'
     ? this.tableRows().map((item) => ({
         roleNumber: Number(item['roleNumber'] ?? 0),
         permRole: String(item['permRole'] ?? '')
@@ -322,6 +454,10 @@ export class EndpointResultComponent {
     return `${index}-${Object.values(item).join('-')}`;
   }
 
+  trackByRole(index: number, role: RolePreviewItem): string {
+    return `${index}-${role.roleNumber}-${role.permRole}`;
+  }
+
   bookAccent(book: BookPreviewItem): string {
     const seed = book.title.length + book.isbn.length;
     const variants = ['from-blue-700 via-sky-600 to-cyan-500', 'from-emerald-700 via-teal-600 to-lime-500', 'from-amber-700 via-orange-600 to-rose-500', 'from-slate-700 via-blue-800 to-cyan-600'];
@@ -351,6 +487,54 @@ export class EndpointResultComponent {
       .filter((value) => value.length > 0);
 
     return entries[0] || 'Item';
+  }
+
+  previewHeroValue(row: Record<string, unknown>): string {
+    const preferredKeys = [
+      'permRole',
+      'stateCode',
+      'catDescription',
+      'name',
+      'title',
+      'description',
+      'userName',
+      'isbn'
+    ];
+
+    for (const key of preferredKeys) {
+      const value = row[key];
+      if (value !== null && value !== undefined) {
+        const normalized = String(value).trim();
+        if (normalized) {
+          return normalized;
+        }
+      }
+    }
+
+    return this.previewLeadValue(row);
+  }
+
+  roleTone(role: RolePreviewItem): 'guest' | 'registered' | 'owner' | 'admin' {
+    const normalized = role.permRole.toLowerCase();
+    if (normalized.includes('admin')) return 'admin';
+    if (normalized.includes('store')) return 'owner';
+    if (normalized.includes('registered')) return 'registered';
+    return 'guest';
+  }
+
+  roleLabel(role: RolePreviewItem): string {
+    const normalized = role.permRole.toLowerCase();
+    if (normalized.includes('registered')) return 'Registered User';
+    if (normalized.includes('store')) return 'Store Owner';
+    return role.permRole || 'Role';
+  }
+
+  roleBadge(role: RolePreviewItem): string {
+    const tone = this.roleTone(role);
+    if (tone === 'admin') return 'FULL ACCESS';
+    if (tone === 'owner') return 'ELEVATED ACCESS';
+    if (tone === 'registered') return 'STANDARD ACCESS';
+    return 'LIMITED ACCESS';
   }
 
   ratingStars(rating: number): string[] {
@@ -405,5 +589,79 @@ export class EndpointResultComponent {
 
   private toNumber(value: unknown): number {
     return typeof value === 'number' ? value : Number(value ?? 0);
+  }
+
+  private statusLabel(status: number): string {
+    const labels: Record<number, string> = {
+      400: 'Bad Request',
+      401: 'Unauthorized',
+      403: 'Forbidden',
+      404: 'Not Found',
+      409: 'Conflict',
+      422: 'Unprocessable Entity',
+      500: 'Internal Server Error'
+    };
+
+    return labels[status] ?? 'Request Failed';
+  }
+
+  private errorDetails(data: unknown): string[] {
+    if (!this.isRecord(data)) {
+      return [];
+    }
+
+    return Object.entries(data)
+      .filter(([key, value]) => key !== 'exception' && value !== null && value !== undefined && String(value).trim().length > 0)
+      .map(([key, value]) => `${this.formatColumnLabel(key)}: ${String(value).trim()}`);
+  }
+
+  private exceptionName(data: unknown): string | null {
+    if (!this.isRecord(data)) {
+      return null;
+    }
+
+    const value = data['exception'];
+    if (typeof value !== 'string' || !value.trim()) {
+      return null;
+    }
+
+    return value.trim();
+  }
+
+  private formatTimestamp(value: string): string {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return new Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(date);
+  }
+
+  private footerMessage(status: number): string {
+    if (status === 404) {
+      return 'The server could not find the requested resource. Verify the ID and try again.';
+    }
+
+    if (status === 400 || status === 422) {
+      return 'The request data was rejected by the server. Review the inputs and try again.';
+    }
+
+    if (status === 401 || status === 403) {
+      return 'Access to this resource was blocked. Check the current user permissions and try again.';
+    }
+
+    if (status === 409) {
+      return 'The request conflicts with existing data. Review the current record state and retry.';
+    }
+
+    return 'The request could not be completed successfully. Review the details and try again.';
   }
 }

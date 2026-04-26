@@ -15,7 +15,7 @@ export const AUTHORS_MODULE: ModuleConfig = {
       path: '/api/v1/authors',
       description: 'Fetch all authors.',
       queryParams: [
-        { key: 'page', label: 'Page', type: 'number', placeholder: '0', min: 0, minMessage: 'Page must be 0 or greater.' },
+        { key: 'page', label: 'Page', type: 'number', placeholder: '1', min: 1, minMessage: 'Page must be 1 or greater.' },
         { key: 'size', label: 'Size', type: 'number', placeholder: '10', min: 1, minMessage: 'Size must be greater than 0.' }
       ]
     },
