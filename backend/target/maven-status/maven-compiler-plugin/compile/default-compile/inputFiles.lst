@@ -96,7 +96,6 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\dto\responsedto\BookConditionResponseDTO.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\exceptions\BookAlreadyPurchasedException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\dto\response\StateResponseDTO.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\usermgmt\exceptions\InvalidCredentialsException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\controller\BookAuthorController.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\entity\Author.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\security\DatabaseUserDetailsService.java
@@ -155,7 +154,6 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\exceptions\InvalidIsbnFormatException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\service\IInventoryService.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\common\ResponseStructure.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\usermgmt\exceptions\UnauthorizedRoleAccessException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\reviewmgmt\entity\Reviewer.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\exceptions\InvalidBookDataException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\exceptions\DataNotFoundException.java

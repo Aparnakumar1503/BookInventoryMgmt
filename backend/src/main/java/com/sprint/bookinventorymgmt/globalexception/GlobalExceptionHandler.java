@@ -32,9 +32,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotAllowedExcept
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
-import com.sprint.bookinventorymgmt.usermgmt.exceptions.InvalidCredentialsException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
-import com.sprint.bookinventorymgmt.usermgmt.exceptions.UnauthorizedRoleAccessException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.MessageSourceResolvable;
@@ -98,7 +96,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             InvalidBookDataException.class,
             InvalidInventoryDataException.class,
-            InvalidCredentialsException.class,
             InvalidIsbnFormatException.class,
             InvalidConditionRankException.class,
             EmptyCartException.class,
@@ -109,7 +106,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            UnauthorizedRoleAccessException.class,
             ReviewNotAllowedException.class
     })
     public ResponseEntity<ResponseStructure<String>> handleForbidden(RuntimeException ex) {
