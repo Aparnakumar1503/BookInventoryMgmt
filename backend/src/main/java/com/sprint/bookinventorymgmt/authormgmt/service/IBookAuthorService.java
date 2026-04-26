@@ -11,10 +11,6 @@ public interface IBookAuthorService {
 
     BookAuthorResponseDTO addBookAuthor(BookAuthorRequestDTO requestDTO);
     List<BookAuthorResponseDTO> getAllBookAuthors();
-    List<BookAuthorResponseDTO> getByIsbn(String isbn);
-    List<BookAuthorResponseDTO> getByAuthorId(Integer authorId);
-    BookAuthorResponseDTO getPrimaryAuthorByIsbn(String isbn);
-    String deleteByIsbn(String isbn);
     String deleteByIsbnAndAuthorId(String isbn, Integer authorId);
     List<BookAuthorResponseDTO> findBooksByAuthorId(Integer authorId);
 }

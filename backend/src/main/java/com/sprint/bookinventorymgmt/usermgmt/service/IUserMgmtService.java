@@ -10,7 +10,4 @@ public interface IUserMgmtService {
     UserResponseDTO getUserById(Integer userId);
     UserResponseDTO updateUser(Integer userId, UserRequestDTO requestDTO);
     String deleteUser(Integer userId);
-    UserResponseDTO getUserByUserName(String userName);
-    List<UserResponseDTO> getUsersByRoleNumber(Integer roleNumber);
-    String updatePassword(Integer userId, String newPassword);
 }

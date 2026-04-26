@@ -60,15 +60,9 @@ class AuthorServiceImplTest {
     void authorReadOperations_returnMappedData() {
         when(repo.findAll()).thenReturn(List.of(author));
         when(repo.findById(1)).thenReturn(Optional.of(author));
-        when(repo.findByFirstNameAndLastName("John", "Doe")).thenReturn(author);
-        when(repo.searchByLastName("doe")).thenReturn(List.of(author));
-        when(repo.countAllAuthors()).thenReturn(1L);
 
         assertEquals(1, service.getAllAuthors().size());
         assertEquals(1, service.getAuthorById(1).getAuthorId());
-        assertEquals("Doe", service.getAuthorByFirstNameAndLastName("John", "Doe").getLastName());
-        assertEquals(1, service.searchByLastName("doe").size());
-        assertEquals(1L, service.countAllAuthors());
     }
 
     @Test
@@ -121,12 +115,8 @@ class AuthorServiceImplTest {
     @Test
     void authorLookupOperations_throwWhenDataIsMissing() {
         when(repo.findById(99)).thenReturn(Optional.empty());
-        when(repo.findByFirstNameAndLastName("Missing", "Author")).thenReturn(null);
-        when(repo.searchByLastName("zzz")).thenReturn(Collections.emptyList());
 
         assertThrows(AuthorNotFoundException.class, () -> service.getAuthorById(99));
-        assertThrows(AuthorNotFoundException.class, () -> service.getAuthorByFirstNameAndLastName("Missing", "Author"));
-        assertThrows(AuthorNotFoundException.class, () -> service.searchByLastName("zzz"));
     }
 
     @Test
@@ -138,11 +128,9 @@ class AuthorServiceImplTest {
     }
 
     @Test
-    void getAllAuthors_andCountAllAuthors_handleEmptyResults() {
+    void getAllAuthors_handlesEmptyResults() {
         when(repo.findAll()).thenReturn(Collections.emptyList());
-        when(repo.countAllAuthors()).thenReturn(0L);
 
         assertTrue(service.getAllAuthors().isEmpty());
-        assertEquals(0L, service.countAllAuthors());
     }
 }

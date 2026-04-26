@@ -98,35 +98,6 @@ public class AuthorServiceImpl implements IAuthorService {
         return "Author deleted successfully with id: " + authorId;
     }
 
-    @Override
-    public AuthorResponseDTO getAuthorByFirstNameAndLastName(String firstName, String lastName) {
-        Author author = repo.findByFirstNameAndLastName(firstName, lastName);
-        if (author == null) {
-            throw new AuthorNotFoundException("Author not found with name: " + firstName + " " + lastName);
-        }
-        return mapToDTO(author);
-    }
-
-    @Override
-    public List<AuthorResponseDTO> searchByLastName(String keyword) {
-        List<Author> authors = repo.searchByLastName(keyword);
-        if (authors.isEmpty()) {
-            throw new AuthorNotFoundException("No authors found with keyword: " + keyword);
-        }
-
-        List<AuthorResponseDTO> response = new ArrayList<>();
-        for (Author author : authors) {
-            response.add(mapToDTO(author));
-        }
-
-        return response;
-    }
-
-    @Override
-    public Long countAllAuthors() {
-        return repo.countAllAuthors();
-    }
-
     private AuthorResponseDTO mapToDTO(Author entity) {
         AuthorResponseDTO dto = new AuthorResponseDTO();
         dto.setAuthorId(entity.getAuthorId());

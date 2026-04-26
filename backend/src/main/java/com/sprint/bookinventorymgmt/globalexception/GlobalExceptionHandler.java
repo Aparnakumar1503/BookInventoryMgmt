@@ -4,7 +4,7 @@ import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundExceptio
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
-import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.PrimaryAuthorConflictException;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.BookAlreadyExistsException;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.BookNotFoundException;
 import com.sprint.bookinventorymgmt.bookmgmt.exceptions.CategoryNotFoundException;
@@ -31,7 +31,9 @@ import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.InvalidRatingException
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewNotFoundException;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.PasswordReuseException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserDeleteNotAllowedException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.MessageSourceResolvable;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,9 +51,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private ResponseEntity<ResponseStructure<String>> build(HttpStatus status, String message) {
+    private ResponseEntity<ResponseStructure<?>> build(HttpStatus status, String message) {
         return ResponseEntity.status(status)
                 .body(ResponseBuilder.error(status.value(), message));
+    }
+
+    private ResponseEntity<ResponseStructure<?>> buildWithException(
+            HttpStatus status, String message, String exceptionName) {
+        Map<String, String> details = new HashMap<>();
+        details.put("exception", exceptionName);
+        return ResponseEntity.status(status)
+                .body(ResponseBuilder.error(status.value(), message, details));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -59,6 +70,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
                 .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+        errors.put("exception", "ValidationException");
         return ResponseEntity.badRequest()
                 .body(ResponseBuilder.error(400, "Validation failed", errors));
     }
@@ -69,6 +81,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations()
                 .forEach(cv -> errors.put(cv.getPropertyPath().toString(), cv.getMessage()));
+        errors.put("exception", "ValidationException");
         return ResponseEntity.badRequest()
                 .body(ResponseBuilder.error(400, "Constraint violation", errors));
     }
@@ -87,26 +100,27 @@ public class GlobalExceptionHandler {
                     .orElse("Invalid value");
             errors.put(key, message);
         });
+        errors.put("exception", "ValidationException");
 
         return ResponseEntity.badRequest()
                 .body(ResponseBuilder.error(400, "Validation failed", errors));
     }
 
     @ExceptionHandler({
-            InvalidBookDataException.class,
+
             InvalidInventoryDataException.class,
             InvalidIsbnFormatException.class,
             InvalidConditionRankException.class,
             EmptyCartException.class,
             InvalidRatingException.class
     })
-    public ResponseEntity<ResponseStructure<String>> handleBadRequest(RuntimeException ex) {
-        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleBadRequest(RuntimeException ex) {
+        return buildWithException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getClass().getSimpleName());
     }
 
-
-    public ResponseEntity<ResponseStructure<String>> handleForbidden(RuntimeException ex) {
-        return build(HttpStatus.FORBIDDEN, ex.getMessage());
+    @ExceptionHandler(UserDeleteNotAllowedException.class)
+    public ResponseEntity<ResponseStructure<?>> handleForbidden(RuntimeException ex) {
+        return buildWithException(HttpStatus.FORBIDDEN, ex.getMessage(), ex.getClass().getSimpleName());
     }
 
     @ExceptionHandler({
@@ -124,39 +138,56 @@ public class GlobalExceptionHandler {
             PurchaseNotFoundException.class,
             ShoppingCartNotFoundException.class
     })
-    public ResponseEntity<ResponseStructure<String>> handleNotFound(RuntimeException ex) {
-        return build(HttpStatus.NOT_FOUND, ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleNotFound(RuntimeException ex) {
+        return buildWithException(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getClass().getSimpleName());
     }
 
     @ExceptionHandler({
             BookAlreadyExistsException.class,
             DuplicateAuthorException.class,
             DuplicateBookAuthorException.class,
+            PrimaryAuthorConflictException.class,
             DuplicateInventoryException.class,
             InventoryPurchaseException.class,
             DuplicateUsernameException.class,
+            PasswordReuseException.class,
             DuplicateReviewException.class,
             BookAlreadyPurchasedException.class,
             BookNotAvailableException.class,
             DuplicateCartItemException.class
     })
-    public ResponseEntity<ResponseStructure<String>> handleConflict(RuntimeException ex) {
-        return build(HttpStatus.CONFLICT, ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleConflict(RuntimeException ex) {
+        return buildWithException(HttpStatus.CONFLICT, ex.getMessage(), ex.getClass().getSimpleName());
     }
 
     @ExceptionHandler(InsufficientInventoryException.class)
-    public ResponseEntity<ResponseStructure<String>> handleUnprocessable(RuntimeException ex) {
-        return build(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleUnprocessable(RuntimeException ex) {
+        return buildWithException(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), ex.getClass().getSimpleName());
     }
 
     @ExceptionHandler(DatabaseOperationException.class)
-    public ResponseEntity<ResponseStructure<String>> handleDatabase(RuntimeException ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleDatabase(RuntimeException ex) {
+        return buildWithException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex.getClass().getSimpleName());
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ResponseStructure<?>> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        String reason = ex.getReason() != null && !ex.getReason().isBlank()
+                ? ex.getReason()
+                : status.getReasonPhrase();
+
+        if (status == HttpStatus.NOT_MODIFIED) {
+            return build(status, reason);
+        }
+
+        return buildWithException(status, reason, ex.getClass().getSimpleName());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseStructure<String>> handleGeneric(Exception ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred: " + ex.getMessage());
+    public ResponseEntity<ResponseStructure<?>> handleGeneric(Exception ex) {
+        return buildWithException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred: " + ex.getMessage(),
+                ex.getClass().getSimpleName());
     }
 }

@@ -73,55 +73,6 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
     }
 
     @Override
-    public List<BookAuthorResponseDTO> getByIsbn(String isbn) {
-        List<BookAuthor> list = repo.findByIsbn(isbn);
-        if (list.isEmpty()) {
-            throw new BookAuthorNotFoundException("No authors found for isbn: " + isbn);
-        }
-
-        List<BookAuthorResponseDTO> response = new ArrayList<>();
-        for (BookAuthor bookAuthor : list) {
-            response.add(mapToDTO(bookAuthor));
-        }
-
-        return response;
-    }
-
-    @Override
-    public List<BookAuthorResponseDTO> getByAuthorId(Integer authorId) {
-        List<BookAuthor> list = repo.findByAuthorId(authorId);
-        if (list.isEmpty()) {
-            throw new BookAuthorNotFoundException("No books found for authorId: " + authorId);
-        }
-
-        List<BookAuthorResponseDTO> response = new ArrayList<>();
-        for (BookAuthor bookAuthor : list) {
-            response.add(mapToDTO(bookAuthor));
-        }
-
-        return response;
-    }
-
-    @Override
-    public BookAuthorResponseDTO getPrimaryAuthorByIsbn(String isbn) {
-        BookAuthor bookAuthor = repo.findPrimaryAuthorByIsbn(isbn);
-        if (bookAuthor == null) {
-            throw new BookAuthorNotFoundException("No primary author found for isbn: " + isbn);
-        }
-        return mapToDTO(bookAuthor);
-    }
-
-    @Override
-    public String deleteByIsbn(String isbn) {
-        List<BookAuthor> list = repo.findByIsbn(isbn);
-        if (list.isEmpty()) {
-            throw new BookAuthorNotFoundException("No entries found for isbn: " + isbn);
-        }
-        repo.deleteByIsbn(isbn);
-        return "BookAuthor entries deleted successfully for isbn: " + isbn;
-    }
-
-    @Override
     public String deleteByIsbnAndAuthorId(String isbn, Integer authorId) {
         int deleted = repo.deleteByIsbnAndAuthorId(isbn, authorId);
         if (deleted == 0) {

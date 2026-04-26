@@ -84,7 +84,6 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\usermgmt\repository\IPermRoleRepository.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\exceptions\BusinessRuleException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\exceptions\ShoppingCartNotFoundException.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewNotAllowedException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\repository\IShoppingCartRepository.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\dto\response\PublisherResponseDTO.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\exceptions\PublisherNotFoundException.java
@@ -99,7 +98,6 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\dto\response\StateResponseDTO.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\controller\BookAuthorController.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\entity\Author.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\security\DatabaseUserDetailsService.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\service\BookConditionServiceImpl.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\entity\ShoppingCartId.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\reviewmgmt\repository\BookReviewRepository.java
@@ -134,7 +132,6 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\dto\requestDto\PurchaseLogRequestDTO.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\entity\Category.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\controller\PurchaseLogController.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\security\JwtAuthenticationFilter.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\usermgmt\exceptions\PasswordReuseException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\entity\BookCondition.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\ordermgmt\service\ShoppingCartServiceImpl.java
@@ -142,13 +139,11 @@ C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\ja
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\BookInventoryMgmtApplication.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\exceptions\PrimaryAuthorConflictException.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewNotFoundException.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\security\JwtService.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\service\IAuthorService.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\service\IBookConditionService.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\reviewmgmt\entity\BookReview.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\bookmgmt\mapper\BookMapper.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\usermgmt\service\UserMgmtServiceImpl.java
-C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\security\RestSecurityExceptionHandler.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\controller\InventoryController.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\inventorymgmt\entity\Inventory.java
 C:\Users\aparn\Downloads\BookInventoryMgmt\BookInventoryMgmt\backend\src\main\java\com\sprint\bookinventorymgmt\authormgmt\dto\requestdto\AuthorRequestDTO.java

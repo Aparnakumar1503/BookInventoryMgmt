@@ -127,46 +127,6 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         return "User deleted successfully with id: " + userId;
     }
 
-    @Override
-    public UserResponseDTO getUserByUserName(String userName) {
-        User user = userRepo.findByUserNameIgnoreCase(userName)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with username: " + userName));
-        return mapToDTO(user);
-    }
-
-    @Override
-    public List<UserResponseDTO> getUsersByRoleNumber(Integer roleNumber) {
-        List<User> users = userRepo.findByRoleNumber(roleNumber);
-        if (users.isEmpty()) {
-            throw new UserNotFoundException("No users found with role number: " + roleNumber);
-        }
-
-        List<UserResponseDTO> response = new ArrayList<>();
-        for (User user : users) {
-            response.add(mapToDTO(user));
-        }
-
-        return response;
-    }
-
-    @Override
-    public String updatePassword(Integer userId, String newPassword) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() ->
-                        new UserNotFoundException("User not found with id: " + userId));
-
-        if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            throw new PasswordReuseException("New password must be different from the current password.");
-        }
-
-        int updated = userRepo.updatePassword(userId, passwordEncoder.encode(newPassword));
-        if (updated > 0) {
-            return "Password updated successfully for userId: " + userId;
-        }
-        return "Password update failed for userId: " + userId;
-    }
-
     private UserResponseDTO mapToDTO(User entity) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setUserId(entity.getUserId());

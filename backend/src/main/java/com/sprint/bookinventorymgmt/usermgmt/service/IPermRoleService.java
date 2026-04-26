@@ -10,9 +10,6 @@ public interface IPermRoleService {
     PermRoleResponseDTO addRole(PermRoleRequestDTO requestDTO);
     List<PermRoleResponseDTO> getAllRoles();
     PermRoleResponseDTO getRoleById(Integer roleNumber);
-    PermRoleResponseDTO updateRole(Integer roleNumber, PermRoleRequestDTO requestDTO);
     String deleteRole(Integer roleNumber);
-    PermRoleResponseDTO getRoleByName(String permRole);
     List<PermRoleResponseDTO> searchByPermRole(String keyword);
-    Long countAllRoles();
 }

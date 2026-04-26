@@ -46,31 +46,12 @@ public class PermRoleServiceImpl implements IPermRoleService {
     }
 
     @Override
-    public PermRoleResponseDTO updateRole(Integer roleNumber, PermRoleRequestDTO dto) {
-        PermRole role = repo.findById(roleNumber)
-                .orElseThrow(() ->
-                        new PermRoleNotFoundException("Role not found with id: " + roleNumber));
-
-        role.setPermRole(dto.getPermRole());
-        PermRole updated = repo.save(role);
-        return mapToDTO(updated);
-    }
-
-    @Override
     public String deleteRole(Integer roleNumber) {
         PermRole role = repo.findById(roleNumber)
                 .orElseThrow(() ->
                         new PermRoleNotFoundException("Role not found with id: " + roleNumber));
         repo.delete(role);
         return "Role deleted successfully with id: " + roleNumber;
-    }
-
-    @Override
-    public PermRoleResponseDTO getRoleByName(String permRole) {
-        PermRole role = repo.findByPermRole(permRole)
-                .orElseThrow(() ->
-                        new PermRoleNotFoundException("Role not found with name: " + permRole));
-        return mapToDTO(role);
     }
 
     @Override
@@ -86,11 +67,6 @@ public class PermRoleServiceImpl implements IPermRoleService {
         }
 
         return response;
-    }
-
-    @Override
-    public Long countAllRoles() {
-        return repo.countAllRoles();
     }
 
     private PermRoleResponseDTO mapToDTO(PermRole entity) {

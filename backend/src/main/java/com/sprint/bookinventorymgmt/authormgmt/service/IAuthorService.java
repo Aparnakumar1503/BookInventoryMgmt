@@ -11,8 +11,4 @@ public interface IAuthorService {
     AuthorResponseDTO getAuthorById(Integer authorId);
     AuthorResponseDTO updateAuthor(Integer authorId, AuthorRequestDTO requestDTO);
     String deleteAuthor(Integer authorId);
-    AuthorResponseDTO getAuthorByFirstNameAndLastName(String firstName, String lastName);
-    List<AuthorResponseDTO> searchByLastName(String keyword);
-    Long countAllAuthors();
-
 }

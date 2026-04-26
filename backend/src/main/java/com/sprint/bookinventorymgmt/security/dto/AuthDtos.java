@@ -14,13 +14,6 @@ public final class AuthDtos {
             @NotBlank(message = "Password is required") String password) {
     }
 
-    public record AuthTokenResponse(
-            String tokenType,
-            String accessToken,
-            long expiresAt,
-            AuthenticatedUserResponse user) {
-    }
-
     public record AuthenticatedUserResponse(
             String username,
             String firstName,

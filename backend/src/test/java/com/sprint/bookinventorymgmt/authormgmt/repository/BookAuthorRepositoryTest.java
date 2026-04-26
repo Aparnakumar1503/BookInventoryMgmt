@@ -66,13 +66,12 @@ class BookAuthorRepositoryTest {
     }
 
     @Test
-    void derivedQueries_findByIsbn_andAuthorId_returnMappings() {
+    void derivedQuery_findByIsbn_returnsMappings() {
         bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
         bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
         bookAuthorRepository.saveAndFlush(new BookAuthor(book2.getIsbn(), author1.getAuthorId(), null, null, "N"));
 
         assertEquals(2, bookAuthorRepository.findByIsbn(book1.getIsbn()).size());
-        assertEquals(2, bookAuthorRepository.findByAuthorId(author1.getAuthorId()).size());
     }
 
     @Test
@@ -83,16 +82,5 @@ class BookAuthorRepositoryTest {
         assertEquals(2, bookAuthorRepository.findBooksByAuthorId(author1.getAuthorId()).size());
         assertNotNull(bookAuthorRepository.findPrimaryAuthorByIsbn(book1.getIsbn()));
     }
-
-    @Test
-    void deleteByIsbn_removesAllMappingsForBook() {
-        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
-        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
-
-        bookAuthorRepository.deleteByIsbn(book1.getIsbn());
-
-        assertTrue(bookAuthorRepository.findByIsbn(book1.getIsbn()).isEmpty());
-    }
-
 
 }

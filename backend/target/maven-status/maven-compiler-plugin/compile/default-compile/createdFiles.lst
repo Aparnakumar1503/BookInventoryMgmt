@@ -57,7 +57,6 @@ com\sprint\bookinventorymgmt\bookmgmt\service\BookServiceImpl.class
 com\sprint\bookinventorymgmt\inventorymgmt\repository\IInventoryRepository.class
 com\sprint\bookinventorymgmt\reviewmgmt\repository\ReviewerRepository.class
 com\sprint\bookinventorymgmt\bookmgmt\controller\StateController.class
-com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewNotAllowedException.class
 com\sprint\bookinventorymgmt\reviewmgmt\repository\BookReviewRepository.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InvalidConditionRankException.class
 com\sprint\bookinventorymgmt\security\dto\AuthDtos.class
@@ -66,14 +65,12 @@ com\sprint\bookinventorymgmt\usermgmt\repository\IPermRoleRepository.class
 com\sprint\bookinventorymgmt\authormgmt\entity\Author.class
 com\sprint\bookinventorymgmt\bookmgmt\service\IBookService.class
 com\sprint\bookinventorymgmt\inventorymgmt\service\IInventoryService.class
-com\sprint\bookinventorymgmt\security\JwtAuthenticationFilter.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\BookAlreadyExistsException.class
 com\sprint\bookinventorymgmt\ordermgmt\dto\responseDto\ShoppingCartResponseDTO.class
 com\sprint\bookinventorymgmt\authormgmt\dto\requestdto\AuthorRequestDTO.class
 com\sprint\bookinventorymgmt\inventorymgmt\dto\requestdto\InventoryRequestDTO.class
 com\sprint\bookinventorymgmt\reviewmgmt\service\BookReviewServiceImpl.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\InvalidIsbnFormatException.class
-com\sprint\bookinventorymgmt\security\DatabaseUserDetailsService.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\ResourceDeletionException.class
 com\sprint\bookinventorymgmt\authormgmt\controller\AuthorController.class
 com\sprint\bookinventorymgmt\bookmgmt\service\PublisherServiceImpl.class
@@ -91,7 +88,6 @@ com\sprint\bookinventorymgmt\authormgmt\service\AuthorServiceImpl.class
 com\sprint\bookinventorymgmt\ordermgmt\exceptions\ShoppingCartNotFoundException.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\BookNotFoundException.class
 com\sprint\bookinventorymgmt\ordermgmt\controller\ShoppingCartController.class
-com\sprint\bookinventorymgmt\security\dto\AuthDtos$AuthTokenResponse.class
 com\sprint\bookinventorymgmt\usermgmt\exceptions\DuplicateUsernameException.class
 com\sprint\bookinventorymgmt\authormgmt\entity\BookAuthorId.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InventoryPurchaseException.class
@@ -105,7 +101,6 @@ com\sprint\bookinventorymgmt\inventorymgmt\exceptions\DuplicateInventoryExceptio
 com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewerNotFoundException.class
 com\sprint\bookinventorymgmt\security\dto\AuthDtos$AuthenticatedUserResponse.class
 com\sprint\bookinventorymgmt\bookmgmt\dto\request\PublisherRequestDTO.class
-com\sprint\bookinventorymgmt\security\JwtService.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\DuplicateResourceException.class
 com\sprint\bookinventorymgmt\usermgmt\service\PermRoleServiceImpl.class
 com\sprint\bookinventorymgmt\usermgmt\entity\PermRole.class
@@ -116,7 +111,6 @@ com\sprint\bookinventorymgmt\authormgmt\service\BookAuthorServiceImpl.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\InvalidInputException.class
 com\sprint\bookinventorymgmt\authormgmt\exceptions\AuthorNotFoundException.class
 com\sprint\bookinventorymgmt\usermgmt\dto\responsedto\UserResponseDTO$UserResponseDTOBuilder.class
-com\sprint\bookinventorymgmt\security\RestSecurityExceptionHandler.class
 com\sprint\bookinventorymgmt\usermgmt\dto\requestdto\PermRoleRequestDTO.class
 com\sprint\bookinventorymgmt\inventorymgmt\entity\BookCondition.class
 com\sprint\bookinventorymgmt\usermgmt\controller\RoleController.class

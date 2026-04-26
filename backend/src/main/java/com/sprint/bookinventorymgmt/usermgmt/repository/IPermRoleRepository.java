@@ -20,14 +20,4 @@ public interface IPermRoleRepository extends JpaRepository<PermRole, Integer> {
     // Custom Query 1 — find all roles containing keyword
     @Query("SELECT p FROM PermRole p WHERE LOWER(p.permRole) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<PermRole> searchByPermRole(@Param("keyword") String keyword);
-
-    // Custom Query 2 — count total roles
-    @Query("SELECT COUNT(p) FROM PermRole p")
-    Long countAllRoles();
-
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE PermRole p SET p.permRole = :newRole WHERE p.roleNumber = :roleNumber")
-    int updatePermRole(@Param("roleNumber") Integer roleNumber, @Param("newRole") String newRole);
 }

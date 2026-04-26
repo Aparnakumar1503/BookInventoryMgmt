@@ -1,5 +1,10 @@
 package com.sprint.bookinventorymgmt.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import com.sprint.bookinventorymgmt.usermgmt.entity.User;
+import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +15,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -29,15 +39,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            RestSecurityExceptionHandler restSecurityExceptionHandler) throws Exception {
+            ObjectMapper objectMapper) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/login",
+                                "/api/v1/auth/logout",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
@@ -51,17 +61,43 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/me").authenticated()
                         .anyRequest().denyAll()
                 )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(restSecurityExceptionHandler)
-                        .accessDeniedHandler(restSecurityExceptionHandler)
-                )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) ->
+                                writeSecurityError(response, objectMapper, HttpServletResponse.SC_UNAUTHORIZED,
+                                        "Authentication is required to access this resource."))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                writeSecurityError(response, objectMapper, HttpServletResponse.SC_FORBIDDEN,
+                                        "You are not allowed to access this resource.")))
                 .build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(IUserMgmtRepository userRepository) {
+        return username -> {
+            User user = userRepository.findAll().stream()
+                    .filter(existingUser -> existingUser.getUserName() != null
+                            && existingUser.getUserName().equalsIgnoreCase(username))
+                    .findFirst()
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            if (user.getRole() != null && user.getRole().getPermRole() != null) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getPermRole().toUpperCase()));
+            }
+            for (String authority : SecurityAuthorities.moduleAuthoritiesFor(user.getUserName())) {
+                authorities.add(new SimpleGrantedAuthority(authority));
+            }
+
+            return org.springframework.security.core.userdetails.User.builder()
+                    .username(user.getUserName())
+                    .password(user.getPassword())
+                    .authorities(authorities)
+                    .build();
+        };
     }
 
     @Bean
@@ -80,11 +116,21 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setExposedHeaders(List.of("Authorization"));
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private void writeSecurityError(
+            HttpServletResponse response,
+            ObjectMapper objectMapper,
+            int status,
+            String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        objectMapper.writeValue(response.getWriter(), ResponseBuilder.error(status, message));
     }
 }
 
