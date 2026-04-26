@@ -6,6 +6,7 @@ import com.sprint.bookinventorymgmt.reviewmgmt.entity.Reviewer;
 import com.sprint.bookinventorymgmt.reviewmgmt.repository.ReviewerRepository;
 import com.sprint.bookinventorymgmt.reviewmgmt.exceptions.ReviewerNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ import java.util.List;
 
 @Service
 public class ReviewerServiceImpl implements ReviewerService {
-
-    private final ReviewerRepository repository;
+    @Autowired
+    private  ReviewerRepository repository;
 
     public ReviewerServiceImpl(ReviewerRepository repository) {
         this.repository = repository;

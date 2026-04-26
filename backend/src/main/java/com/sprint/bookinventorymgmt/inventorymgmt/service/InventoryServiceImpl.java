@@ -5,6 +5,7 @@ import com.sprint.bookinventorymgmt.inventorymgmt.exceptions.*;
 import com.sprint.bookinventorymgmt.inventorymgmt.repository.IInventoryRepository;
 import com.sprint.bookinventorymgmt.common.ResponseStructure;
 import com.sprint.bookinventorymgmt.common.ResponseBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +13,8 @@ import java.util.List;
 
 @Service
 public class InventoryServiceImpl implements IInventoryService {
-
-    private final IInventoryRepository repository;
+    @Autowired
+    private IInventoryRepository repository;
 
     public InventoryServiceImpl(IInventoryRepository repository) {
         this.repository = repository;
