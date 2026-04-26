@@ -11,11 +11,5 @@ public class ReviewerNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public ReviewerNotFoundException(Integer reviewerId) {
-        super("Reviewer not found with ID: " + reviewerId);
-    }
 
-    public ReviewerNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
