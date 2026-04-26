@@ -8,11 +8,11 @@ public class PermRole {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "role_number") // ✅ FIXED
+	@Column(name = "role_number") //
 	private Integer roleNumber;
 
 	@NotBlank(message = "Role name is required")
-	@Column(name = "perm_role", length = 30) // ✅ also fix this for consistency
+	@Column(name = "perm_role", length = 30) //
 	private String permRole;
 
 	public PermRole() {}
@@ -21,9 +21,6 @@ public class PermRole {
 		this.roleNumber = roleNumber;
 		this.permRole = permRole;
 	}
-
-	// getters & setters
-
 
 	// Getters and Setters
 	public Integer getRoleNumber() {

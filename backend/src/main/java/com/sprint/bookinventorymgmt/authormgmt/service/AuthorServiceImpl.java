@@ -5,13 +5,15 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO
 import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
-import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 @Service
 public class AuthorServiceImpl implements IAuthorService {
 
@@ -24,7 +26,7 @@ public class AuthorServiceImpl implements IAuthorService {
 
     @Override
     public AuthorResponseDTO addAuthor(AuthorRequestDTO dto) {
-        validateAuthorRequest(dto);
+        Objects.requireNonNull(dto, "Author request cannot be null");
 
         Author existingAuthor = repo.findByFirstNameAndLastName(dto.getFirstName(), dto.getLastName());
         if (existingAuthor != null) {
@@ -63,11 +65,21 @@ public class AuthorServiceImpl implements IAuthorService {
 
     @Override
     public AuthorResponseDTO updateAuthor(Integer authorId, AuthorRequestDTO dto) {
-        validateAuthorRequest(dto);
+        Objects.requireNonNull(dto, "Author request cannot be null");
 
         Author author = repo.findById(authorId)
                 .orElseThrow(() ->
                         new AuthorNotFoundException("Author not found with id: " + authorId));
+
+        if (repo.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot(
+                dto.getFirstName(), dto.getLastName(), authorId)) {
+            throw new DuplicateAuthorException(
+                    "Author already exists with name: " + dto.getFirstName() + " " + dto.getLastName());
+        }
+
+        if (isAuthorUnchanged(author, dto)) {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, "No changes detected for author id: " + authorId);
+        }
 
         author.setFirstName(dto.getFirstName());
         author.setLastName(dto.getLastName());
@@ -124,11 +136,13 @@ public class AuthorServiceImpl implements IAuthorService {
         return dto;
     }
 
-    private void validateAuthorRequest(AuthorRequestDTO dto) {
-        if (dto == null
-                || dto.getFirstName() == null || dto.getFirstName().isBlank()
-                || dto.getLastName() == null || dto.getLastName().isBlank()) {
-            throw new InvalidBookDataException("Author first name and last name cannot be null or empty");
-        }
+    private boolean isAuthorUnchanged(Author author, AuthorRequestDTO dto) {
+        return Objects.equals(author.getFirstName(), dto.getFirstName())
+                && Objects.equals(author.getLastName(), dto.getLastName())
+                && Objects.equals(normalizePhoto(author.getPhoto()), normalizePhoto(dto.getPhoto()));
+    }
+
+    private String normalizePhoto(String photo) {
+        return photo == null ? "" : photo.trim();
     }
 }

@@ -27,11 +27,8 @@ public interface IUserMgmtRepository extends JpaRepository <User,Integer>{
 	// Custom Query 2 — find all users by role number
 	@Query("SELECT u FROM User u WHERE u.role.roleNumber = :roleNumber")
 	List<User> findByRoleNumber(@Param("roleNumber") Integer roleNumber);
-
-	// Custom Query 3 — update password by userId
 	@Modifying
 	@Transactional
 	@Query("UPDATE User u SET u.password = :password WHERE u.userId = :userId")
-	int updatePassword(@Param("userId") Integer userId,
-					   @Param("password") String password);
+	int updatePassword(@Param("userId") Integer userId, @Param("password") String password);
 }

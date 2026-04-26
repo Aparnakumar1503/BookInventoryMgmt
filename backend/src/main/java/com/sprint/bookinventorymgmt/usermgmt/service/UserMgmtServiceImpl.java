@@ -5,16 +5,23 @@ import com.sprint.bookinventorymgmt.usermgmt.dto.responsedto.UserResponseDTO;
 import com.sprint.bookinventorymgmt.usermgmt.entity.PermRole;
 import com.sprint.bookinventorymgmt.usermgmt.entity.User;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.DuplicateUsernameException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.PasswordReuseException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.PermRoleNotFoundException;
+import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserDeleteNotAllowedException;
 import com.sprint.bookinventorymgmt.usermgmt.exceptions.UserNotFoundException;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IPermRoleRepository;
 import com.sprint.bookinventorymgmt.usermgmt.repository.IUserMgmtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserMgmtServiceImpl implements IUserMgmtService {
@@ -26,14 +33,7 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserMgmtServiceImpl(
-            IUserMgmtRepository userRepo,
-            IPermRoleRepository permRoleRepo,
-            PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
-        this.permRoleRepo = permRoleRepo;
-        this.passwordEncoder = passwordEncoder;
-    }
+
 
     @Override
     public UserResponseDTO addUser(UserRequestDTO dto) {
@@ -92,6 +92,16 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
                 .orElseThrow(() ->
                         new PermRoleNotFoundException("Role not found with id: " + dto.getRoleNumber()));
 
+        if (dto.getPassword() != null
+                && !dto.getPassword().isBlank()
+                && passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new PasswordReuseException("New password must be different from the current password.");
+        }
+
+        if (isUserUnchanged(user, dto, role)) {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED, "No changes detected for user id: " + userId);
+        }
+
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setPhoneNumber(dto.getPhoneNumber());
@@ -110,6 +120,9 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + userId));
+        if (isCurrentLoggedInUser(user)) {
+            throw new UserDeleteNotAllowedException("The currently logged-in user cannot delete their own account.");
+        }
         userRepo.delete(user);
         return "User deleted successfully with id: " + userId;
     }
@@ -139,9 +152,13 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
 
     @Override
     public String updatePassword(Integer userId, String newPassword) {
-        userRepo.findById(userId)
+        User user = userRepo.findById(userId)
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found with id: " + userId));
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new PasswordReuseException("New password must be different from the current password.");
+        }
 
         int updated = userRepo.updatePassword(userId, passwordEncoder.encode(newPassword));
         if (updated > 0) {
@@ -160,5 +177,27 @@ public class UserMgmtServiceImpl implements IUserMgmtService {
         dto.setRoleNumber(entity.getRole() != null ? entity.getRole().getRoleNumber() : null);
         dto.setPermRole(entity.getRole() != null ? entity.getRole().getPermRole() : null);
         return dto;
+    }
+
+    private boolean isUserUnchanged(User user, UserRequestDTO dto, PermRole role) {
+        boolean passwordUnchanged = dto.getPassword() == null
+                || dto.getPassword().isBlank()
+                || passwordEncoder.matches(dto.getPassword(), user.getPassword());
+
+        return Objects.equals(user.getFirstName(), dto.getFirstName())
+                && Objects.equals(user.getLastName(), dto.getLastName())
+                && Objects.equals(user.getPhoneNumber(), dto.getPhoneNumber())
+                && Objects.equals(user.getUserName(), dto.getUserName())
+                && Objects.equals(user.getRole() != null ? user.getRole().getRoleNumber() : null, role.getRoleNumber())
+                && passwordUnchanged;
+    }
+
+    private boolean isCurrentLoggedInUser(User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            return false;
+        }
+        return user.getUserName() != null
+                && user.getUserName().equalsIgnoreCase(authentication.getName());
     }
 }

@@ -99,6 +99,7 @@ com\sprint\bookinventorymgmt\reviewmgmt\service\BookReviewService.class
 com\sprint\bookinventorymgmt\bookmgmt\exceptions\EmptyDataException.class
 com\sprint\bookinventorymgmt\inventorymgmt\dto\requestdto\BookConditionRequestDTO.class
 com\sprint\bookinventorymgmt\bookmgmt\dto\response\CategoryResponseDTO.class
+com\sprint\bookinventorymgmt\authormgmt\exceptions\PrimaryAuthorConflictException.class
 com\sprint\bookinventorymgmt\common\PaginationUtils.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\DuplicateInventoryException.class
 com\sprint\bookinventorymgmt\reviewmgmt\exceptions\ReviewerNotFoundException.class
@@ -134,7 +135,6 @@ com\sprint\bookinventorymgmt\usermgmt\exceptions\UserNotFoundException.class
 com\sprint\bookinventorymgmt\authormgmt\dto\responsedto\AuthorResponseDTO$AuthorResponseDTOBuilder.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InsufficientInventoryException.class
 com\sprint\bookinventorymgmt\usermgmt\dto\responsedto\PermRoleResponseDTO.class
-com\sprint\bookinventorymgmt\authormgmt\exceptions\InvalidBookDataException.class
 com\sprint\bookinventorymgmt\bookmgmt\entity\State.class
 com\sprint\bookinventorymgmt\reviewmgmt\dto\BookReviewRequestDTO.class
 com\sprint\bookinventorymgmt\authormgmt\entity\BookAuthor.class
@@ -156,6 +156,7 @@ com\sprint\bookinventorymgmt\authormgmt\dto\requestdto\AuthorRequestDTO$AuthorRe
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\InventoryNotFoundException.class
 com\sprint\bookinventorymgmt\ordermgmt\entity\ShoppingCart.class
 com\sprint\bookinventorymgmt\reviewmgmt\entity\Reviewer.class
+com\sprint\bookinventorymgmt\usermgmt\exceptions\UserDeleteNotAllowedException.class
 com\sprint\bookinventorymgmt\usermgmt\service\IUserMgmtService.class
 com\sprint\bookinventorymgmt\bookmgmt\dto\request\CategoryRequestDTO.class
 com\sprint\bookinventorymgmt\reviewmgmt\service\ReviewerService.class
@@ -163,6 +164,7 @@ com\sprint\bookinventorymgmt\bookmgmt\exceptions\CategoryNotFoundException.class
 com\sprint\bookinventorymgmt\inventorymgmt\service\BookConditionServiceImpl.class
 com\sprint\bookinventorymgmt\inventorymgmt\exceptions\DatabaseOperationException.class
 com\sprint\bookinventorymgmt\ordermgmt\entity\PurchaseLog.class
+com\sprint\bookinventorymgmt\usermgmt\exceptions\PasswordReuseException.class
 com\sprint\bookinventorymgmt\bookmgmt\entity\Category.class
 com\sprint\bookinventorymgmt\usermgmt\exceptions\PermRoleNotFoundException.class
 com\sprint\bookinventorymgmt\usermgmt\service\IPermRoleService.class

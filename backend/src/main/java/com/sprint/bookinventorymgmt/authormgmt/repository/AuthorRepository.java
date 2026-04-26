@@ -11,6 +11,7 @@ import java.util.List;
 public interface AuthorRepository extends JpaRepository<Author, Integer> {
     List<Author> findByLastName(String lastName);
     List<Author> findByFirstName(String firstName);
+    boolean existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot(String firstName, String lastName, Integer authorId);
 
     // Custom Query 1 — Find author by first and last name
     @Query("SELECT a FROM Author a WHERE a.firstName = :firstName AND a.lastName = :lastName")

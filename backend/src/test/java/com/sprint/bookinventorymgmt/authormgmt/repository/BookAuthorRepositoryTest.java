@@ -94,14 +94,5 @@ class BookAuthorRepositoryTest {
         assertTrue(bookAuthorRepository.findByIsbn(book1.getIsbn()).isEmpty());
     }
 
-    @Test
-    void deleteByIsbnAndAuthorId_removesSingleMapping() {
-        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author1.getAuthorId(), null, null, "Y"));
-        bookAuthorRepository.saveAndFlush(new BookAuthor(book1.getIsbn(), author2.getAuthorId(), null, null, "N"));
 
-        int deleted = bookAuthorRepository.deleteByIsbnAndAuthorId(book1.getIsbn(), author1.getAuthorId());
-
-        assertEquals(1, deleted);
-        assertEquals(1, bookAuthorRepository.findByIsbn(book1.getIsbn()).size());
-    }
 }

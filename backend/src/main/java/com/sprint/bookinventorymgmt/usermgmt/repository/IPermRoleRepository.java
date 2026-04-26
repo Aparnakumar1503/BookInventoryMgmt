@@ -25,10 +25,9 @@ public interface IPermRoleRepository extends JpaRepository<PermRole, Integer> {
     @Query("SELECT COUNT(p) FROM PermRole p")
     Long countAllRoles();
 
-    // Custom Query 3 — update role name by roleNumber
+
     @Modifying
     @Transactional
-    @Query("UPDATE PermRole p SET p.permRole = :permRole WHERE p.roleNumber = :roleNumber")
-    int updatePermRole(@Param("roleNumber") Integer roleNumber,
-                       @Param("permRole") String permRole);
+    @Query("UPDATE PermRole p SET p.permRole = :newRole WHERE p.roleNumber = :roleNumber")
+    int updatePermRole(@Param("roleNumber") Integer roleNumber, @Param("newRole") String newRole);
 }

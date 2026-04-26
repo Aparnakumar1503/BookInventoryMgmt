@@ -4,12 +4,13 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.BookAuthorRespons
 import com.sprint.bookinventorymgmt.authormgmt.entity.BookAuthor;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
-import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
+import com.sprint.bookinventorymgmt.authormgmt.exceptions.PrimaryAuthorConflictException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.BookAuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BookAuthorServiceImpl implements IBookAuthorService {
@@ -23,9 +24,14 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
 
     @Override
     public BookAuthorResponseDTO addBookAuthor(BookAuthorRequestDTO dto) {
-        validateBookAuthorRequest(dto);
+        Objects.requireNonNull(dto, "Book-author request cannot be null");
 
         List<BookAuthor> existingBookAuthors = repo.findByIsbn(dto.getIsbn());
+        if (isPrimaryAuthor(dto) && repo.findPrimaryAuthorByIsbn(dto.getIsbn()) != null) {
+            throw new PrimaryAuthorConflictException(
+                    "A primary author is already assigned for isbn: " + dto.getIsbn());
+        }
+
         boolean alreadyMapped = false;
         for (BookAuthor bookAuthor : existingBookAuthors) {
             if (dto.getAuthorId().equals(bookAuthor.getAuthorId())) {
@@ -44,8 +50,14 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
         entity.setAuthorId(dto.getAuthorId());
         entity.setPrimaryAuthor(dto.getPrimaryAuthor());
 
-        BookAuthor saved = repo.save(entity);
-        return mapToDTO(saved);
+        repo.save(entity);
+
+        BookAuthor savedWithRelations = repo.findByIsbn(dto.getIsbn()).stream()
+                .filter(bookAuthor -> dto.getAuthorId().equals(bookAuthor.getAuthorId()))
+                .findFirst()
+                .orElse(entity);
+
+        return mapToDTO(savedWithRelations);
     }
 
     @Override
@@ -145,12 +157,8 @@ public class BookAuthorServiceImpl implements IBookAuthorService {
         return dto;
     }
 
-    private void validateBookAuthorRequest(BookAuthorRequestDTO dto) {
-        if (dto == null
-                || dto.getIsbn() == null || dto.getIsbn().isBlank()
-                || dto.getAuthorId() == null
-                || dto.getPrimaryAuthor() == null || dto.getPrimaryAuthor().isBlank()) {
-            throw new InvalidBookDataException("ISBN, authorId and primaryAuthor cannot be null or empty");
-        }
+    private boolean isPrimaryAuthor(BookAuthorRequestDTO dto) {
+        return dto.getPrimaryAuthor() != null && "Y".equalsIgnoreCase(dto.getPrimaryAuthor().trim());
     }
+
 }

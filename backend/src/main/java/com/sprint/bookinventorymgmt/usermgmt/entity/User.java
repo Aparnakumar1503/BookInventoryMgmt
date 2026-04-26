@@ -2,9 +2,9 @@ package com.sprint.bookinventorymgmt.usermgmt.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 @Entity
 @Table(name = "users")
-
 public class User {
 
 	    @Id

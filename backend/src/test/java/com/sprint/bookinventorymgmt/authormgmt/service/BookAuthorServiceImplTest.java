@@ -5,7 +5,6 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.BookAuthorRespons
 import com.sprint.bookinventorymgmt.authormgmt.entity.BookAuthor;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.BookAuthorNotFoundException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateBookAuthorException;
-import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.BookAuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +90,7 @@ class BookAuthorServiceImplTest {
     void addBookAuthor_throwsForInvalidRequestOrDuplicateMapping() {
         when(repo.findByIsbn("1-111-11111-4")).thenReturn(List.of(bookAuthor));
 
-        assertThrows(InvalidBookDataException.class, () -> service.addBookAuthor(null));
+        assertThrows(NullPointerException.class, () -> service.addBookAuthor(null));
         assertThrows(DuplicateBookAuthorException.class, () -> service.addBookAuthor(requestDTO));
     }
 

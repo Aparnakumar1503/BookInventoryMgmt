@@ -5,7 +5,6 @@ import com.sprint.bookinventorymgmt.authormgmt.dto.responsedto.AuthorResponseDTO
 import com.sprint.bookinventorymgmt.authormgmt.entity.Author;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.AuthorNotFoundException;
 import com.sprint.bookinventorymgmt.authormgmt.exceptions.DuplicateAuthorException;
-import com.sprint.bookinventorymgmt.authormgmt.exceptions.InvalidBookDataException;
 import com.sprint.bookinventorymgmt.authormgmt.repository.AuthorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +74,7 @@ class AuthorServiceImplTest {
     @Test
     void updateAuthor_updatesExistingAuthor() {
         when(repo.findById(1)).thenReturn(Optional.of(author));
+        when(repo.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot("Jane", "Doe", 1)).thenReturn(false);
         when(repo.save(any(Author.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         AuthorRequestDTO updateDTO = AuthorRequestDTO.builder()
@@ -90,6 +90,20 @@ class AuthorServiceImplTest {
     }
 
     @Test
+    void updateAuthor_throwsWhenUpdatedNameAlreadyExistsForAnotherAuthor() {
+        when(repo.findById(1)).thenReturn(Optional.of(author));
+        when(repo.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot("Jane", "Doe", 1)).thenReturn(true);
+
+        AuthorRequestDTO updateDTO = AuthorRequestDTO.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .photo("updated.jpg")
+                .build();
+
+        assertThrows(DuplicateAuthorException.class, () -> service.updateAuthor(1, updateDTO));
+    }
+
+    @Test
     void deleteAuthor_returnsSuccessMessage_whenAuthorExists() {
         when(repo.findById(1)).thenReturn(Optional.of(author));
 
@@ -100,7 +114,7 @@ class AuthorServiceImplTest {
     void addAuthor_throwsWhenRequestIsInvalidOrDuplicate() {
         when(repo.findByFirstNameAndLastName("John", "Doe")).thenReturn(author);
 
-        assertThrows(InvalidBookDataException.class, () -> service.addAuthor(null));
+        assertThrows(NullPointerException.class, () -> service.addAuthor(null));
         assertThrows(DuplicateAuthorException.class, () -> service.addAuthor(requestDTO));
     }
 

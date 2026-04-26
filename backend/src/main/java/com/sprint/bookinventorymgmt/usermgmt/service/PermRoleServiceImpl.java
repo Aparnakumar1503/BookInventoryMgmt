@@ -16,10 +16,6 @@ public class PermRoleServiceImpl implements IPermRoleService {
     @Autowired
     private  IPermRoleRepository repo;
 
-    public PermRoleServiceImpl(IPermRoleRepository repo) {
-        this.repo = repo;
-    }
-
     @Override
     public PermRoleResponseDTO addRole(PermRoleRequestDTO dto) {
         PermRole entity = new PermRole();
