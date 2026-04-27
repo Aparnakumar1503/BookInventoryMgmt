@@ -7,13 +7,6 @@ export interface AuthenticatedUser {
   readonly modules: readonly string[];
 }
 
-export interface AuthTokenPayload {
-  readonly tokenType: string;
-  readonly accessToken: string;
-  readonly expiresAt: number;
-  readonly user: AuthenticatedUser;
-}
-
 export interface ApiEnvelope<T> {
   readonly statusCode: number;
   readonly message: string;

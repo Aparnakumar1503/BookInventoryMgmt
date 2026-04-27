@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, map, of, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiEnvelope, AuthenticatedUser, AuthTokenPayload } from '../models/auth.model';
+import { ApiEnvelope, AuthenticatedUser } from '../models/auth.model';
 
-const TOKEN_KEY = 'book-inventory:token';
-const EXPIRES_AT_KEY = 'book-inventory:expires-at';
 const USER_KEY = 'book-inventory:user';
 
 @Injectable({ providedIn: 'root' })
@@ -15,45 +13,38 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly baseUrl = environment.apiBaseUrl;
 
-  private readonly tokenSignal = signal<string | null>(this.read<string>(TOKEN_KEY));
-  private readonly expiresAtSignal = signal<number | null>(this.read<number>(EXPIRES_AT_KEY));
   private readonly userSignal = signal<AuthenticatedUser | null>(this.read<AuthenticatedUser>(USER_KEY));
 
-  readonly token = this.tokenSignal.asReadonly();
   readonly currentUser = this.userSignal.asReadonly();
-  readonly isAuthenticated = computed(() => {
-    const token = this.tokenSignal();
-    const expiresAt = this.expiresAtSignal();
-    return Boolean(token && expiresAt && expiresAt > Date.now());
-  });
+  readonly isAuthenticated = computed(() => Boolean(this.userSignal()));
 
-  login(username: string, password: string): Observable<AuthTokenPayload> {
-    return this.http.post<ApiEnvelope<AuthTokenPayload>>(`${this.baseUrl}/api/v1/auth/login`, { username, password }).pipe(
+  login(username: string, password: string): Observable<AuthenticatedUser> {
+    return this.http.post<ApiEnvelope<AuthenticatedUser>>(`${this.baseUrl}/api/v1/auth/login`, { username, password }).pipe(
       map((response) => response.data),
-      tap((payload) => this.persist(payload))
+      tap((user) => this.persist(user))
     );
   }
 
   restoreSession(): Observable<AuthenticatedUser | null> {
-    if (!this.isAuthenticated()) {
-      this.clearSession();
-      return of(null);
-    }
-
     return this.http.get<ApiEnvelope<AuthenticatedUser>>(`${this.baseUrl}/api/v1/auth/me`).pipe(
       map((response) => response.data),
       tap((user) => {
         this.userSignal.set(user);
         this.write(USER_KEY, user);
+      }),
+      catchError(() => {
+        this.clearSession();
+        return of(null);
       })
     );
   }
 
   logout(redirect = true): void {
-    this.clearSession();
-    if (redirect) {
-      void this.router.navigate(['/']);
-    }
+    this.http.post<ApiEnvelope<string>>(`${this.baseUrl}/api/v1/auth/logout`, {}).pipe(
+      catchError(() => of(null))
+    ).subscribe({
+      next: () => this.finishLogout(redirect)
+    });
   }
 
   canAccessModule(moduleId: string): boolean {
@@ -61,24 +52,21 @@ export class AuthService {
     return Boolean(user?.modules.includes(moduleId));
   }
 
-  private persist(payload: AuthTokenPayload): void {
-    this.tokenSignal.set(payload.accessToken);
-    this.expiresAtSignal.set(payload.expiresAt);
-    this.userSignal.set(payload.user);
-
-    this.write(TOKEN_KEY, payload.accessToken);
-    this.write(EXPIRES_AT_KEY, payload.expiresAt);
-    this.write(USER_KEY, payload.user);
+  private persist(user: AuthenticatedUser): void {
+    this.userSignal.set(user);
+    this.write(USER_KEY, user);
   }
 
   private clearSession(): void {
-    this.tokenSignal.set(null);
-    this.expiresAtSignal.set(null);
     this.userSignal.set(null);
-
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(EXPIRES_AT_KEY);
     localStorage.removeItem(USER_KEY);
+  }
+
+  private finishLogout(redirect: boolean): void {
+    this.clearSession();
+    if (redirect) {
+      void this.router.navigate(['/']);
+    }
   }
 
   private read<T>(key: string): T | null {

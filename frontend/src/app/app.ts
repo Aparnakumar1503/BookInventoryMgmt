@@ -16,7 +16,7 @@ export class App {
     private readonly authService: AuthService
   ) {
     if (this.authService.isAuthenticated()) {
-      this.authService.restoreSession().subscribe({ error: () => this.authService.logout(false) });
+      this.authService.restoreSession().subscribe();
     }
   }
 }
