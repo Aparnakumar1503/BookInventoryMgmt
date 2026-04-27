@@ -17,10 +17,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 public class PermRoleServiceImplTest {
-    @Mock
+    @Mock // create a fake repo
     private IPermRoleRepository repo;
 
-    @InjectMocks
+    @InjectMocks // inject fake repo into service
     private PermRoleServiceImpl service;
 
     private PermRole permRole;
@@ -32,9 +32,7 @@ public class PermRoleServiceImplTest {
 
         permRole = new PermRole(1, "Admin");
 
-        requestDTO = PermRoleRequestDTO.builder()
-                .permRole("Admin")
-                .build();
+        requestDTO = new PermRoleRequestDTO("Admin");
     }
 
     // ==================== POSITIVE (3) ====================
@@ -52,6 +50,7 @@ public class PermRoleServiceImplTest {
 
     @Test
     void testGetRoleById_Positive() {
+        // here optional prevent nullpointerexception
         when(repo.findById(1)).thenReturn(Optional.of(permRole));
 
         PermRoleResponseDTO result = service.getRoleById(1);

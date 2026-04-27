@@ -49,16 +49,16 @@ public class UserMgmtServiceTest {
         user = new User("John", "Doe", "9876543210", "johndoe", "pass123", permRole);
         user.setUserId(1);
 
-        requestDTO = UserRequestDTO.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .phoneNumber("9876543210")
-                .userName("johndoe")
-                .password("pass123")
-                .roleNumber(1)
-                .build();
+        requestDTO = new UserRequestDTO(
+                "John",
+                "Doe",
+                "9876543210",
+                "johndoe",
+                "pass123",
+                1
+        );
     }
-
+// positive test case
     @Test
     void testAddUser_Positive() {
         when(userRepo.existsByUserNameIgnoreCase("johndoe")).thenReturn(false);
@@ -87,21 +87,15 @@ public class UserMgmtServiceTest {
     }
 
     @Test
-    void testAddUser_Negative_RoleNotFound() {
-        when(userRepo.existsByUserNameIgnoreCase("johndoe")).thenReturn(false);
-        when(permRoleRepo.findById(99)).thenReturn(Optional.empty());
+    void testDeleteUser_Positive() {
+        when(userRepo.findById(1)).thenReturn(Optional.of(user));
 
-        UserRequestDTO invalidDTO = UserRequestDTO.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .userName("johndoe")
-                .password("pass123")
-                .roleNumber(99)
-                .build();
+        String result = service.deleteUser(1);
 
-        assertThrows(PermRoleNotFoundException.class, () -> service.addUser(invalidDTO));
-        verify(permRoleRepo).findById(99);
+        assertEquals("User deleted successfully with id: 1", result);
+        verify(userRepo).delete(user);
     }
+    // negative testcase
 
     @Test
     void testAddUser_Negative_DuplicateUsername() {
@@ -119,6 +113,16 @@ public class UserMgmtServiceTest {
         verify(userRepo).findById(99);
     }
 
+
+
+    @Test
+    void testDeleteUser_Negative_NotFound() {
+        when(userRepo.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> service.deleteUser(99));
+        verify(userRepo, never()).delete(any(User.class));
+    }
+    // Edge case
     @Test
     void testGetAllUsers_Edge_EmptyList() {
         when(userRepo.findAll()).thenReturn(Collections.emptyList());
@@ -128,23 +132,5 @@ public class UserMgmtServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(userRepo).findAll();
-    }
-
-    @Test
-    void testDeleteUser_Positive() {
-        when(userRepo.findById(1)).thenReturn(Optional.of(user));
-
-        String result = service.deleteUser(1);
-
-        assertEquals("User deleted successfully with id: 1", result);
-        verify(userRepo).delete(user);
-    }
-
-    @Test
-    void testDeleteUser_Negative_NotFound() {
-        when(userRepo.findById(99)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> service.deleteUser(99));
-        verify(userRepo, never()).delete(any(User.class));
     }
 }

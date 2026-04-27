@@ -1,8 +1,5 @@
 package com.sprint.bookinventorymgmt.usermgmt.dto.responsedto;
 
-import lombok.Builder;
-
-@Builder
 public class UserResponseDTO {
     private Integer userId;
     private String firstName;

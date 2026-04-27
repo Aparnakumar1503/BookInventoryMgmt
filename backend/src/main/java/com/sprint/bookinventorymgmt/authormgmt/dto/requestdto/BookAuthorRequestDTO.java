@@ -1,10 +1,6 @@
 package com.sprint.bookinventorymgmt.authormgmt.dto.requestdto;
 
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Data;
-
-@Builder
 public class BookAuthorRequestDTO {
 
     private String isbn;

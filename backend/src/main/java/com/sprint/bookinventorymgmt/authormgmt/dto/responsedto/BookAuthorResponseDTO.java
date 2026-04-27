@@ -1,9 +1,5 @@
 package com.sprint.bookinventorymgmt.authormgmt.dto.responsedto;
 
-import lombok.Builder;
-import lombok.Data;
-
-@Builder
 public class BookAuthorResponseDTO {
 
     private String isbn;

@@ -3,10 +3,6 @@ package com.sprint.bookinventorymgmt.authormgmt.dto.requestdto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-
-@Builder
 public class AuthorRequestDTO {
 
     @NotBlank(message = "First name is required")

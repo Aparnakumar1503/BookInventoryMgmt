@@ -1,9 +1,5 @@
 package com.sprint.bookinventorymgmt.authormgmt.dto.responsedto;
 
-import lombok.Builder;
-
-
-@Builder
 public class AuthorResponseDTO {
 
     private Integer authorId; // returned in response after save

@@ -37,11 +37,7 @@ class BookAuthorServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         bookAuthor = new BookAuthor("1-111-11111-4", 1, null, null, "Y");
-        requestDTO = BookAuthorRequestDTO.builder()
-                .isbn("1-111-11111-4")
-                .authorId(1)
-                .primaryAuthor("Y")
-                .build();
+        requestDTO = new BookAuthorRequestDTO("1-111-11111-4", 1, "Y");
     }
 
     @Test

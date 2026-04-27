@@ -22,10 +22,12 @@ class UserMgmtRepositoryTest {
     private PermRole savedRole;
 
     @BeforeEach
+    //User entity requires a role (foreign key) so we afe setting up the role before test
     void setUp() {
         savedRole = permRoleRepository.saveAndFlush(new PermRole(null, "Guest"));
     }
 
+    //checking the exist
     @Test
     void derivedQueries_lastName_andExistsChecks_work() {
         userRepository.saveAndFlush(new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));
@@ -35,7 +37,7 @@ class UserMgmtRepositoryTest {
         assertTrue(userRepository.existsByUserName("johndoe"));
         assertTrue(userRepository.existsByUserNameIgnoreCase("JOHNDOE"));
     }
-
+ //checking using username and password
     @Test
     void customQueries_findByUsernameAndPassword_andRoleNumber_work() {
         userRepository.saveAndFlush(new User("John", "Doe", "9876543210", "johndoe", "pass123", savedRole));

@@ -38,11 +38,7 @@ class AuthorServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         author = new Author(1, "John", "Doe", "photo.jpg");
-        requestDTO = AuthorRequestDTO.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .photo("photo.jpg")
-                .build();
+        requestDTO = new AuthorRequestDTO("John", "Doe", "photo.jpg");
     }
 
     @Test
@@ -71,11 +67,7 @@ class AuthorServiceImplTest {
         when(repo.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot("Jane", "Doe", 1)).thenReturn(false);
         when(repo.save(any(Author.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AuthorRequestDTO updateDTO = AuthorRequestDTO.builder()
-                .firstName("Jane")
-                .lastName("Doe")
-                .photo("updated.jpg")
-                .build();
+        AuthorRequestDTO updateDTO = new AuthorRequestDTO("Jane", "Doe", "updated.jpg");
 
         AuthorResponseDTO result = service.updateAuthor(1, updateDTO);
 
@@ -88,11 +80,7 @@ class AuthorServiceImplTest {
         when(repo.findById(1)).thenReturn(Optional.of(author));
         when(repo.existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndAuthorIdNot("Jane", "Doe", 1)).thenReturn(true);
 
-        AuthorRequestDTO updateDTO = AuthorRequestDTO.builder()
-                .firstName("Jane")
-                .lastName("Doe")
-                .photo("updated.jpg")
-                .build();
+        AuthorRequestDTO updateDTO = new AuthorRequestDTO("Jane", "Doe", "updated.jpg");
 
         assertThrows(DuplicateAuthorException.class, () -> service.updateAuthor(1, updateDTO));
     }
